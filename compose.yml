@@ -1,4 +1,12 @@
 services:
+  api:
+    build:
+      context: ./api
+      dockerfile: Dockerfile.dev
+    volumes:
+      - ./api:/rails/
+    ports:
+      - "3000:3000"
   backend:
     build: ./Backend/.
     volumes:
