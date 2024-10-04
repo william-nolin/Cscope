@@ -1,4 +1,4 @@
-require 'test_helper'
+require "test_helper"
 
 class RepositoriesControllerTest < ActionDispatch::IntegrationTest
   test "returns 404 when the repository does not exists" do
