@@ -4,7 +4,20 @@ class RemoteRepository
   #
   def initialize(name:, description:, url:)
     @name = name
-    @descriptoin = description
-    @url = url
+    @description = description
+    @remote_url = url
+    @uri = Addressable::URI.heuristic_parse(url)
+  end
+
+  def name
+    @name
+  end
+
+  def domain
+    @uri.domain
+  end
+
+  def path
+    @uri.path
   end
 end
