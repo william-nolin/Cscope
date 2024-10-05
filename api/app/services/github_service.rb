@@ -14,12 +14,12 @@ class GithubService
 
     repository = @client.repository(uri.path[1..])
 
-    return nil unless repository
-
     RemoteRepository.new(
       name: repository.name,
       description: repository.description,
       url: repository.html_url
     )
+  rescue Octokit::NotFound
+    nil
   end
 end
