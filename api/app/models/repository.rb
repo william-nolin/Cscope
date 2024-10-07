@@ -13,4 +13,12 @@ class Repository < ApplicationRecord
       repository.path = remote_repository.path
     end
   end
+
+  def remote_url
+    Addressable::URI.new.tap do |u|
+      u.host = self.domain
+      u.path = self.path
+      u.scheme = "https"
+    end.to_s
+  end
 end

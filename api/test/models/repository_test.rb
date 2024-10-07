@@ -31,4 +31,8 @@ class RepositoryTest < ActiveSupport::TestCase
     assert_equal("github.com", repository.domain)
     assert_equal("/discourse/discourse", repository.path)
   end
+
+  test "#remote_url" do
+    assert_equal("https://github.com/rails/rails", repositories(:rails).remote_url)
+  end
 end
