@@ -8,3 +8,8 @@ rails:
   name: "rails"
   domain: "github.com"
   path: "/rails/rails"
+
+moodle:
+  name: "moodle"
+  domain: "github.com"
+  path: "/moodle/moodle"
