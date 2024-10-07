@@ -1,0 +1,19 @@
+# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+# This model initially had no columns defined. If you add columns to the
+# model remove the "{}" from the fixture names and add the columns immediately
+# below each fixture, per the syntax in the comments below
+#
+rails_4ad93b:
+  repository: rails
+  commit_hash: 4ad93b56ae27582947c9e37f15f1fc54ea263e26
+  author: David Heinemeier Hansson
+  committer_date: 2024-10-02
+  author_date: 2024-10-02
+
+moodle_52c0da:
+  repository: moodle
+  commit_hash: 52c0da7c647bd6ba8c5f61882d88959821a1fb41
+  author: Jun Pataleta
+  committer_date: 2024-10-05
+  author_date: 2024-10-05
