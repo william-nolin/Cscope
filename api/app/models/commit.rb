@@ -1,6 +1,6 @@
 class Commit < ApplicationRecord
   belongs_to :repository
-  has_many :commit_file_changes
+  has_many :file_changes, class_name: "CommitFileChange"
 
   validates :commit_hash,
     presence: true,

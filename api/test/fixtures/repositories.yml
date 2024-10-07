@@ -13,3 +13,8 @@ moodle:
   name: "moodle"
   domain: "github.com"
   path: "/moodle/moodle"
+
+example_repository:
+  name: "example"
+  domain: "github.com"
+  path: "/example/example"
