@@ -42,7 +42,7 @@ class GitRepository
   def logs(since: nil, before: nil, format: nil)
     return unless block_given?
 
-    command = ["log"]
+    command = [ "log" ]
     command << "--numstat"
     command << "--summary"
     command << "--since=#{since.strftime("%Y-%m-%d")}" if since
