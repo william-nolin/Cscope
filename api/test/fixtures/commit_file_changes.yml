@@ -4,12 +4,8 @@
 # model remove the "{}" from the fixture names and add the columns immediately
 # below each fixture, per the syntax in the comments below
 #
-rails:
-  name: "rails"
-  domain: "github.com"
-  path: "/rails/rails"
-
-moodle:
-  name: "moodle"
-  domain: "github.com"
-  path: "/moodle/moodle"
+rails_4ad93b_Gemfile:
+  commit: rails_4ad93b
+  filepath: Gemfile
+  additions: 1
+  deletions: 1

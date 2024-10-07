@@ -10,7 +10,24 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2024_10_04_015517) do
+ActiveRecord::Schema[8.0].define(version: 2024_10_07_003949) do
+  create_table "commit_file_changes", force: :cascade do |t|
+    t.integer "commit_id"
+    t.string "filepath"
+    t.integer "additions", default: 0
+    t.integer "deletions", default: 0
+    t.index ["commit_id"], name: "index_commit_file_changes_on_commit_id"
+  end
+
+  create_table "commits", force: :cascade do |t|
+    t.integer "repository_id"
+    t.string "commit_hash"
+    t.string "author"
+    t.datetime "committer_date"
+    t.datetime "author_date"
+    t.index ["repository_id", "commit_hash"], name: "index_commits_on_repository_id_and_commit_hash", unique: true
+  end
+
   create_table "repositories", force: :cascade do |t|
     t.string "name"
     t.string "domain"
