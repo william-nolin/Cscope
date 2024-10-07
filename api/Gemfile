@@ -49,3 +49,4 @@ end
 gem "octokit"
 gem "addressable", "~> 2.7"
 gem "git"
+gem "mocha"
