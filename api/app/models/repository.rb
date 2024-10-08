@@ -1,4 +1,6 @@
 class Repository < ApplicationRecord
+  has_many :commits
+
   def self.find_by_url(url)
     uri = Addressable::URI.heuristic_parse(url)
     return nil if uri.domain.nil? || uri.path.nil?
@@ -12,5 +14,13 @@ class Repository < ApplicationRecord
       repository.domain = remote_repository.domain
       repository.path = remote_repository.path
     end
+  end
+
+  def remote_url
+    Addressable::URI.new.tap do |u|
+      u.host = self.domain
+      u.path = self.path
+      u.scheme = "https"
+    end.to_s
   end
 end
