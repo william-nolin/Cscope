@@ -63,6 +63,6 @@ class GitRepository
   end
 
   def cli
-    @cli ||= Git::CommandLine.new({}, "/usr/bin/git", [], Logger.new(STDOUT))
+    @cli ||= Git::CommandLine.new({}, "/usr/bin/git", [], Logger.new("/dev/null"))
   end
 end
