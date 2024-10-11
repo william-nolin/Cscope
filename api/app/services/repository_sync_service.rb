@@ -25,8 +25,7 @@ class RepositorySyncService
           current_commit_hash = commit[:commit_hash]
           @commits << commit
         elsif Integer(line[0], exception: false)
-          change = commit_file_change_data_from_line(line, current_commit_hash)
-          @file_changes << change
+          @file_changes << commit_file_change_data_from_line(line, current_commit_hash)
         end
       end
 
