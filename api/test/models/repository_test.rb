@@ -1,6 +1,8 @@
 require "test_helper"
 
 class RepositoryTest < ActiveSupport::TestCase
+  include ActiveJob::TestHelper
+
   test ".find_by_url returns nil when the url is not valid" do
     assert_nil(Repository.find_by_url("garbage url"))
   end
@@ -34,5 +36,10 @@ class RepositoryTest < ActiveSupport::TestCase
 
   test "#remote_url" do
     assert_equal("https://github.com/rails/rails", repositories(:rails).remote_url)
+  end
+
+  test "enqueues a RepositorySyncJob after creation" do
+    repository = Repository.create(name: "moodle", domain: "github.com", path: "/moodle/moodle")
+    assert_enqueued_with(job: RepositorySyncJob, args: [ { repository_id: repository.id } ])
   end
 end
