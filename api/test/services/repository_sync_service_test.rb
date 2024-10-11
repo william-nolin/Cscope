@@ -8,12 +8,12 @@ class RepositorySyncServiceTest < ActiveSupport::TestCase
   test "#index creates commits for the given repository" do
     stub_git_repository_logs do
       <<~GIT_LOGS
-        ||3ecab153fab78e61290892881e9a34d0df6fb7a0||Jonathan Lalande||2024-10-10||2024-10-10||
-        3	0	README.md
-
         ||71c23127bf7bad405dd3e8e29f9394140882898c||Jonathan Lalande||2024-10-06||2024-10-06||
         2	0	README.md
          create mode 100644 README.md
+
+        ||3ecab153fab78e61290892881e9a34d0df6fb7a0||Jonathan Lalande||2024-10-10||2024-10-10||
+        3	0	README.md
       GIT_LOGS
     end
 
@@ -33,15 +33,15 @@ class RepositorySyncServiceTest < ActiveSupport::TestCase
   test "#index creates commit_file_changes for each commits" do
     stub_git_repository_logs do
       <<~GIT_LOGS
+        ||3ecab153fab78e61290892881e9a34d0df6fb7a0||Jonathan Lalande||2024-10-06||2024-10-06
+        3	0	README.md
+
         ||c8ab6fe877522729d4088dc7bce64b560d56a324||Jonathan Lalande||2024-10-07||2024-10-07
         21	0	LICENSE
         0	3	README.md
         1	0	main.rb
          create mode 100644 LICENSE
          create mode 100644 main.rb
-
-        ||3ecab153fab78e61290892881e9a34d0df6fb7a0||Jonathan Lalande||2024-10-06||2024-10-06
-        3	0	README.md
       GIT_LOGS
     end
 

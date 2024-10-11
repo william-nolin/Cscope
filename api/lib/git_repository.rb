@@ -43,6 +43,7 @@ class GitRepository
     return unless block_given?
 
     command = [ "log" ]
+    command << "--reverse"
     command << "--numstat"
     command << "--summary"
     command << "--since=#{since.strftime("%Y-%m-%d")}" if since
