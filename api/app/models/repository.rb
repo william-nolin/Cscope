@@ -1,6 +1,8 @@
 class Repository < ApplicationRecord
   has_many :commits
 
+  after_create_commit { RepositorySyncJob.perform_later(repository_id: id) }
+
   def self.find_by_url(url)
     uri = Addressable::URI.heuristic_parse(url)
     return nil if uri.domain.nil? || uri.path.nil?
