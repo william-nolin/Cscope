@@ -5,6 +5,11 @@ Rails.application.routes.draw do
   # Can be used by load balancers and uptime monitors to verify that the app is live.
   get "up" => "rails/health#show", as: :rails_health_check
 
+  if Rails.env.development?
+    # Dashboard and Active Job extensions to operate and troubleshoot background jobs
+     mount MissionControl::Jobs::Engine, at: "/jobs"
+  end
+
   get "/repositories/:id", to: "repositories#show"
   post "/repositories", to: "repositories#create"
 end
