@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2024_10_07_003949) do
+ActiveRecord::Schema[8.0].define(version: 2024_10_11_035221) do
   create_table "commit_file_changes", force: :cascade do |t|
     t.integer "commit_id"
     t.string "filepath"
@@ -34,5 +34,6 @@ ActiveRecord::Schema[8.0].define(version: 2024_10_07_003949) do
     t.string "path"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.index ["domain", "path"], name: "index_repositories_on_domain_and_path", unique: true
   end
 end
