@@ -3,6 +3,11 @@ class Repository < ApplicationRecord
 
   after_create_commit { RepositorySyncJob.perform_later(repository_id: id) }
 
+  validates :path, uniqueness: {
+    scope: :domain,
+    message: ->(object, _) { "#{object.remote_url} already exists." }
+  }
+
   def self.find_by_url(url)
     uri = Addressable::URI.heuristic_parse(url)
     return nil if uri.domain.nil? || uri.path.nil?
