@@ -39,7 +39,20 @@ class RepositoryTest < ActiveSupport::TestCase
   end
 
   test "enqueues a RepositorySyncJob after creation" do
-    repository = Repository.create(name: "moodle", domain: "github.com", path: "/moodle/moodle")
+    repository = Repository.create(name: "react", domain: "github.com", path: "/facebook/react")
     assert_enqueued_with(job: RepositorySyncJob, args: [ { repository_id: repository.id } ])
+  end
+
+  test "prevents creation of duplicated repositories on the same domain" do
+    repository = Repository.create(name: "rails", domain: "github.com", path: "/rails/rails")
+    assert_not(repository.valid?)
+    assert(repository.errors.of_kind?(:path, :taken))
+  end
+
+  test "does not prevent the creation of duplicated repositories on different domains" do
+    assert_nothing_raised do
+      Repository.create!(name: "duplicated_repo", domain: "github.com", path: "/example/duplicated_repository")
+      Repository.create!(name: "duplicated_repo", domain: "gitlab.com", path: "/example/duplicated_repository")
+    end
   end
 end
