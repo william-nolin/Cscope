@@ -66,6 +66,28 @@ class RepositorySyncServiceTest < ActiveSupport::TestCase
     assert_equal(0, change.deletions)
   end
 
+  test "#index creates source_files for each file in the log" do
+    stub_git_repository_logs do
+      <<~GIT_LOGS
+        ||3ecab153fab78e61290892881e9a34d0df6fb7a0||Jonathan Lalande||2024-10-06||2024-10-06
+        3	0	README.md
+
+        ||c8ab6fe877522729d4088dc7bce64b560d56a324||Jonathan Lalande||2024-10-07||2024-10-07
+        21	0	LICENSE
+        0	3	README.md
+        1	0	main.rb
+         create mode 100644 LICENSE
+         create mode 100644 main.rb
+      GIT_LOGS
+    end
+
+    RepositorySyncService.new(@repository).index
+
+    assert_not_nil(@repository.source_files.find_by(filepath: "README.md"))
+    assert_not_nil(@repository.source_files.find_by(filepath: "LICENSE"))
+    assert_not_nil(@repository.source_files.find_by(filepath: "main.rb"))
+  end
+
   private
 
   def stub_git_repository_logs(&block)
