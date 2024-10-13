@@ -10,3 +10,4 @@
 #
 Repository.find_or_create_by!(name: "rails", domain: "github.com", path: "/rails/rails")
 Repository.find_or_create_by!(name: "discourse", domain: "github.com", path: "/discourse/discourse")
+Repository.find_or_create_by!(name: "venomq", domain: "github.com", path: "/zergov/venomq")
