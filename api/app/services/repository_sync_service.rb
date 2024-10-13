@@ -48,7 +48,7 @@ class RepositorySyncService
       change[:commit_id] = commits_by_hash[commit_hash].id
     end
 
-    CommitFileChange.insert_all(@file_changes)
+    SourceFileChange.insert_all(@file_changes)
 
     @commits = []
     @file_changes = []
