@@ -8,31 +8,32 @@ class RepositorySyncService
   end
 
   def index
-    git_repo = GitRepository.new(@repository.remote_url)
-    git_repo.clone
-    git_repo.logs(format: "||%H||%aN||%cs||%as||") do |logs|
-      current_commit_hash = nil
+    GitRepository.temporary do |git|
+      git.clone(@repository.remote_url)
+      git.logs(format: "||%H||%aN||%cs||%as||") do |logs|
+        current_commit_hash = nil
 
-      logs.each do |line|
-        line.force_encoding("utf-8")
+        logs.each do |line|
+          line.force_encoding("utf-8")
 
-        next if line == ""
+          next if line == ""
 
-        if line[0] == "|"
-          persist_current_batch if @commits.size >= COMMIT_BATCH_SIZE
+          if line[0] == "|"
+            persist_current_batch if @commits.size >= COMMIT_BATCH_SIZE
 
-          commit = commit_data_from_line(line)
-          current_commit_hash = commit[:commit_hash]
-          @commits << commit
-        elsif Integer(line[0], exception: false)
-          change = commit_file_change_data_from_line(line, current_commit_hash)
-          filepath = change.delete(:filepath)
+            commit = commit_data_from_line(line)
+            current_commit_hash = commit[:commit_hash]
+            @commits << commit
+          elsif Integer(line[0], exception: false)
+            change = commit_file_change_data_from_line(line, current_commit_hash)
+            filepath = change.delete(:filepath)
 
-          (@files[filepath] ||= []) << change
+            (@files[filepath] ||= []) << change
+          end
         end
-      end
 
-      persist_current_batch
+        persist_current_batch
+      end
     end
   end
 

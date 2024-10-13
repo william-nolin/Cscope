@@ -1,10 +1,30 @@
 class GitRepository
-  def initialize(remote_url)
-    @remote_url = remote_url
+  class << self
+    #
+    # Initialize a GitRepository context in a temp directory.
+    # The temp directory is cleaned up when the block terminates.
+    #
+    # Example:
+    #
+    #   GitRepository.temporary do |git|
+    #     git.clone("https://github.com/rails/rails")
+    #     git.logs(since: DateTime.parse("2024-01-01")) { |logs| parse_logs(logs) }
+    #   end
+    #
+    def temporary
+      Dir.mktmpdir { |temp_directory| yield new(temp_directory) }
+    end
   end
 
-  def clone
-    Git.clone(@remote_url, temp_directory)
+  def initialize(directory)
+    @directory = directory
+  end
+
+  #
+  # Clone a repository in the directory passed to the initializer.
+  #
+  def clone(repository)
+    Git.clone(repository, @directory)
   end
 
   #
@@ -51,17 +71,13 @@ class GitRepository
     command << "--pretty=format:#{format}" if format
 
     Tempfile.create(binmode: true) do |f|
-      cli.run(*command, out: f, err: STDERR, chdir: temp_directory, normalize: true, chomp: true, merge: false)
+      cli.run(*command, out: f, err: STDERR, chdir: @directory, normalize: true, chomp: true, merge: false)
       f.rewind
       yield f.each_line
     end
   end
 
   private
-
-  def temp_directory
-    @temp_directory ||= Dir.mktmpdir
-  end
 
   def cli
     @cli ||= Git::CommandLine.new({}, "/usr/bin/git", [], Logger.new("/dev/null"))
