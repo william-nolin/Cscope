@@ -6,6 +6,6 @@
 #
 rails_4ad93b_Gemfile:
   commit: rails_4ad93b
-  filepath: Gemfile
+  source_file: rails_gemfile
   additions: 1
   deletions: 1

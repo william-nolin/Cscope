@@ -48,24 +48,20 @@ class RepositorySyncServiceTest < ActiveSupport::TestCase
     RepositorySyncService.new(@repository).index
 
     commit = @repository.commits.find_by(commit_hash: "3ecab153fab78e61290892881e9a34d0df6fb7a0")
-    change = commit.source_file_changes.find_by(filepath: "README.md")
-    assert_equal("README.md", change.filepath)
+    change = commit.source_file_changes.joins(:source_file).find_by(source_file: { filepath: "README.md" })
     assert_equal(3, change.additions)
     assert_equal(0, change.deletions)
 
     commit = @repository.commits.find_by(commit_hash: "c8ab6fe877522729d4088dc7bce64b560d56a324")
-    change = commit.source_file_changes.find_by(filepath: "LICENSE")
-    assert_equal("LICENSE", change.filepath)
+    change = commit.source_file_changes.joins(:source_file).find_by(source_file: { filepath: "LICENSE" })
     assert_equal(21, change.additions)
     assert_equal(0, change.deletions)
 
-    change = commit.source_file_changes.find_by(filepath: "README.md")
-    assert_equal("README.md", change.filepath)
+    change = commit.source_file_changes.joins(:source_file).find_by(source_file: { filepath: "README.md" })
     assert_equal(0, change.additions)
     assert_equal(3, change.deletions)
 
-    change = commit.source_file_changes.find_by(filepath: "main.rb")
-    assert_equal("main.rb", change.filepath)
+    change = commit.source_file_changes.joins(:source_file).find_by(source_file: { filepath: "main.rb" })
     assert_equal(1, change.additions)
     assert_equal(0, change.deletions)
   end

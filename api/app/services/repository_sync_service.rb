@@ -4,7 +4,7 @@ class RepositorySyncService
   def initialize(repository)
     @repository = repository
     @commits = []
-    @file_changes = []
+    @files = {}
   end
 
   def index
@@ -25,7 +25,10 @@ class RepositorySyncService
           current_commit_hash = commit[:commit_hash]
           @commits << commit
         elsif Integer(line[0], exception: false)
-          @file_changes << commit_file_change_data_from_line(line, current_commit_hash)
+          change = commit_file_change_data_from_line(line, current_commit_hash)
+          filepath = change.delete(:filepath)
+
+          (@files[filepath] ||= []) << change
         end
       end
 
@@ -37,21 +40,39 @@ class RepositorySyncService
 
   def persist_current_batch
     Commit.insert_all(@commits)
+    SourceFile.insert_all(@files.keys.map { |filepath| source_file_attribute(filepath) })
 
     commits_by_hash = Commit
       .select(:id, :commit_hash)
       .where(repository: @repository, commit_hash: @commits.map { _1[:commit_hash] })
       .index_by(&:commit_hash)
 
-    @file_changes.each do |change|
-      commit_hash = change.delete(:commit_hash)
-      change[:commit_id] = commits_by_hash[commit_hash].id
+    source_files_by_filepath = SourceFile
+      .where(repository: @repository, filepath: @files.keys)
+      .index_by(&:filepath)
+
+    @files.each do |filepath, changes|
+      changes.map! do |change|
+        commit = commits_by_hash[change[:commit_hash]]
+        source_file = source_files_by_filepath[filepath]
+
+        {
+          commit_id: commit.id,
+          source_file_id: source_file.id,
+          additions: change[:additions],
+          deletions: change[:deletions]
+        }
+      end
     end
 
-    SourceFileChange.insert_all(@file_changes)
+    SourceFileChange.insert_all(@files.values.flatten)
 
     @commits = []
-    @file_changes = []
+    @files = {}
+  end
+
+  def source_file_attribute(filepath)
+    { repository_id: @repository.id, filepath: filepath }
   end
 
   def commit_data_from_line(line)
