@@ -1,61 +1,104 @@
 class RepositorySyncService
-  COMMIT_BATCH_SIZE = 2500
-
   def initialize(repository)
     @repository = repository
-    @commits = []
-    @files = {}
   end
 
   def index
     GitRepository.temporary do |git|
       git.clone(@repository.remote_url)
-      git.logs(format: "||%H||%aN||%cs||%as||") do |logs|
-        current_commit_hash = nil
 
-        logs.each do |line|
-          line.force_encoding("utf-8")
-
-          next if line == ""
-
-          if line[0] == "|"
-            persist_current_batch if @commits.size >= COMMIT_BATCH_SIZE
-
-            commit = commit_data_from_line(line)
-            current_commit_hash = commit[:commit_hash]
-            @commits << commit
-          elsif Integer(line[0], exception: false)
-            change = commit_file_change_data_from_line(line, current_commit_hash)
-            filepath = change.delete(:filepath)
-
-            (@files[filepath] ||= []) << change
-          end
-        end
-
-        persist_current_batch
-      end
+      extract_full_commit_history(git)
     end
   end
 
   private
 
-  def persist_current_batch
-    Commit.insert_all(@commits)
-    SourceFile.insert_all(@files.keys.map { |filepath| source_file_attribute(filepath) })
+  #
+  # A batch of commits, source_files and changes to persist.
+  #
+  class Batch
+    MAX_COMMIT_BATCH_SIZE = 2500
 
-    commits_by_hash = Commit
+    attr_reader(:commits)
+
+    def initialize
+      @commits = []
+      @files = {}
+    end
+
+    def add_commit(commit)
+      @commits << commit
+    end
+
+    def add_file_change(file_change)
+      (@files[file_change[:filepath]] ||= []) << file_change
+    end
+
+    def size
+      @commits.size
+    end
+
+    def full?
+      size >= MAX_COMMIT_BATCH_SIZE
+    end
+
+    def filepaths
+      @files.keys
+    end
+
+    def file_changes
+      @files.values.flatten
+    end
+
+    def reset
+      @commits = []
+      @files = {}
+    end
+  end
+
+  def extract_full_commit_history(git)
+    batch = Batch.new
+    current_commit_hash = nil
+
+    git.logs(format: "||%H||%aN||%cs||%as||") do |logs|
+      logs.each do |line|
+        line.force_encoding("utf-8")
+
+        if line_is_a_commit?(line)
+          commit_batch(batch) if batch.full?
+
+          commit = commit_attributes_from_line(line)
+          current_commit_hash = commit[:commit_hash]
+
+          batch.add_commit(commit)
+        elsif line_is_a_file_change?(line)
+          change = file_change_attributes_from_line(line, current_commit_hash)
+          batch.add_file_change(change)
+        end
+      end
+
+      commit_batch(batch)
+    end
+  end
+
+  def commit_batch(batch)
+    @repository.commits.insert_all(batch.commits)
+    @repository.source_files.insert_all(batch.filepaths.map { { filepath: _1 } })
+
+    commits_by_hash = @repository.commits
       .select(:id, :commit_hash)
-      .where(repository: @repository, commit_hash: @commits.map { _1[:commit_hash] })
+      .where(commit_hash: batch.commits.map { _1[:commit_hash] })
       .index_by(&:commit_hash)
 
-    source_files_by_filepath = SourceFile
-      .where(repository: @repository, filepath: @files.keys)
+    source_files_by_filepath = @repository.source_files
+      .select(:id, :filepath)
+      .where(filepath: batch.filepaths)
       .index_by(&:filepath)
 
-    @files.each do |filepath, changes|
-      changes.map! do |change|
+    SourceFileChange.insert_all(
+      batch.file_changes.map do |change|
         commit = commits_by_hash[change[:commit_hash]]
-        source_file = source_files_by_filepath[filepath]
+        source_file = source_files_by_filepath[change[:filepath]]
 
         {
           commit_id: commit.id,
@@ -64,22 +107,22 @@ class RepositorySyncService
           deletions: change[:deletions]
         }
       end
-    end
+    )
 
-    SourceFileChange.insert_all(@files.values.flatten)
-
-    @commits = []
-    @files = {}
+    batch.reset
   end
 
-  def source_file_attribute(filepath)
-    { repository_id: @repository.id, filepath: filepath }
+  def line_is_a_commit?(line)
+    line[0] == "|"
   end
 
-  def commit_data_from_line(line)
+  def line_is_a_file_change?(line)
+    Integer(line[0], exception: false)
+  end
+
+  def commit_attributes_from_line(line)
     _, hash, author, committer_date, author_date = line.split("||")
     {
-      repository_id: @repository.id,
       commit_hash: hash,
       author: author,
       committer_date: DateTime.parse(committer_date),
@@ -87,7 +130,7 @@ class RepositorySyncService
     }
   end
 
-  def commit_file_change_data_from_line(line, commit_hash)
+  def file_change_attributes_from_line(line, commit_hash)
     additions, deletions, filepath = line.split("\t", 3)
     {
       commit_hash: commit_hash,
