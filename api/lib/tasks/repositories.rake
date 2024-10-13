@@ -17,11 +17,12 @@ namespace :repositories do
     repository = Repository.find(repository_id)
 
     puts "deleting commits and file changes of repository: #{repository.remote_url}..."
-    CommitFileChange
+    SourceFileChange
       .joins(commit: :repository)
       .where(commit: { repository_id: repository.id })
       .delete_all
-    Commit.where(repository_id: repository.id).delete_all
+    repository.commits.delete_all
+    repository.source_files.delete_all
     puts "done."
 
     puts "syncing #{repository.remote_url}..."
@@ -29,15 +30,15 @@ namespace :repositories do
       RepositorySyncService.new(repository).index
     end
 
-    file_changes_count = CommitFileChange
+    source_file_changes = SourceFileChange
       .joins(commit: :repository)
       .where(commit: { repository_id: repository.id })
-      .count
 
     puts <<~RESULTS
       Sync duration: #{time.to_s.strip}
       Commit created: #{repository.commits.count}
-      File changes created: #{file_changes_count}
+      File created: #{repository.source_files.count}
+      File changes created: #{source_file_changes.count}
     RESULTS
   end
 end
