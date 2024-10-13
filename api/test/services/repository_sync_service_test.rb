@@ -30,7 +30,7 @@ class RepositorySyncServiceTest < ActiveSupport::TestCase
     assert_equal(DateTime.parse("2024-10-10"), commit_b.author_date.to_datetime)
   end
 
-  test "#index creates commit_file_changes for each commits" do
+  test "#index creates source_file_changes for each commits" do
     stub_git_repository_logs do
       <<~GIT_LOGS
         ||3ecab153fab78e61290892881e9a34d0df6fb7a0||Jonathan Lalande||2024-10-06||2024-10-06
@@ -48,23 +48,23 @@ class RepositorySyncServiceTest < ActiveSupport::TestCase
     RepositorySyncService.new(@repository).index
 
     commit = @repository.commits.find_by(commit_hash: "3ecab153fab78e61290892881e9a34d0df6fb7a0")
-    change = commit.file_changes.find_by(filepath: "README.md")
+    change = commit.source_file_changes.find_by(filepath: "README.md")
     assert_equal("README.md", change.filepath)
     assert_equal(3, change.additions)
     assert_equal(0, change.deletions)
 
     commit = @repository.commits.find_by(commit_hash: "c8ab6fe877522729d4088dc7bce64b560d56a324")
-    change = commit.file_changes.find_by(filepath: "LICENSE")
+    change = commit.source_file_changes.find_by(filepath: "LICENSE")
     assert_equal("LICENSE", change.filepath)
     assert_equal(21, change.additions)
     assert_equal(0, change.deletions)
 
-    change = commit.file_changes.find_by(filepath: "README.md")
+    change = commit.source_file_changes.find_by(filepath: "README.md")
     assert_equal("README.md", change.filepath)
     assert_equal(0, change.additions)
     assert_equal(3, change.deletions)
 
-    change = commit.file_changes.find_by(filepath: "main.rb")
+    change = commit.source_file_changes.find_by(filepath: "main.rb")
     assert_equal("main.rb", change.filepath)
     assert_equal(1, change.additions)
     assert_equal(0, change.deletions)
