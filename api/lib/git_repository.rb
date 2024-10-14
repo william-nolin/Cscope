@@ -58,8 +58,11 @@ class GitRepository
   # format: pretty print format for commits.
   #         This is passed directly to the `--pretty=format:"#{format}"` option
   #         See `man git log` for documentation about available formats.
+  # first_parent: Shows the history including change diffs, but only from the “main branch”
+  #               perspective, skipping commits that come from merged branches, and showing full
+  #               diffs of changes introduced by the merges.
   #
-  def logs(since: nil, before: nil, format: nil)
+  def logs(since: nil, before: nil, format: nil, first_parent: false)
     return unless block_given?
 
     command = [ "log" ]
@@ -69,6 +72,11 @@ class GitRepository
     command << "--since=#{since.strftime("%Y-%m-%d")}" if since
     command << "--until=#{before.strftime("%Y-%m-%d")}" if before
     command << "--pretty=format:#{format}" if format
+
+    if first_parent
+      command << "-m"
+      command << "--first-parent"
+    end
 
     Tempfile.create(binmode: true) do |f|
       cli.run(*command, out: f, err: STDERR, chdir: @directory, normalize: true, chomp: true, merge: false)

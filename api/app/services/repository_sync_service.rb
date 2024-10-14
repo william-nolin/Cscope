@@ -8,6 +8,7 @@ class RepositorySyncService
       git.clone(@repository.remote_url)
 
       extract_full_commit_history(git)
+      extract_commit_history_for_changes_ledger(git)
     end
   end
 
@@ -81,6 +82,31 @@ class RepositorySyncService
     end
   end
 
+  def extract_commit_history_for_changes_ledger(git)
+    batch = Batch.new
+    current_commit_hash = nil
+
+    git.logs(format: "||%H||%aN||%cs||%as||", first_parent: true) do |logs|
+      logs.each do |line|
+        line.force_encoding("utf-8")
+
+        if line_is_a_commit?(line)
+          commit_batch_for_changes_ledger(batch) if batch.full?
+
+          commit = commit_attributes_from_line(line)
+          current_commit_hash = commit[:commit_hash]
+
+          batch.add_commit(commit)
+        elsif line_is_a_file_change?(line)
+          change = file_change_attributes_from_line(line, current_commit_hash)
+          batch.add_file_change(change)
+        end
+      end
+
+      commit_batch_for_changes_ledger(batch)
+    end
+  end
+
   def commit_batch(batch)
     @repository.commits.insert_all(batch.commits)
     @repository.source_files.insert_all(batch.filepaths.map { { filepath: _1 } })
@@ -89,6 +115,35 @@ class RepositorySyncService
       .select(:id, :commit_hash)
       .where(commit_hash: batch.commits.map { _1[:commit_hash] })
       .index_by(&:commit_hash)
+
+    source_files_by_filepath = @repository.source_files
+      .select(:id, :filepath)
+      .where(filepath: batch.filepaths)
+      .index_by(&:filepath)
+
+    SourceFileChange.insert_all(
+      batch.file_changes.map do |change|
+        commit = commits_by_hash[change[:commit_hash]]
+        source_file = source_files_by_filepath[change[:filepath]]
+
+        {
+          commit_id: commit.id,
+          source_file_id: source_file.id,
+          additions: change[:additions],
+          deletions: change[:deletions]
+        }
+      end
+    )
+
+    batch.reset
+  end
+
+  def commit_batch_for_changes_ledger(batch)
+    @repository.source_files.insert_all(batch.filepaths.map { { filepath: _1 } })
+
+    commit_scope = @repository.commits.where(commit_hash: batch.commits.map { _1[:commit_hash] })
+    commit_scope.update_all(for_changes_ledger: true)
+    commits_by_hash = commit_scope.select(:id, :commit_hash).index_by(&:commit_hash)
 
     source_files_by_filepath = @repository.source_files
       .select(:id, :filepath)
