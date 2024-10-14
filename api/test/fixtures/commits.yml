@@ -17,3 +17,26 @@ moodle_52c0da:
   author: Jun Pataleta
   committer_date: 2024-10-05
   author_date: 2024-10-05
+
+test_repository_6a3e17:
+  repository: test_repository
+  commit_hash: 6a3e1775d43ec3a51c66d7672dcfc6628ea01dcd
+  author: Jonathan Lalande
+  committer_date: 2024-10-13
+  author_date: 2024-10-13
+  for_changes_ledger: true
+
+test_repository_1bd82e:
+  repository: test_repository
+  commit_hash: 1bd82e1b47706d021c419c5c4b0363bc90892039
+  author: Jonathan Lalande
+  committer_date: 2024-10-13
+  author_date: 2024-10-13
+
+test_repository_c7dc1a:
+  repository: test_repository
+  commit_hash: c7dc1aec5968621f63944cf41888d3000bed44fc
+  author: Jonathan Lalande
+  committer_date: 2024-10-13
+  author_date: 2024-10-13
+  for_changes_ledger: true

@@ -18,3 +18,8 @@ example_repository:
   name: "example"
   domain: "github.com"
   path: "/example/example"
+
+test_repository:
+  name: "zergov-test-repository"
+  domain: "github.com"
+  path: "/zergov/zergov-test-repository"

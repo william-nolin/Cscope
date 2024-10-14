@@ -9,3 +9,21 @@ rails_4ad93b_Gemfile:
   source_file: rails_gemfile
   additions: 1
   deletions: 1
+
+test_repository_6a3e17_readme:
+  commit: test_repository_6a3e17
+  source_file: test_repository_readme
+  additions: 7
+  deletions: 0
+
+test_repository_1bd82e_main_rb:
+  commit: test_repository_1bd82e
+  source_file: test_repository_main
+  additions: 1
+  deletions: 0
+
+test_repository_c7dc1a_main_rb:
+  commit: test_repository_c7dc1a
+  source_file: test_repository_main
+  additions: 1
+  deletions: 0
