@@ -7,3 +7,11 @@
 rails_gemfile:
   repository: rails
   filepath: "Gemfile"
+
+test_repository_readme:
+  repository: test_repository
+  filepath: "README.md"
+
+test_repository_main:
+  repository: test_repository
+  filepath: "main.rb"
