@@ -8,6 +8,10 @@ module Gitland
       @repository = repository
     end
 
+    def cloned?
+      Dir.exist?(absolute_path)
+    end
+
     def absolute_path
       GITLAND_STORAGE_PATH.join(repository_hash).to_s
     end
