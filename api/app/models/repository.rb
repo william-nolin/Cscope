@@ -8,6 +8,7 @@ class Repository < ApplicationRecord
   }
 
   after_create_commit { RepositorySyncJob.perform_later(repository_id: id) }
+  after_create_commit { InitializeGitlandRepositoryJob.perform_later(repository_id: id) }
 
   class << self
     def find_by_url(url)
