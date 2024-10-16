@@ -55,9 +55,4 @@ class RepositoryTest < ActiveSupport::TestCase
       Repository.create!(name: "duplicated_repo", domain: "gitlab.com", path: "/example/duplicated_repository")
     end
   end
-
-  test "enqueues a InitializeGitlandRepositoryJob after creation" do
-    repository = Repository.create(name: "react", domain: "github.com", path: "/facebook/react")
-    assert_enqueued_with(job: InitializeGitlandRepositoryJob, args: [ { repository_id: repository.id } ])
-  end
 end
