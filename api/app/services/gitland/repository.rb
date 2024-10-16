@@ -5,7 +5,7 @@ module Gitland
     end
 
     def list_all_files_with_size
-      Commands::CommandLsTree.new(@repository, recursive: true, long: true).execute
+      Commands::ListTreeWithLineNumbers.new(@repository).execute
     end
   end
 end

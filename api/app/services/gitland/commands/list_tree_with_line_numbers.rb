@@ -1,21 +1,21 @@
 module Gitland
   module Commands
-    class CommandLsTree < GitCommand
+    class ListTreeWithLineNumbers < GitCommand
+      EMPTY_DIRECTORY_TREE_HASH = "4b825dc642cb6eb9a060e54bf8d69288fbee4904"
+
       #
       # Executes `git ls-tree`
       #
-      def initialize(repository, recursive: false, long: false)
+      def initialize(repository)
         @repository = repository
-        @recursive = recursive
-        @long = long
       end
 
       def execute
         cli = Git::CommandLine.new({}, "/usr/bin/git", [], Logger.new("/dev/null"))
 
-        command = [ "ls-tree" ]
-        command << "-r" if @recursive
-        command << "--long" if @long
+        command = [ "diff" ]
+        command << "--numstat"
+        command << EMPTY_DIRECTORY_TREE_HASH
         command << "HEAD"
 
         output = cli.run(
@@ -29,11 +29,11 @@ module Gitland
         ).stdout
 
         output.lines.map! do |line|
-          _, _, _, size, filepath = line.strip.split
+          line_count, _, filepath = line.strip.split
 
           {
             filepath: filepath,
-            size: size.to_i
+            line_count: line_count.to_i
           }
         end
       end
