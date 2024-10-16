@@ -13,3 +13,4 @@ This project clones and indexes Git repositories in background jobs. Therefore, 
 ---
 
 - 🔍 Looking for a list of the api endpoints? Check the [endpoints page](./documentation/endpoints.md)
+- 📝 Looking for a list of rake tasks for this project? Check the [rake tasks page](./documentation/rake_tasks.md)
