@@ -9,3 +9,7 @@ You can then visit http://localhost:3000/ and you should see:
 ![rails development home page](./documentation/assets/rails_home_page.png)
 
 This project clones and indexes Git repositories in background jobs. Therefore, you should also launch a job worker as a separate worker using: `bin/jobs`. This process will process jobs enqueued by the api.
+
+---
+
+- 🔍 Looking for a list of the api endpoints? Check the [endpoints page](./documentation/endpoints.md)
