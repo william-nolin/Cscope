@@ -18,4 +18,10 @@ class SourceFileTest < ActiveSupport::TestCase
     assert_equal(7, source_files(:test_repository_readme).line_count(revision_id: revision))
     assert_equal(0, source_files(:test_repository_main).line_count(revision_id: revision))
   end
+
+  test "#main_contributor" do
+    file = source_files(:test_repository_main)
+
+    assert_equal({ author: "Jonathan Lalande", commits_count: 2 }, file.main_contributor)
+  end
 end

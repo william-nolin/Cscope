@@ -15,7 +15,7 @@ class TreesControllerTest < ActionDispatch::IntegrationTest
     files = stub_gitland_repository(:list_all_files_with_size) do
       [
         { "filepath" => "Gemfile", "line_count" => 123 },
-        { "filepath" => "actionpack/lib/action_pack.rb", "line_count" => 27 },
+        { "filepath" => "actionpack/lib/action_pack.rb", "line_count" => 27 }
       ]
     end
 
