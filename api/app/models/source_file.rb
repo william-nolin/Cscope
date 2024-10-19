@@ -13,4 +13,15 @@ class SourceFile < ApplicationRecord
       changes.sum_line_changes
     end
   end
+
+  def main_contributor
+    author, count = commits
+      .group(:author)
+      .order(Arel.sql("count_id DESC"))
+      .limit(1)
+      .count(:id)
+      .first
+
+    { author: author, commits_count: count }.compact
+  end
 end
