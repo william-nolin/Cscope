@@ -11,7 +11,7 @@ module Gitland
         raise StandardError, "repository already exists at: #{repository_storage.absolute_path}"
       end
 
-      Git.clone(@repository.remote_url, repository_storage.absolute_path, bare: true)
+      Git.clone(@repository.remote_url, repository_storage.absolute_path)
     end
   end
 end
