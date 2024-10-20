@@ -7,7 +7,6 @@ class Repository < ApplicationRecord
     message: ->(object, _) { "#{object.remote_url} already exists." }
   }
 
-  after_create_commit { RepositorySyncJob.perform_later(repository_id: id) }
   after_create_commit { InitializeGitlandRepositoryJob.perform_later(repository_id: id) }
 
   class << self
