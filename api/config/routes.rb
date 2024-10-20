@@ -16,4 +16,6 @@ Rails.application.routes.draw do
   get "/repositories/:repository_id/tree/head", to: "trees#show"
 
   get "/repositories/:repository_id/files/head/*filepath", to: "files#show", format: false
+
+  get "/repositories/:repository_id/commits/stats/commits_over_time", to: "commits#commits_over_time"
 end
