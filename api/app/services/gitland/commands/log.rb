@@ -18,9 +18,10 @@ module Gitland
       #     end
       #   end
       #
-      def initialize(repository, format: nil)
+      def initialize(repository, format: nil, first_parent: false)
         @repository = repository
         @format = format
+        @first_parent = first_parent
       end
 
       def execute
@@ -32,6 +33,7 @@ module Gitland
         command << "--reverse"
         command << "--numstat"
         command << "--summary"
+        command << "--first-parent" if @first_parent
         command << "--pretty=format:#{@format}" if @format
 
         Tempfile.create(binmode: true) do |f|

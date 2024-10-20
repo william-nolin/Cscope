@@ -35,6 +35,19 @@ module Gitland
         Gitland::Commands::Log.new(@repository, format: "||%H||%aN||%cs||%as||").execute { }
       end
 
+      test "#execute calls `git log` with --first-parent if its provided in the initializer" do
+        Git::CommandLine
+          .any_instance
+          .expects(:run)
+          .with do |*args|
+            command, _, _, _, first_parent, _ = args
+            assert_equal("log", command)
+            assert_equal("--first-parent", first_parent)
+          end
+
+        Gitland::Commands::Log.new(@repository, first_parent: true).execute { }
+      end
+
       test "#execute redirect cli output to a temporary file" do
         _, tmp_file = stub_temporary_log_file { "" }
 
