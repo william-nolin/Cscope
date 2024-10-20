@@ -30,13 +30,13 @@ test_repository_1bd82e:
   repository: test_repository
   commit_hash: 1bd82e1b47706d021c419c5c4b0363bc90892039
   author: Jonathan Lalande
-  committer_date: 2024-10-13
-  author_date: 2024-10-13
+  committer_date: 2024-10-15
+  author_date: 2024-10-15
 
 test_repository_c7dc1a:
   repository: test_repository
   commit_hash: c7dc1aec5968621f63944cf41888d3000bed44fc
   author: Jonathan Lalande
-  committer_date: 2024-10-13
-  author_date: 2024-10-13
+  committer_date: 2024-10-15
+  author_date: 2024-10-15
   for_changes_ledger: true
