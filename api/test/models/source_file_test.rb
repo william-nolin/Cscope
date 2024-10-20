@@ -22,6 +22,6 @@ class SourceFileTest < ActiveSupport::TestCase
   test "#main_contributor" do
     file = source_files(:test_repository_main)
 
-    assert_equal({ author: "Jonathan Lalande", commits_count: 2 }, file.main_contributor)
+    assert_equal({ author: "Jonathan Lalande", commits_count: 1 }, file.main_contributor)
   end
 end

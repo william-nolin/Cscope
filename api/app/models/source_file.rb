@@ -16,6 +16,7 @@ class SourceFile < ApplicationRecord
 
   def main_contributor
     author, count = commits
+      .where(for_changes_ledger: false)
       .group(:author)
       .order(Arel.sql("count_id DESC"))
       .limit(1)
