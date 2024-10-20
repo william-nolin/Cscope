@@ -38,11 +38,6 @@ class RepositoryTest < ActiveSupport::TestCase
     assert_equal("https://github.com/rails/rails", repositories(:rails).remote_url)
   end
 
-  test "enqueues a RepositorySyncJob after creation" do
-    repository = Repository.create(name: "react", domain: "github.com", path: "/facebook/react")
-    assert_enqueued_with(job: RepositorySyncJob, args: [ { repository_id: repository.id } ])
-  end
-
   test "prevents creation of duplicated repositories on the same domain" do
     repository = Repository.create(name: "rails", domain: "github.com", path: "/rails/rails")
     assert_not(repository.valid?)
@@ -56,8 +51,8 @@ class RepositoryTest < ActiveSupport::TestCase
     end
   end
 
-  test "enqueues a InitializeGitlandRepositoryJob after creation" do
+  test "enqueues a InitializeRepositoryJob after creation" do
     repository = Repository.create(name: "react", domain: "github.com", path: "/facebook/react")
-    assert_enqueued_with(job: InitializeGitlandRepositoryJob, args: [ { repository_id: repository.id } ])
+    assert_enqueued_with(job: InitializeRepositoryJob, args: [ { repository_id: repository.id } ])
   end
 end
