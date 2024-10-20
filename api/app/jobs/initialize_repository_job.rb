@@ -1,6 +1,9 @@
-class InitializeGitlandRepositoryJob < ApplicationJob
+class InitializeRepositoryJob < ApplicationJob
   queue_as :default
 
+  #
+  # Initializes a git repository to be consumed by the application.
+  #
   def perform(repository_id:)
     repository = Repository.find_by(id: repository_id)
 

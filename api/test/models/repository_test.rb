@@ -51,8 +51,8 @@ class RepositoryTest < ActiveSupport::TestCase
     end
   end
 
-  test "enqueues a InitializeGitlandRepositoryJob after creation" do
+  test "enqueues a InitializeRepositoryJob after creation" do
     repository = Repository.create(name: "react", domain: "github.com", path: "/facebook/react")
-    assert_enqueued_with(job: InitializeGitlandRepositoryJob, args: [ { repository_id: repository.id } ])
+    assert_enqueued_with(job: InitializeRepositoryJob, args: [ { repository_id: repository.id } ])
   end
 end
