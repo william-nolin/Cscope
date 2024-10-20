@@ -4,7 +4,7 @@ class CommitsController < ApplicationController
 
     stats = RepositoryStatisticsService
       .new(repository)
-      .commits_statistics_by_date
+      .commits_statistics_by_date(start_date: start_date_filter, end_date: end_date_filter)
       .map! do |date, commits_count, file_changed, line_changed|
         {
           date: date,
@@ -25,5 +25,17 @@ class CommitsController < ApplicationController
 
   def render_repository_not_found
     render(json: [], status: :not_found)
+  end
+
+  def start_date_filter
+    DateTime.parse(params[:start_date])
+  rescue
+    nil
+  end
+
+  def end_date_filter
+    DateTime.parse(params[:end_date])
+  rescue
+    nil
   end
 end

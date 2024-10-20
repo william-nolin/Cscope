@@ -16,9 +16,11 @@ class RepositoryStatisticsService
   #   line changed      <-- the net number of line changed that day
   # ]
   #
-  def commits_statistics_by_date
-    @repository.commits
-      .on_changes_ledger
+  def commits_statistics_by_date(start_date: nil, end_date: nil)
+    scope = @repository.commits.on_changes_ledger
+    scope = scope.where(committer_date: start_date..) if start_date
+    scope = scope.where(committer_date: ..end_date) if end_date
+    scope
       .joins(:source_file_changes)
       .group(:committer_date)
       .pluck(
