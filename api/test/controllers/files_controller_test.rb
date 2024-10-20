@@ -26,7 +26,7 @@ class FilesControllerTest < ActionDispatch::IntegrationTest
       "commits_count" => source_files(:test_repository_main).commits.size,
       "main_contributor" => {
         "author" => "Jonathan Lalande",
-        "commits_count" => 2
+        "commits_count" => 1
       }
     }
 
