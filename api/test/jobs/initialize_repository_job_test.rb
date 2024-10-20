@@ -6,13 +6,13 @@ class InitializeRepositoryJobTest < ActiveJob::TestCase
   end
 
   test "clones the repository" do
-    Gitland::CloneRepository.any_instance.expects(:execute).returns(nil)
+    Gitland::Repository.any_instance.expects(:clone).returns(nil)
 
     InitializeRepositoryJob.perform_now(repository_id: @repository.id)
   end
 
   test "enqueues a RepositorySyncJob" do
-    Gitland::CloneRepository.any_instance.expects(:execute).returns(nil)
+    Gitland::Repository.any_instance.expects(:clone).returns(nil)
 
     assert_enqueued_with(job: RepositorySyncJob, args: [ { repository_id: @repository.id } ]) do
       InitializeRepositoryJob.perform_now(repository_id: @repository.id)
