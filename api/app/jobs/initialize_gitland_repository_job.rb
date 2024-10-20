@@ -8,6 +8,9 @@ class InitializeGitlandRepositoryJob < ApplicationJob
       return Rails.logger.info("repository #{repository_id} does not exists.")
     end
 
-    Gitland::CloneRepository.new(repository).execute
+    Gitland::CloneRepository
+      .new(repository)
+      .execute
+      .then { RepositorySyncJob.perform_later(repository_id: repository.id) }
   end
 end
