@@ -3,8 +3,6 @@ require "test_helper"
 class RepositorySyncServiceTest < ActiveSupport::TestCase
   def setup
     @repository = repositories(:example_repository)
-
-    GitRepository.any_instance.expects(:clone).returns(nil).once
   end
 
   test "#index creates commits for the given repository" do
@@ -192,20 +190,26 @@ class RepositorySyncServiceTest < ActiveSupport::TestCase
   def stub_git_commit_history(&block)
     logs_enumerator = (block.call).lines.each
 
-    GitRepository.any_instance
-      .expects(:logs)
-      .with(format: "||%H||%aN||%cs||%as||")
-      .yields(logs_enumerator)
+    command = mock()
+    command.expects(:execute).yields(logs_enumerator)
+
+    Gitland::Commands::Log
+      .expects(:new)
+      .with(anything, format: "||%H||%aN||%cs||%as||", first_parent: false)
+      .returns(command)
       .at_least_once
   end
 
   def stub_git_commit_history_for_line_counts(&block)
     logs_enumerator = (block.call).lines.each
 
-    GitRepository.any_instance
-      .expects(:logs)
-      .with(format: "||%H||%aN||%cs||%as||", first_parent: true)
-      .yields(logs_enumerator)
+    command = mock()
+    command.expects(:execute).yields(logs_enumerator)
+
+    Gitland::Commands::Log
+      .expects(:new)
+      .with(anything, format: "||%H||%aN||%cs||%as||", first_parent: true)
+      .returns(command)
       .at_least_once
   end
 end

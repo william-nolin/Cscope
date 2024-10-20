@@ -4,12 +4,10 @@ class RepositorySyncService
   end
 
   def index
-    GitRepository.temporary do |git|
-      git.clone(@repository.remote_url)
+    gitland_repository = Gitland::Repository.new(@repository)
 
-      extract_full_commit_history(git)
-      extract_commit_history_for_changes_ledger(git)
-    end
+    extract_full_commit_history(gitland_repository)
+    extract_commit_history_for_changes_ledger(gitland_repository)
   end
 
   private
@@ -57,11 +55,11 @@ class RepositorySyncService
     end
   end
 
-  def extract_full_commit_history(git)
+  def extract_full_commit_history(gitland_repository)
     batch = Batch.new
     current_commit_hash = nil
 
-    git.logs(format: "||%H||%aN||%cs||%as||") do |logs|
+    gitland_repository.log(format: "||%H||%aN||%cs||%as||") do |logs|
       logs.each do |line|
         line.force_encoding("utf-8")
 
@@ -82,11 +80,11 @@ class RepositorySyncService
     end
   end
 
-  def extract_commit_history_for_changes_ledger(git)
+  def extract_commit_history_for_changes_ledger(gitland_repository)
     batch = Batch.new
     current_commit_hash = nil
 
-    git.logs(format: "||%H||%aN||%cs||%as||", first_parent: true) do |logs|
+    gitland_repository.log(format: "||%H||%aN||%cs||%as||", first_parent: true) do |logs|
       logs.each do |line|
         line.force_encoding("utf-8")
 
