@@ -1,0 +1,31 @@
+class RepositoryStatisticsService
+  def initialize(repository)
+    @repository = repository
+  end
+
+  #
+  # Returns a list of point that describes the stream of commit over the
+  # lifetime of the repository. Each point represents a date, and a summary of change
+  # that happened that date.
+  #
+  # Each point is an array with this format:
+  # [
+  #   date,             <-- the date in this format: YYYY-MM-DD
+  #   commit count,     <-- the number of commit comitted that day
+  #   file changed,     <-- the number of file changed that day
+  #   line changed      <-- the net number of line changed that day
+  # ]
+  #
+  def commits_statistics_by_date
+    @repository.commits
+      .on_changes_ledger
+      .joins(:source_file_changes)
+      .group(:committer_date)
+      .pluck(
+        Arel.sql("strftime('%Y-%m-%d', committer_date)"),
+        Arel.sql("count(distinct commits.id)"),
+        Arel.sql("count(distinct source_file_changes.source_file_id)"),
+        Arel.sql("sum(source_file_changes.additions - source_file_changes.deletions)")
+      )
+  end
+end
