@@ -8,7 +8,8 @@ class FilesController < ApplicationController
     render(json: {
       filepath: source_file.filepath,
       commits_count: source_file.commits.count,
-      main_contributor: source_file.main_contributor
+      main_contributor: source_file.main_contributor,
+      line_count: source_file.line_count
     })
   end
 
