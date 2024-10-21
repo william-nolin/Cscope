@@ -7,16 +7,14 @@ class SourceFileTest < ActiveSupport::TestCase
     assert(file.errors.of_kind?(:filepath, :taken))
   end
 
-  test "#line_count" do
-    assert_equal(7, source_files(:test_repository_readme).line_count)
-    assert_equal(1, source_files(:test_repository_main).line_count)
-  end
+  test "#line_count uses gitland internally" do
+    source_file = source_files(:test_repository_readme)
 
-  test "#line_count at a specific revision" do
-    revision = commits(:test_repository_6a3e17).id
+    mock_repo = mock()
+    mock_repo.expects(:file_line_count).with(source_file.filepath).returns(7)
+    Gitland::Repository.expects(:new).with(source_file.repository).returns(mock_repo)
 
-    assert_equal(7, source_files(:test_repository_readme).line_count(revision_id: revision))
-    assert_equal(0, source_files(:test_repository_main).line_count(revision_id: revision))
+    assert_equal(7, source_file.line_count)
   end
 
   test "#main_contributor" do

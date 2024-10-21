@@ -19,15 +19,19 @@ class FilesControllerTest < ActionDispatch::IntegrationTest
   end
 
   test "#show returns 200 when the file exists on the repository" do
-    get "/repositories/#{@repository.id}/files/head/main.rb"
+    SourceFile.any_instance.stubs(:line_count).returns(69)
+
+    source_file = source_files(:test_repository_main)
+    get "/repositories/#{@repository.id}/files/head/#{source_file.filepath}"
 
     expected_response = {
       "filepath" => "main.rb",
-      "commits_count" => source_files(:test_repository_main).commits.size,
+      "commits_count" => source_file.commits.size,
       "main_contributor" => {
         "author" => "Jonathan Lalande",
         "commits_count" => 1
-      }
+      },
+      "line_count" => 69
     }
 
     assert_response(:ok)
