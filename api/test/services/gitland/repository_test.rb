@@ -34,5 +34,26 @@ module Gitland
         Gitland::Repository.new(@repository).list_all_files_with_size
       )
     end
+
+    test "#file_line_count calls Commands::Diff internally" do
+      mocked_diff_output = <<~OUTPUT
+        55      0       api/Gemfile
+      OUTPUT
+
+      command = mock()
+      command.expects(:execute).returns(mocked_diff_output).once
+
+      Commands::Diff
+        .expects(:new)
+        .with(
+          @repository,
+          filepath: "api/Gemfile",
+          sha_a: Commands::Diff::EMPTY_DIRECTORY_TREE_HASH,
+          sha_b: Commands::Diff::HEAD
+        )
+        .returns(command)
+
+      assert_equal(55, Gitland::Repository.new(@repository).file_line_count("api/Gemfile"))
+    end
   end
 end
