@@ -64,6 +64,24 @@ module Gitland
 
         Gitland::Commands::Diff.new(@repository, sha_a: sha_a, sha_b: sha_b).execute
       end
+
+      test "#execute passes filepath to `git diff` if filepath is in the initializer" do
+        mock = mock()
+        mock.expects(:stdout).returns("")
+
+        Git::CommandLine
+          .any_instance
+          .expects(:run)
+          .with do |*args|
+            command, numstat, filepath = args
+            assert_equal("diff", command)
+            assert_equal("--numstat", numstat)
+            assert_equal("api/Gemfile", filepath)
+          end
+          .returns(mock)
+
+        Gitland::Commands::Diff.new(@repository, filepath: "api/Gemfile").execute
+      end
     end
   end
 end

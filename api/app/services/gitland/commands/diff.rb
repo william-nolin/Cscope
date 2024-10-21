@@ -9,8 +9,9 @@ module Gitland
       #
       # Executes `git diff <sha_a> <sha_b>`
       #
-      def initialize(repository, sha_a: nil, sha_b: nil)
+      def initialize(repository, filepath: nil, sha_a: nil, sha_b: nil)
         @repository = repository
+        @filepath = filepath
         @sha_a = sha_a
         @sha_b = sha_b
       end
@@ -22,6 +23,7 @@ module Gitland
         command << "--numstat"
         command << @sha_a if sha1_input_valid?(@sha_a)
         command << @sha_b if sha1_input_valid?(@sha_b)
+        command << @filepath if @filepath
 
         cli.run(
           *command,
