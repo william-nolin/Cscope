@@ -1,12 +1,8 @@
 class RepositoriesController < ApplicationController
   def show
-    repository = Repository.find_by(id: params[:id])
+    return render_repository_not_found unless current_repository
 
-    if repository
-      render(json: repository)
-    else
-      render(json: nil, status: :not_found)
-    end
+    render(json: current_repository)
   end
 
   def create

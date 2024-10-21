@@ -10,7 +10,7 @@ Rails.application.routes.draw do
      mount MissionControl::Jobs::Engine, at: "/jobs"
   end
 
-  get "/repositories/:id", to: "repositories#show"
+  get "/repositories/:repository_id", to: "repositories#show"
   post "/repositories", to: "repositories#create"
 
   get "/repositories/:repository_id/tree/head", to: "trees#show"
