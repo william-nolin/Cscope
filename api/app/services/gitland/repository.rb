@@ -29,5 +29,18 @@ module Gitland
           }
         end
     end
+
+    def file_line_count(filepath)
+      sha_a = Commands::Diff::EMPTY_DIRECTORY_TREE_HASH
+      sha_b = Commands::Diff::HEAD
+
+      line = Commands::Diff
+        .new(@repository, filepath: filepath, sha_a: sha_a, sha_b: sha_b)
+        .execute
+        .lines
+        .first
+
+      line.strip.split.first.to_i
+    end
   end
 end
