@@ -13,7 +13,21 @@ module Gitland
     end
 
     def list_all_files_with_size
-      Commands::ListTreeWithLineNumbers.new(@repository).execute
+      sha_a = Commands::Diff::EMPTY_DIRECTORY_TREE_HASH
+      sha_b = Commands::Diff::HEAD
+
+      Commands::Diff
+        .new(@repository, sha_a: sha_a, sha_b: sha_b)
+        .execute
+        .lines
+        .map! do |line|
+          line_count, _, filepath = line.strip.split
+
+          {
+            filepath: filepath,
+            line_count: line_count.to_i
+          }
+        end
     end
   end
 end
