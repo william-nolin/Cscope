@@ -59,7 +59,7 @@ class RepositorySyncService
     batch = Batch.new
     current_commit_hash = nil
 
-    gitland_repository.log(format: "||%H||%aN||%cs||%as||") do |logs|
+    gitland_repository.log(format: "||%H||%aN||%cs||%as||%P||%s") do |logs|
       logs.each do |line|
         line.force_encoding("utf-8")
 
@@ -84,7 +84,7 @@ class RepositorySyncService
     batch = Batch.new
     current_commit_hash = nil
 
-    gitland_repository.log(format: "||%H||%aN||%cs||%as||", first_parent: true) do |logs|
+    gitland_repository.log(format: "||%H||%aN||%cs||%as||%P||%s", first_parent: true) do |logs|
       logs.each do |line|
         line.force_encoding("utf-8")
 
@@ -174,12 +174,14 @@ class RepositorySyncService
   end
 
   def commit_attributes_from_line(line)
-    _, hash, author, committer_date, author_date = line.split("||")
+    _, hash, author, committer_date, author_date, parent_hashes, subject = line.split("||")
     {
       commit_hash: hash,
       author: author,
       committer_date: DateTime.parse(committer_date),
-      author_date: DateTime.parse(author_date)
+      author_date: DateTime.parse(author_date),
+      parent_hashes: parent_hashes.split(" "),
+      subject: subject
     }
   end
 

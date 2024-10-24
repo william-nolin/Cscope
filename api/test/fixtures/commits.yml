@@ -10,6 +10,8 @@ rails_4ad93b:
   author: David Heinemeier Hansson
   committer_date: 2024-10-02
   author_date: 2024-10-02
+  parent_hashes: <%= ["2fe1ca0f058c3e9ffd7fa7616e27c03aed8dba7a"].to_json.inspect  %>
+  subject: Kamal 2 has been released
 
 moodle_52c0da:
   repository: moodle

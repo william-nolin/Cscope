@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2024_10_20_003703) do
+ActiveRecord::Schema[8.0].define(version: 2024_10_21_192453) do
   create_table "commits", force: :cascade do |t|
     t.integer "repository_id"
     t.string "commit_hash"
@@ -18,6 +18,8 @@ ActiveRecord::Schema[8.0].define(version: 2024_10_20_003703) do
     t.datetime "committer_date"
     t.datetime "author_date"
     t.boolean "for_changes_ledger", default: false
+    t.text "parent_hashes"
+    t.string "subject"
     t.index ["repository_id", "commit_hash"], name: "index_commits_on_repository_id_and_commit_hash", unique: true
     t.index ["repository_id", "for_changes_ledger", "committer_date"], name: "idx_on_repository_id_for_changes_ledger_committer_d_f429cd9db3"
   end

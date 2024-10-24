@@ -35,10 +35,10 @@ class RepositorySyncServiceTest < ActiveSupport::TestCase
     stub_git_commit_history_for_line_counts { "" }
     stub_git_commit_history do
       <<~GIT_LOGS
-        ||3ecab153fab78e61290892881e9a34d0df6fb7a0||Jonathan Lalande||2024-10-06||2024-10-06
+        ||3ecab153fab78e61290892881e9a34d0df6fb7a0||Jonathan Lalande||2024-10-06||2024-10-06||l3gitpar3ntha5h yupt0ta11yl3git||some kind of subject
         3	0	README.md
 
-        ||c8ab6fe877522729d4088dc7bce64b560d56a324||Jonathan Lalande||2024-10-07||2024-10-07
+        ||c8ab6fe877522729d4088dc7bce64b560d56a324||Jonathan Lalande||2024-10-07||2024-10-07||l3gitpar3ntha5h yupt0ta11yl3git||some kind of subject
         21	0	LICENSE
         0	3	README.md
         1	0	main.rb
@@ -72,10 +72,10 @@ class RepositorySyncServiceTest < ActiveSupport::TestCase
     stub_git_commit_history_for_line_counts { "" }
     stub_git_commit_history do
       <<~GIT_LOGS
-        ||3ecab153fab78e61290892881e9a34d0df6fb7a0||Jonathan Lalande||2024-10-06||2024-10-06
+        ||3ecab153fab78e61290892881e9a34d0df6fb7a0||Jonathan Lalande||2024-10-06||2024-10-06||l3gitpar3ntha5h yupt0ta11yl3git||some kind of subject
         3	0	README.md
 
-        ||c8ab6fe877522729d4088dc7bce64b560d56a324||Jonathan Lalande||2024-10-07||2024-10-07
+        ||c8ab6fe877522729d4088dc7bce64b560d56a324||Jonathan Lalande||2024-10-07||2024-10-07||l3gitpar3ntha5h yupt0ta11yl3git||some kind of subject
         21	0	LICENSE
         0	3	README.md
         1	0	main.rb
@@ -195,7 +195,7 @@ class RepositorySyncServiceTest < ActiveSupport::TestCase
 
     Gitland::Commands::Log
       .expects(:new)
-      .with(anything, format: "||%H||%aN||%cs||%as||", first_parent: false)
+      .with(anything, format: "||%H||%aN||%cs||%as||%P||%s", first_parent: false)
       .returns(command)
       .at_least_once
   end
@@ -208,7 +208,7 @@ class RepositorySyncServiceTest < ActiveSupport::TestCase
 
     Gitland::Commands::Log
       .expects(:new)
-      .with(anything, format: "||%H||%aN||%cs||%as||", first_parent: true)
+      .with(anything, format: "||%H||%aN||%cs||%as||%P||%s", first_parent: true)
       .returns(command)
       .at_least_once
   end

@@ -29,10 +29,10 @@ module Gitland
           .with do |*args|
             command, _, _, _, format, _ = args
             assert_equal("log", command)
-            assert_equal("--pretty=format:||%H||%aN||%cs||%as||", format)
+            assert_equal("--pretty=format:||%H||%aN||%cs||%as||%P||%s", format)
           end
 
-        Gitland::Commands::Log.new(@repository, format: "||%H||%aN||%cs||%as||").execute { }
+        Gitland::Commands::Log.new(@repository, format: "||%H||%aN||%cs||%as||%P||%s").execute { }
       end
 
       test "#execute calls `git log` with --first-parent if its provided in the initializer" do
