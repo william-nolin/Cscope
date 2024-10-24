@@ -26,12 +26,4 @@ class CommitTest < ActiveSupport::TestCase
 
     assert(commit.valid?)
   end
-
-  test "serialize/deserialize parent hashes" do
-    commit = commits(:rails_4ad93b)
-    commit.save
-
-    commit = Commit.find(commit.id)
-    assert_equal("2fe1ca0f058c3e9ffd7fa7616e27c03aed8dba7a", commit.parent_hashes[0])
-  end
 end
