@@ -9,7 +9,9 @@ class FilesController < ApplicationController
       filepath: source_file.filepath,
       commits_count: source_file.commits.count,
       main_contributor: source_file.main_contributor,
-      line_count: source_file.line_count
+      line_count: source_file.line_count,
+      creation_date: source_file.creation_date,
+      last_modification_date: source_file.last_modification_date
     })
   end
 

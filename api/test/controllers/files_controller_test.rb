@@ -31,7 +31,9 @@ class FilesControllerTest < ActionDispatch::IntegrationTest
         "author" => "Jonathan Lalande",
         "commits_count" => 1
       },
-      "line_count" => 69
+      "line_count" => 69,
+      "creation_date" => source_file.creation_date.as_json,
+      "last_modification_date" => source_file.last_modification_date.as_json
     }
 
     assert_response(:ok)
