@@ -20,14 +20,16 @@ class CommitsControllerTest < ActionDispatch::IntegrationTest
         {
           "date" => "2024-10-13",
           "commits_count" => 1,
-          "modified_files" => 1,
-          "modified_lines" => 7
+          "files_modified" => 1,
+          "lines_added" => 7,
+          "lines_removed" => 0
         },
         {
           "date" => "2024-10-15",
           "commits_count" => 1,
-          "modified_files" => 1,
-          "modified_lines" => 1
+          "files_modified" => 1,
+          "lines_added" => 1,
+          "lines_removed" => 0
         }
       ],
       response.parsed_body
@@ -43,8 +45,9 @@ class CommitsControllerTest < ActionDispatch::IntegrationTest
         {
           "date" => "2024-10-15",
           "commits_count" => 1,
-          "modified_files" => 1,
-          "modified_lines" => 1
+          "files_modified" => 1,
+          "lines_added" => 1,
+          "lines_removed" => 0
         }
       ],
       response.parsed_body
@@ -60,8 +63,9 @@ class CommitsControllerTest < ActionDispatch::IntegrationTest
         {
           "date" => "2024-10-13",
           "commits_count" => 1,
-          "modified_files" => 1,
-          "modified_lines" => 7
+          "files_modified" => 1,
+          "lines_added" => 7,
+          "lines_removed" => 0
         }
       ],
       response.parsed_body

@@ -5,12 +5,13 @@ class CommitsController < ApplicationController
     stats = RepositoryStatisticsService
       .new(current_repository)
       .commits_statistics_by_date(start_date: start_date_filter, end_date: end_date_filter)
-      .map! do |date, commits_count, file_changed, line_changed|
+      .map! do |date, commits_count, files_modified, lines_added, lines_removed|
         {
           date: date,
           commits_count: commits_count,
-          modified_files: file_changed,
-          modified_lines: line_changed
+          files_modified: files_modified,
+          lines_added: lines_added,
+          lines_removed: lines_removed
         }
       end
 
