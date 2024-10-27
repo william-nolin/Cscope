@@ -42,3 +42,11 @@ test_repository_c7dc1a:
   committer_date: 2024-10-15
   author_date: 2024-10-15
   for_changes_ledger: true
+
+test_repository_0b8094:
+  repository: test_repository
+  commit_hash: 0b8094d247cb6c22d21fd863222ba5bab59130ca
+  author: Jonathan Lalande
+  committer_date: 2024-10-27
+  author_date: 2024-10-27
+  for_changes_ledger: true

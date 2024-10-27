@@ -22,4 +22,12 @@ class SourceFileTest < ActiveSupport::TestCase
 
     assert_equal({ author: "Jonathan Lalande", commits_count: 1 }, file.main_contributor)
   end
+
+  test "#creation_date" do
+    assert_equal(DateTime.new(2024, 10, 13), source_files(:test_repository_readme).creation_date)
+  end
+
+  test "#last_modification_date" do
+    assert_equal(DateTime.new(2024, 10, 27), source_files(:test_repository_readme).last_modification_date)
+  end
 end

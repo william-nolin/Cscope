@@ -20,4 +20,12 @@ class SourceFile < ApplicationRecord
 
     { author: author, commits_count: count }.compact
   end
+
+  def creation_date
+    commits.first.committer_date
+  end
+
+  def last_modification_date
+    commits.last.committer_date
+  end
 end

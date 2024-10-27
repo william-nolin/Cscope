@@ -27,3 +27,9 @@ test_repository_c7dc1a_main_rb:
   source_file: test_repository_main
   additions: 1
   deletions: 0
+
+test_repository_0b8094_readme:
+  commit: test_repository_0b8094
+  source_file: test_repository_readme
+  additions: 2
+  deletions: 0
