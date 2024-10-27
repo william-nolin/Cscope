@@ -13,7 +13,8 @@ class RepositoryStatisticsService
   #   date,             <-- the date in this format: YYYY-MM-DD
   #   commit count,     <-- the number of commit comitted that day
   #   file changed,     <-- the number of file changed that day
-  #   line changed      <-- the net number of line changed that day
+  #   line added        <-- the number of line added that day
+  #   line removed      <-- the number of line removed that day
   # ]
   #
   def commits_statistics_by_date(start_date: nil, end_date: nil)
@@ -27,7 +28,8 @@ class RepositoryStatisticsService
         Arel.sql("strftime('%Y-%m-%d', committer_date)"),
         Arel.sql("count(distinct commits.id)"),
         Arel.sql("count(distinct source_file_changes.source_file_id)"),
-        Arel.sql("sum(source_file_changes.additions - source_file_changes.deletions)")
+        Arel.sql("sum(source_file_changes.additions)"),
+        Arel.sql("sum(source_file_changes.deletions)"),
       )
   end
 end
