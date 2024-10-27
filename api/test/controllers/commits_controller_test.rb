@@ -30,6 +30,13 @@ class CommitsControllerTest < ActionDispatch::IntegrationTest
           "files_modified" => 1,
           "lines_added" => 1,
           "lines_removed" => 0
+        },
+        {
+          "date" => "2024-10-27",
+          "commits_count" => 1,
+          "files_modified" => 1,
+          "lines_added" => 2,
+          "lines_removed" => 0
         }
       ],
       response.parsed_body
@@ -47,6 +54,13 @@ class CommitsControllerTest < ActionDispatch::IntegrationTest
           "commits_count" => 1,
           "files_modified" => 1,
           "lines_added" => 1,
+          "lines_removed" => 0
+        },
+        {
+          "date" => "2024-10-27",
+          "commits_count" => 1,
+          "files_modified" => 1,
+          "lines_added" => 2,
           "lines_removed" => 0
         }
       ],
