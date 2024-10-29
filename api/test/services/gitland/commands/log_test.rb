@@ -7,14 +7,15 @@ module Gitland
         @repository = repositories(:rails)
       end
 
-      test "#execute calls `git log` with --reverse, --numstat and --summary by default" do
+      test "#execute calls `git log` with default flags" do
         Git::CommandLine
           .any_instance
           .expects(:run)
           .with do |*args|
-            command, reverse, numstat, summary = args
+            command, reverse, no_renames, numstat, summary = args
             assert_equal("log", command)
             assert_equal("--reverse", reverse)
+            assert_equal("--no-renames", no_renames)
             assert_equal("--numstat", numstat)
             assert_equal("--summary", summary)
           end
@@ -27,7 +28,7 @@ module Gitland
           .any_instance
           .expects(:run)
           .with do |*args|
-            command, _, _, _, format, _ = args
+            command, _, _, _, _, format, _ = args
             assert_equal("log", command)
             assert_equal("--pretty=format:||%H||%aN||%cs||%as||%P||%s", format)
           end
@@ -40,7 +41,7 @@ module Gitland
           .any_instance
           .expects(:run)
           .with do |*args|
-            command, _, _, _, first_parent, _ = args
+            command, _, _, _, _, first_parent, _ = args
             assert_equal("log", command)
             assert_equal("--first-parent", first_parent)
           end
