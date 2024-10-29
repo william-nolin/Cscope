@@ -31,6 +31,7 @@ module Gitland
 
         command = [ "log" ]
         command << "--reverse"
+        command << "--no-renames"
         command << "--numstat"
         command << "--summary"
         command << "--first-parent" if @first_parent
