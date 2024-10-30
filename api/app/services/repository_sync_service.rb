@@ -170,7 +170,7 @@ class RepositorySyncService
   end
 
   def line_is_a_file_change?(line)
-    Integer(line[0], exception: false)
+    Integer(line[0], exception: false) || line[0] == "-"
   end
 
   def commit_attributes_from_line(line)
