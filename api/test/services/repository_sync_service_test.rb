@@ -91,6 +91,24 @@ class RepositorySyncServiceTest < ActiveSupport::TestCase
     assert_not_nil(@repository.source_files.find_by(filepath: "main.rb"))
   end
 
+  test "#index creates source_files for binary files in the log" do
+    stub_git_commit_history_for_line_counts { "" }
+    stub_git_commit_history do
+      <<~GIT_LOGS
+        ||c5c6db27cef5623124dfb3f9aea34a04fd7c920f||Jonathan Lalande||2019-10-06||2019-10-06||c54b2f6989ba56fda64b7363e27ef99c4fa24346||Allow connection and channel creation via amqp
+        -	-	amqp/amqp-xml-doc0-9-1.pdf
+        -	-	amqp/amqp0-9-1.pdf
+        459	0	amqp/amqp0-9-1.stripped.xml
+      GIT_LOGS
+    end
+
+    RepositorySyncService.new(@repository).index
+
+    assert_not_nil(@repository.source_files.find_by(filepath: "amqp/amqp-xml-doc0-9-1.pdf"))
+    assert_not_nil(@repository.source_files.find_by(filepath: "amqp/amqp0-9-1.pdf"))
+    assert_not_nil(@repository.source_files.find_by(filepath: "amqp/amqp0-9-1.stripped.xml"))
+  end
+
   test "#index creates source_file_changes for merge commits" do
     stub_git_commit_history do
       # The empty lines here represents merge commits.
