@@ -55,5 +55,13 @@ module Gitland
 
       assert_equal(55, Gitland::Repository.new(@repository).file_line_count("api/Gemfile"))
     end
+
+    test "#destroy removes the repository from disk" do
+      FileUtils
+        .expects(:remove_dir)
+        .with(Gitland::Storage.new(@repository).absolute_path, force: true)
+
+      Gitland::Repository.new(@repository).destroy
+    end
   end
 end

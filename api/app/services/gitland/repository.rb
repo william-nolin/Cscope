@@ -12,6 +12,10 @@ module Gitland
       Commands::Log.new(@repository, format: format, first_parent: first_parent).execute { |logs| yield logs }
     end
 
+    def destroy
+      FileUtils.remove_dir(disk_path, force: true)
+    end
+
     def list_all_files_with_size
       sha_a = Commands::Diff::EMPTY_DIRECTORY_TREE_HASH
       sha_b = Commands::Diff::HEAD
@@ -41,6 +45,12 @@ module Gitland
         .first
 
       line.strip.split.first.to_i
+    end
+
+    private
+
+    def disk_path
+      Gitland::Storage.new(@repository).absolute_path
     end
   end
 end
