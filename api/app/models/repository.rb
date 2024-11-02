@@ -8,6 +8,7 @@ class Repository < ApplicationRecord
   }
 
   after_create_commit { InitializeRepositoryJob.perform_later(repository_id: id) }
+  after_destroy_commit :remove_gitland_repository
 
   class << self
     def find_by_url(url)
@@ -32,5 +33,11 @@ class Repository < ApplicationRecord
       u.path = self.path
       u.scheme = "https"
     end.to_s
+  end
+
+  private
+
+  def remove_gitland_repository
+    Gitland::Repository.new(self).destroy
   end
 end
