@@ -55,4 +55,14 @@ class RepositoryTest < ActiveSupport::TestCase
     repository = Repository.create(name: "react", domain: "github.com", path: "/facebook/react")
     assert_enqueued_with(job: InitializeRepositoryJob, args: [ { repository_id: repository.id } ])
   end
+
+  test "removes gitland repository when destroyed" do
+    repository = repositories(:rails)
+
+    gitland_repository_mock = mock()
+    gitland_repository_mock.expects(:destroy).once
+    Gitland::Repository.expects(:new).with(repository).returns(gitland_repository_mock)
+
+    repository.destroy!
+  end
 end
