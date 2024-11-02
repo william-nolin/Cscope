@@ -1,7 +1,10 @@
 import React from "react";
 import { useDateFileContext } from "context/DateFileContext";
+import { ConfigProvider, DatePicker, DatePickerProps, Select } from "antd";
 
 const DateAndFileInput: React.FC = () => {
+  const inputWidth = 200;
+
   const {
     startDate,
     setStartDate,
@@ -17,27 +20,61 @@ const DateAndFileInput: React.FC = () => {
     }
   };
 
+  const onChange: DatePickerProps["onChange"] = (date, dateString) => {
+    console.log(date, dateString);
+  };
+
   return (
-    <div className="date-file-input">
-      <input
-        type="file"
-        onChange={handleFileChange}
-        placeholder="Search by filename"
-        className="date-file-input__file"
-      />
-      <input
-        type="date"
-        value={startDate}
-        onChange={(e) => setStartDate(e.target.value)}
-        className="date-file-input__date"
-      />
-      <input
-        type="date"
-        value={endDate}
-        onChange={(e) => setEndDate(e.target.value)}
-        className="date-file-input__date"
-      />
-    </div>
+    <ConfigProvider
+      theme={{
+        components: {
+          Select: {},
+        },
+      }}
+    >
+      <div className="date-file-input">
+        <div>
+          <label>Choose file : </label>
+          <Select
+            showSearch
+            style={{ width: inputWidth * 2 + 20, height: 45 }}
+            placeholder="Search by filename"
+            optionFilterProp="label"
+            filterSort={(optionA, optionB) =>
+              (optionA?.label ?? "")
+                .toLowerCase()
+                .localeCompare((optionB?.label ?? "").toLowerCase())
+            }
+            options={[
+              {
+                value: "1",
+                label: "Not Identified",
+              },
+              {
+                value: "2",
+                label: "Closed",
+              },
+            ]}
+          />
+        </div>
+        <div>
+          <div>
+            <label>Start date : </label>
+            <DatePicker
+              style={{ width: inputWidth, height: 45 }}
+              onChange={onChange}
+            />
+          </div>
+          <div>
+            <label>End date : </label>
+            <DatePicker
+              style={{ width: inputWidth, height: 45 }}
+              onChange={onChange}
+            />
+          </div>
+        </div>
+      </div>
+    </ConfigProvider>
   );
 };
 

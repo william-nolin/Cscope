@@ -1,9 +1,4 @@
-$background-color: rgba(242, 245, 252, 0.95);
-$border-radius: 8px;
-$input-bg-color: #ffffff;
-$input-border-color: #cccccc;
-$text-color: #405864;
-$title-color: #415764;
+@import "_variables.scss";
 
 .cscope {
   background-color: $background-color;
@@ -11,7 +6,7 @@ $title-color: #415764;
   padding: 40px 20px;
   padding-bottom: 60px;
   text-align: center;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+  box-shadow: $box-shadow;
 
   &__title {
     font-size: 3rem;

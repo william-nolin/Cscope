@@ -3,6 +3,7 @@
 *,
 *::before,
 *::after {
+  box-sizing: border-box;
   margin: 0;
   padding: 0;
 }
@@ -22,19 +23,61 @@ body {
   align-items: center;
 }
 
+.date-file-input {
+  background-color: $background-color;
+  border-radius: $border-radius;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  width: 460px;
+
+  label {
+    margin-bottom: 10px;
+    font-weight: bold;
+    color: $text-page-color;
+    letter-spacing: 0.08rem;
+  }
+
+  > div:nth-child(1) {
+    display: flex;
+    flex-direction: column;
+    margin: 20px 0px;
+  }
+
+  > div:nth-child(2) {
+    display: flex;
+    > div {
+      display: flex;
+      flex-direction: column;
+      margin-bottom: 10px;
+    }
+
+    > div:nth-child(1) {
+      margin-right: 20px;
+    }
+  }
+}
+
+.two-side-structure {
+  display: flex;
+  align-items: start;
+}
+
 .page {
   background-color: #fff;
   padding: 20px;
+  margin-right: 20px;
   border-radius: $border-radius;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-
+  box-shadow: $box-shadow;
+  width: calc(100% - 420px);
+  min-width: 700px;
   h2 {
     font-size: 1.2rem;
     color: $header-color;
   }
 
   .visualization-placeholder {
-    height: 400px;
+    height: 600px;
     background-color: #f3f3f3;
     display: flex;
     align-items: center;

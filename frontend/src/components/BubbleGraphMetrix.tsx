@@ -1,29 +1,28 @@
 import { MetricsProps } from "model/MetricsProps";
 
-const BuddleGraphMetrics: React.FC<MetricsProps> = ({
-  commitCount,
-  codeSize,
-  mainAuthor,
-  modifiedDate,
+const BuddleGraphMetrics = ({
+  metricsProps,
+}: {
+  metricsProps: MetricsProps;
 }) => {
   return (
     <div className="metrics">
       <div className="metrics__header">Metrics</div>
       <div className="metrics__item">
-        <span className="metrics__label">Commit</span>
-        <span className="metrics__value">{commitCount} commits</span>
+        <span>Commit</span>
+        <span>{metricsProps.commitCount} commits</span>
       </div>
       <div className="metrics__item">
-        <span className="metrics__label">Size</span>
-        <span className="metrics__value">{codeSize} Lines of Code</span>
+        <span>Size</span>
+        <span>{metricsProps.codeSize} Lines of Code</span>
       </div>
       <div className="metrics__item">
-        <span className="metrics__label">Main Author</span>
-        <span className="metrics__value">{mainAuthor}</span>
+        <span>Main Author</span>
+        <span>{metricsProps.mainAuthor}</span>
       </div>
       <div className="metrics__item">
-        <span className="metrics__label">Modified</span>
-        <span className="metrics__value">{modifiedDate}</span>
+        <span>Modified</span>
+        <span>{metricsProps.modifiedDate}</span>
       </div>
     </div>
   );
