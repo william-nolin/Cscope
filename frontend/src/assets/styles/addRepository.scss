@@ -1,0 +1,50 @@
+$background-color: rgba(242, 245, 252, 0.95);
+$border-radius: 8px;
+$input-bg-color: #ffffff;
+$input-border-color: #cccccc;
+$text-color: #405864;
+$title-color: #415764;
+
+.cscope {
+  background-color: $background-color;
+  border-radius: $border-radius;
+  padding: 40px 20px;
+  padding-bottom: 60px;
+  text-align: center;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+
+  &__title {
+    font-size: 3rem;
+    color: $title-color;
+    font-weight: normal;
+    margin-bottom: 20px;
+  }
+
+  &__subtitle {
+    font-size: 1.3rem;
+    color: $text-color;
+    margin-top: 5px;
+    margin-bottom: 15px;
+    letter-spacing: 0.1rem;
+  }
+
+  &__search {
+    display: flex;
+    justify-content: center;
+  }
+
+  &__input {
+    width: 400px;
+    padding: 10px;
+    font-size: 1rem;
+    color: $text-color;
+    background-color: $input-bg-color;
+    border: 1px solid $input-border-color;
+    border-radius: $border-radius;
+    outline: none;
+
+    &::placeholder {
+      color: $input-border-color;
+    }
+  }
+}

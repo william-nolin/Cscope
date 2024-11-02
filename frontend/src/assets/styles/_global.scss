@@ -1,0 +1,47 @@
+@import "_variables";
+
+*,
+*::before,
+*::after {
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: "Roboto", sans-serif;
+}
+
+.back-svg-forme {
+  width: 100vw;
+  height: 100vh;
+  background-image: url("../svg/backgroundForm.svg");
+  background-repeat: no-repeat;
+  background-position: center;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.page {
+  background-color: #fff;
+  padding: 20px;
+  border-radius: $border-radius;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+
+  h2 {
+    font-size: 1.2rem;
+    color: $header-color;
+  }
+
+  .visualization-placeholder {
+    height: 400px;
+    background-color: #f3f3f3;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: $font-color;
+    font-size: 1rem;
+    border-radius: $border-radius;
+    border: 1px dashed $secondary-bg-color;
+  }
+}

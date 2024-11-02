@@ -1,0 +1,44 @@
+// Variables pour les couleurs
+$header-bg-color: #398ab9;
+$text-color: #333;
+$label-color: #1d4e89;
+$bg-color: #ffffff;
+$border-radius: 8px;
+$box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+
+.metrics {
+  background-color: $bg-color;
+  border-radius: $border-radius;
+  box-shadow: $box-shadow;
+  padding: 15px;
+  max-width: 250px;
+
+  &__header {
+    background-color: $header-bg-color;
+    color: #ffffff;
+    font-weight: bold;
+    padding: 8px 12px;
+    border-top-left-radius: $border-radius;
+    border-top-right-radius: $border-radius;
+  }
+
+  &__item {
+    display: flex;
+    justify-content: space-between;
+    padding: 8px 0;
+    border-bottom: 1px solid #eee;
+
+    &:last-child {
+      border-bottom: none;
+    }
+  }
+
+  &__label {
+    color: $label-color;
+    font-weight: bold;
+  }
+
+  &__value {
+    color: $text-color;
+  }
+}
