@@ -1,0 +1,67 @@
+@import "_variables";
+
+.main-layout {
+  background-color: $primary-bg-color;
+  color: $font-color;
+  padding: 20px;
+
+  &__header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 0;
+    color: $header-color;
+
+    h1 {
+      font-size: 1.5rem;
+    }
+
+    .main-layout__nav {
+      display: flex;
+      gap: 10px;
+
+      a {
+        background-color: $inactive-button-bg;
+        color: $inactive-button-color;
+        padding: 8px 16px;
+        border-radius: $border-radius;
+        text-decoration: none;
+        transition: background-color 0.3s ease;
+
+        &.active {
+          background-color: $active-button-bg;
+          color: $button-bg-color;
+          font-weight: bold;
+        }
+
+        &:hover {
+          background-color: lighten($button-bg-color, 10%);
+        }
+      }
+    }
+  }
+
+  &__content {
+    margin-top: 20px;
+  }
+}
+
+.date-file-input {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  background-color: $secondary-bg-color;
+  padding: 10px;
+  border-radius: $border-radius;
+  color: $font-color;
+
+  &__file,
+  &__date {
+    background-color: #fff;
+    border: 1px solid lighten($secondary-bg-color, 20%);
+    padding: 8px;
+    border-radius: $border-radius;
+    font-size: 0.9rem;
+    color: $font-color;
+  }
+}
