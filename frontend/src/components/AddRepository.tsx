@@ -17,7 +17,7 @@ const AddRepository: React.FC = () => {
       <div className="cscope__search">
         <Input
           className="cscope__input"
-          placeholder="URL"
+          placeholder="Insert URL and press enter"
           onPressEnter={handleEnterPress}
         />
       </div>
