@@ -1,7 +1,7 @@
 import { TypeFileCommitEvolution } from "enum/TypeFileCommitEvolution";
-import { FileEvolutionCommit } from "models/FileEvolutionCommit";
+import { FileHistoryCommit } from "models/FileHistoryCommit";
 
-export const fileEvolitionCommitSmokeData: FileEvolutionCommit[] = [
+export const fileEvolitionCommitSmokeData: FileHistoryCommit[] = [
   {
     fileId: 1,
     fileName: "file1.js",

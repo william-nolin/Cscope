@@ -22,7 +22,7 @@ const MainLayout: React.FC = () => {
               </div>
               <nav>
                 <NavLink to="change-volume">Change volume</NavLink>
-                <NavLink to="evolution-file">File evolution</NavLink>
+                <NavLink to="history-file">File history</NavLink>
                 <NavLink to="developers-input">Developer's input</NavLink>
               </nav>
             </header>

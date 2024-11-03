@@ -1,6 +1,6 @@
 import { TypeFileCommitEvolution } from "enum/TypeFileCommitEvolution";
 
-export interface FileEvolutionCommit {
+export interface FileHistoryCommit {
   fileId: number;
   fileName: string;
   typeEvolution: TypeFileCommitEvolution;

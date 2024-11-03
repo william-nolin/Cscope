@@ -1,7 +1,7 @@
 import MainLayout from "layout/MainLayout";
 import ChangeVolumePage from "pages/ChangeVolumePage";
 import DevelopersInputPage from "pages/DevelopersInputPage";
-import EvolutionFileCommitPage from "pages/EvolutionFileCommitPage";
+import HistoryFileCommitPage from "pages/HistoryFileCommitPage";
 import StartProjectPage from "pages/StartProjectPage";
 import { RouteObject } from "react-router-dom";
 
@@ -11,7 +11,7 @@ const routes: RouteObject[] = [
     element: <MainLayout />,
     children: [
       { path: "change-volume", element: <ChangeVolumePage /> },
-      { path: "evolution-file", element: <EvolutionFileCommitPage /> },
+      { path: "history-file", element: <HistoryFileCommitPage /> },
       { path: "developers-input", element: <DevelopersInputPage /> },
     ],
   },

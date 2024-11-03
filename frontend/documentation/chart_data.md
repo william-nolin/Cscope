@@ -9,7 +9,8 @@ This project aims to visualize file and folder modifications using bubble diagra
   - [Project Overview](#project-overview)
   - [Key Interfaces and Enums](#key-interfaces-and-enums)
     - [FileFolderModified](#filefoldermodified)
-    - [Commit](#commit)
+    - [TypeFileCommitEvolution](#typefilecommitevolution)
+    - [FileHistoryCommit](#filehistorycommit)
     - [ModifiedCategory](#modifiedcategory)
     - [Author](#author)
     - [CommitsCategory](#commitscategory)
@@ -20,7 +21,7 @@ This project aims to visualize file and folder modifications using bubble diagra
   - [Modification Metrics](#modification-metrics)
       - [Example 1:](#example-1)
       - [Example 2:](#example-2)
-  - [Change Scope in the Repository](#change-scope-in-the-repository)
+  - [File History commit in the Repository](#file-history-commit-in-the-repository)
   - [Commit Statistics by Author](#commit-statistics-by-author)
 
 ## Project Overview
@@ -48,16 +49,33 @@ export interface FileFolderModified {
 }
 ```
 
-### Commit
-This interface represents a commit, which tracks changes made in the repository:
+### TypeFileCommitEvolution
+An enum defining different categories of file modifications and evolution:
 ```typescript
-export interface commit {
-  id: string;
-  nbCodeLinesModified: number;
-  nbModifiedFiles: number;
-  date: Date;
-  typeOfFiles: ModifiedCategory;
+export enum TypeFileCommitEvolution {
+  ADD_SOURCE_FILE = "#4798e5",
+  SET_SOURCE_FILE = "#eeab3c",
+  DELETE_SOURCE_FILE = "#ee493c",
+  ADD_TEST_FILE = "#6dee3c",
+  SET_TEST_FILE = "#3ceed6",
+  DELETE_TEST_FILE = "#3d4a7d",
+  ADD_DOC_FILE = "#a137e6",
+  SET_DOC_FILE = "#f53dd9",
+  DELETE_DOC_FILE = "#8e125d",
 }
+
+```
+
+### FileHistoryCommit
+This interface represents the file evolution with the commit history
+```typescript
+export interface FileHistoryCommit {
+  fileId: number;
+  fileName: string;
+  typeEvolution: TypeFileCommitEvolution;
+  Date: Date;
+}
+
 ```
 
 ### ModifiedCategory
@@ -156,13 +174,13 @@ Color representation:
 - File1: Yellow
 - File2: Red
 
-## Change Scope in the Repository
+## File History commit in the Repository
 
 Key variables:
-- **date**: The date of the commit. This represents the X-axis.
-- **nbCodeLinesModified**: The number of lines of code modified between the start and end dates. This represents the Y-axis.
-- **nbModifiedFiles**: The number of modified files in the commit (commit scope). This represents the size of the bubble.
-- **typeOfFiles**: The predominant type of files modified (e.g., Configuration, Test, Documentation, Production). This represents the color of the bubble.
+- **fileId**: The file id. This represents the y axis.
+- **fileName**: The file name.
+- **typeEvolution**: define different categories of file modifications and evolution.
+- **Date**: The modification date. This represents the y axis.
 
 ## Commit Statistics by Author
 
