@@ -10,9 +10,7 @@ const HistoryFileCommitPage: React.FC = () => {
   return (
     <div className="two-side-structure">
       <div className="page">
-        <div className="visualization-placeholder">
-          <MotionChartDisplay />
-        </div>
+        <MotionChartDisplay />
       </div>
       <DateAndFileInput />
     </div>
