@@ -9,13 +9,38 @@
 
   > header {
     width: 100%;
-    > h1 {
-      font-size: 2.5rem;
-      font-weight: normal;
-      letter-spacing: 0.2rem;
-      color: $title-page-color;
+    > div {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
       margin-bottom: 20px;
+
+      h1 {
+        font-size: 2.5rem;
+        font-weight: normal;
+        letter-spacing: 0.2rem;
+        color: $title-page-color;
+      }
+
+      > a {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        font-size: 2rem;
+        width: 60px;
+        height: 60px;
+        background-color: white;
+        border-radius: 50%;
+        color: $bg-active-color;
+        transition: background-color 0.3s, color 0.3s;
+        &:hover {
+          background-color: $bg-active-color;
+          color: $bg-button;
+          cursor: pointer;
+        }
+      }
     }
+
     > nav {
       margin-bottom: 20px;
       width: 100%;

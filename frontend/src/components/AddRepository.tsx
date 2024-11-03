@@ -8,8 +8,7 @@ const AddRepository: React.FC = () => {
   const navigate = useNavigate();
 
   const handleEnterPress = () => {
-    // Rediriger vers la route dynamique avec l'ID spécifié
-    navigate(`/repository/${repositoryId}`);
+    navigate(`/repository/${repositoryId}/change-volume`);
   };
   return (
     <div className="cscope">
