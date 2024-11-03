@@ -1,6 +1,8 @@
 import { createContext, useContext } from "react";
 
-interface DateFileContextType {
+interface DataSettingContextType {
+  repositoryId: string;
+  setRepositoryId: (id: string) => void;
   startDate: string;
   setStartDate: (date: string) => void;
   endDate: string;
@@ -9,12 +11,12 @@ interface DateFileContextType {
   setFileName: (name: string) => void;
 }
 
-export const DateFileContext = createContext<DateFileContextType | undefined>(
-  undefined
-);
+export const DataSettingContext = createContext<
+  DataSettingContextType | undefined
+>(undefined);
 
-export const useDateFileContext = (): DateFileContextType => {
-  const context = useContext(DateFileContext);
+export const useDataSettingContext = (): DataSettingContextType => {
+  const context = useContext(DataSettingContext);
   if (!context) {
     throw new Error(
       "useDateFileContext must be used within a DateFileProvider"

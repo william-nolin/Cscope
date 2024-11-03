@@ -1,5 +1,5 @@
 import React from "react";
-import { useDateFileContext } from "context/DateFileContext";
+import { useDataSettingContext } from "context/DataSettingContext";
 import { ConfigProvider, DatePicker, DatePickerProps, Select } from "antd";
 
 const DateAndFileInput: React.FC = () => {
@@ -12,7 +12,7 @@ const DateAndFileInput: React.FC = () => {
     setEndDate,
     fileName,
     setFileName,
-  } = useDateFileContext();
+  } = useDataSettingContext();
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files?.[0]) {

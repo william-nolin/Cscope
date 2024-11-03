@@ -22,7 +22,9 @@
       "pages/*": ["pages/*"],
       "assets/*": ["assets/*"],
       "layout/*": ["layout/*"],
-      "model/*": ["model/*"]
+      "enum/*": ["enum/*"],
+      "models/*": ["models/*"],
+      "utils/*": ["utils/*"]
     }
   },
   "include": ["src"]
