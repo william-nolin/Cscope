@@ -1,16 +1,11 @@
 // src/components/GraphDisplay.tsx
 import React, { useEffect, useLayoutEffect, useMemo, useState } from "react";
 import * as am5 from "@amcharts/amcharts5";
-import * as am5hierarchy from "@amcharts/amcharts5/hierarchy";
 import * as am5xy from "@amcharts/amcharts5/xy";
 import am5themes_Animated from "@amcharts/amcharts5/themes/Animated";
 
-import { FileFolderCommits } from "models/FileFolderCommits";
-import { GraphNode } from "models/GraphNode";
-import { convertToGraphData } from "utils/algofileFolderData";
-import { FileEvolutionCommit } from "models/FileEvolutionCommit";
-import { TypeFileCommitEvolution } from "enum/TypeFileCommitEvolution";
 import { fileEvolitionCommitSmokeData } from "data/FileEvolutionCommitSmokeList";
+import { getModificationTypeFromColor } from "utils/tooltipHelper";
 
 const MotionChartDisplay = () => {
   const dataFormat = fileEvolitionCommitSmokeData.map((f) => {
@@ -19,6 +14,7 @@ const MotionChartDisplay = () => {
       x: new Date(f.Date).getTime(),
       y: f.fileId,
       color: f.typeEvolution,
+      modificationType: getModificationTypeFromColor(f.typeEvolution),
     };
   });
   useLayoutEffect(() => {
@@ -49,7 +45,7 @@ const MotionChartDisplay = () => {
 
     xAxis.children.moveValue(
       am5.Label.new(root, {
-        text: "GDP per Capita, USD",
+        text: "Modification Date",
         x: am5.p50,
         centerX: am5.p50,
       }),
@@ -68,7 +64,7 @@ const MotionChartDisplay = () => {
     yAxis.children.moveValue(
       am5.Label.new(root, {
         rotation: -90,
-        text: "Life expectancy, years",
+        text: "File id",
         y: am5.p50,
         centerX: am5.p50,
       }),
@@ -88,7 +84,7 @@ const MotionChartDisplay = () => {
         tooltip: am5.Tooltip.new(root, {
           pointerOrientation: "horizontal",
           labelText:
-            "[bold]{title}[/]\nDate: {valueX.formatDate('yyyy-MM-dd')}\nID: {valueY}",
+            "[bold]{title}[/]\nDate: {valueX.formatDate('yyyy-MM-dd')}\nID: {valueY}\nType: {modificationType}",
         }),
       })
     );
