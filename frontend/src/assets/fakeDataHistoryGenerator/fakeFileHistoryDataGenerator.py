@@ -77,6 +77,7 @@ def generate_file_evolution(file_name, category, file_id):
                 "fileId": file_id,  # Utiliser le même fileId pour chaque évolution du même fichier
                 "fileName": file_name,
                 "typeEvolution": evolution_type,
+                "category": category,
                 "Date": date.strftime("%Y-%m-%d"),
             }
         )
