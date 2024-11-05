@@ -7,13 +7,3 @@ services:
       - ./api:/rails/
     ports:
       - "3000:3000"
-  backend:
-    build: ./Backend/.
-    volumes:
-      - ./Backend:/code
-    ports:
-      - "80:80"
-  frontend:
-    build: ./Frontend/.
-    ports:
-      - "8080:8080"
