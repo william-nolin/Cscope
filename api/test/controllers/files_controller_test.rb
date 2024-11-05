@@ -26,6 +26,7 @@ class FilesControllerTest < ActionDispatch::IntegrationTest
 
     expected_response = {
       "filepath" => "main.rb",
+      "filetype" => "ruby",
       "commits_count" => source_file.commits.size,
       "main_contributor" => {
         "author" => "Jonathan Lalande",
