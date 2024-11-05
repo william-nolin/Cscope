@@ -1,0 +1,82 @@
+@import "_variables";
+
+.main-layout {
+  color: $font-color;
+  border-radius: $border-radius;
+  padding: 20px;
+  width: 80%;
+  min-width: calc(740px + 480px);
+
+  > header {
+    width: 100%;
+    > div {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 20px;
+
+      h1 {
+        font-size: 2.5rem;
+        font-weight: normal;
+        letter-spacing: 0.2rem;
+        color: $title-page-color;
+      }
+
+      > a {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        font-size: 1.7rem;
+        width: 60px;
+        height: 60px;
+        background-color: white;
+        border-radius: 50%;
+        color: $bg-active-color;
+        transition: background-color 0.3s, color 0.3s;
+        &:hover {
+          background-color: $bg-active-color;
+          color: $bg-button;
+          cursor: pointer;
+        }
+      }
+    }
+
+    > nav {
+      margin-bottom: 20px;
+      width: 100%;
+      display: flex;
+      justify-content: space-between;
+      > a {
+        display: block;
+        color: white;
+        text-decoration: none;
+        background-color: $bg-button;
+        color: $text-page-color;
+        padding: 20px 11%;
+        margin-bottom: 10px;
+        font-weight: bold;
+        transition: background-color 0.3s, color 0.3s;
+
+        &:hover {
+          background-color: $bg-active-color;
+          color: $bg-button;
+        }
+      }
+
+      > a.active {
+        background-color: $bg-active-color;
+        color: $bg-button;
+      }
+
+      > a:nth-child(1) {
+        border-top-left-radius: $border-radius;
+        border-bottom-left-radius: $border-radius;
+      }
+
+      > a:nth-last-child(1) {
+        border-top-right-radius: $border-radius;
+        border-bottom-right-radius: $border-radius;
+      }
+    }
+  }
+}

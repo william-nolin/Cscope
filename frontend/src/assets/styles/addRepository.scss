@@ -1,0 +1,45 @@
+@import "_variables.scss";
+
+.cscope {
+  background-color: $background-color;
+  border-radius: $border-radius;
+  padding: 40px 20px;
+  padding-bottom: 60px;
+  text-align: center;
+  box-shadow: $box-shadow;
+
+  &__title {
+    font-size: 3rem;
+    color: $title-color;
+    font-weight: normal;
+    margin-bottom: 20px;
+  }
+
+  &__subtitle {
+    font-size: 1.3rem;
+    color: $text-color;
+    margin-top: 5px;
+    margin-bottom: 15px;
+    letter-spacing: 0.1rem;
+  }
+
+  &__search {
+    display: flex;
+    justify-content: center;
+  }
+
+  &__input {
+    width: 400px;
+    padding: 10px;
+    font-size: 1rem;
+    color: $text-color;
+    background-color: $input-bg-color;
+    border: 1px solid $input-border-color;
+    border-radius: $border-radius;
+    outline: none;
+
+    &::placeholder {
+      color: $input-border-color;
+    }
+  }
+}
