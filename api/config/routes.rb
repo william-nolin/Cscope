@@ -10,6 +10,7 @@ Rails.application.routes.draw do
      mount MissionControl::Jobs::Engine, at: "/jobs"
   end
 
+  get "/repositories/search", to: "repositories#search"
   get "/repositories/:repository_id", to: "repositories#show"
   post "/repositories", to: "repositories#create"
 

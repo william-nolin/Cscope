@@ -5,6 +5,21 @@ class RepositoriesController < ApplicationController
     render(json: current_repository)
   end
 
+  def search
+    url = params.permit(:url).fetch(:url)
+
+    repository = Repository.find_by_url(url)
+    remote_repository = GithubService.new.fetch_remote_repository(url)
+
+    render(
+      json: {
+        repository: repository,
+        remote_repository: remote_repository
+      },
+      status: (repository || remote_repository) ? :ok : :not_found
+    )
+  end
+
   def create
     url = params.permit(:url).fetch(:url)
 
