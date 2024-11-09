@@ -35,6 +35,18 @@ class Repository < ApplicationRecord
     end.to_s
   end
 
+  def as_json
+    {
+      id: id,
+      name: name,
+      domain: domain,
+      path: path,
+      url: remote_url,
+      created_at: created_at,
+      updated_at: updated_at
+    }
+  end
+
   private
 
   def remove_gitland_repository
