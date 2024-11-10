@@ -20,4 +20,17 @@ class RemoteRepositoryTest < ActiveSupport::TestCase
   test "#path" do
     assert_equal("/discourse/discourse", @remote_repository.path)
   end
+
+  test "#as_json" do
+    assert_equal(
+      {
+        name: "discourse",
+        description: "A platform for community discussion. Free, open, simple.",
+        domain: "github.com",
+        path: "/discourse/discourse",
+        url: "https://github.com/discourse/discourse"
+      },
+      @remote_repository.as_json
+    )
+  end
 end

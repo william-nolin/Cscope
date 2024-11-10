@@ -20,4 +20,14 @@ class RemoteRepository
   def path
     @uri.path
   end
+
+  def as_json
+    {
+      name: name,
+      description: @description,
+      domain: domain,
+      path: path,
+      url: @uri.to_s
+    }
+  end
 end
