@@ -13,6 +13,7 @@
     "@types/react": "^18.3.12",
     "@types/react-dom": "^18.3.1",
     "antd": "^5.21.6",
+    "axios": "^1.7.7",
     "node-sass": "^7.0.3",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
@@ -22,7 +23,7 @@
     "web-vitals": "^2.1.4"
   },
   "scripts": {
-    "start": "react-scripts start",
+    "start": "PORT=4000 react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
