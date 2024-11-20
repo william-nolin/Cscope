@@ -22,14 +22,14 @@ jobs:
 
       # Assign Project
       - name: Add to Project
-        uses: actions/add-to-project@v2
+        uses: actions/add-to-project@v1
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
           project: "Cscope_project"
 
       # Assign Milestone
       - name: Assign Milestone
-        uses: doit-actions/assign-milestone@v2
+        uses: doit-actions/assign-milestone@v1
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           milestone: "Final presentation"
