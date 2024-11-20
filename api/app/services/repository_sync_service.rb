@@ -49,6 +49,12 @@ class RepositorySyncService
       @files.values.flatten
     end
 
+    def set_category_to_file_change(commit_hash, filepath, category)
+      @files[filepath]
+        .find { |file_change| file_change[:commit_hash] == commit_hash }
+        .then { |file_change| file_change[:category] = category }
+    end
+
     def reset
       @commits = []
       @files = {}
@@ -73,6 +79,9 @@ class RepositorySyncService
         elsif line_is_a_file_change?(line)
           change = file_change_attributes_from_line(line, current_commit_hash)
           batch.add_file_change(change)
+        elsif line_is_a_summary?(line)
+          category, _, _, filepath = line.strip.split
+          batch.set_category_to_file_change(current_commit_hash, filepath, category)
         end
       end
 
@@ -98,6 +107,9 @@ class RepositorySyncService
         elsif line_is_a_file_change?(line)
           change = file_change_attributes_from_line(line, current_commit_hash)
           batch.add_file_change(change)
+        elsif line_is_a_summary?(line)
+          category, _, _, filepath = line.strip.split
+          batch.set_category_to_file_change(current_commit_hash, filepath, category)
         end
       end
 
@@ -128,7 +140,8 @@ class RepositorySyncService
           commit_id: commit.id,
           source_file_id: source_file.id,
           additions: change[:additions],
-          deletions: change[:deletions]
+          deletions: change[:deletions],
+          category: change[:category]
         }
       end
     )
@@ -157,7 +170,8 @@ class RepositorySyncService
           commit_id: commit.id,
           source_file_id: source_file.id,
           additions: change[:additions],
-          deletions: change[:deletions]
+          deletions: change[:deletions],
+          category: change[:category]
         }
       end
     )
@@ -171,6 +185,13 @@ class RepositorySyncService
 
   def line_is_a_file_change?(line)
     Integer(line[0], exception: false) || line[0] == "-"
+  end
+
+  def line_is_a_summary?(line)
+    line.strip.start_with?(
+      SourceFileChange::FILE_CHANGE_CREATE_CATEGORY,
+      SourceFileChange::FILE_CHANGE_DELETE_CATEGORY
+    )
   end
 
   def commit_attributes_from_line(line)
@@ -190,6 +211,7 @@ class RepositorySyncService
     {
       commit_hash: commit_hash,
       filepath: filepath.strip,
+      category: SourceFileChange::FILE_CHANGE_MODIFY_CATEGORY,
       additions: additions,
       deletions: deletions
     }

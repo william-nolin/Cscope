@@ -203,6 +203,86 @@ class RepositorySyncServiceTest < ActiveSupport::TestCase
     )
   end
 
+  test "#index creates source_file_changes tagged with the type of changes" do
+    stub_git_commit_history_for_line_counts { "" }
+    stub_git_commit_history do
+      <<~GIT_LOGS
+        ||8fee13948c87b7a2497a74e4e43423de419161eb||Jonathan Lalande||2024-11-19||2024-11-19||0b8094d247cb6c22d21fd863222ba5bab59130ca||add random_file.rb
+        1	0	src/random_file.rb
+         create mode 100644 src/random_file.rb
+
+        ||a151de81e6f90d9c0745ca638695c4bfe6b46ba6||Jonathan Lalande||2024-11-19||2024-11-19||8fee13948c87b7a2497a74e4e43423de419161eb||update random_file.rb
+        1	0	src/random_file.rb
+
+        ||c1e50e105f8848b893bb58e2475cc52b8b170f99||Jonathan Lalande||2024-11-19||2024-11-19||a151de81e6f90d9c0745ca638695c4bfe6b46ba6||remove random_file.rb
+        0	2	src/random_file.rb
+         delete mode 100644 src/random_file.rb
+      GIT_LOGS
+    end
+
+    RepositorySyncService.new(@repository).index
+
+    creation, modification, deletion = @repository
+      .source_files
+      .find_by(filepath: "src/random_file.rb")
+      .source_file_changes
+
+    assert_equal(1, creation.additions)
+    assert_equal(0, creation.deletions)
+    assert_equal("create", creation.category)
+
+    assert_equal(1, modification.additions)
+    assert_equal(0, modification.deletions)
+    assert_equal("modify", modification.category)
+
+    assert_equal(0, deletion.additions)
+    assert_equal(2, deletion.deletions)
+    assert_equal("delete", deletion.category)
+  end
+
+  test "#index creates source_file_changes for change ledger tagged with the type of changes" do
+    stub_git_commit_history do
+      <<~GIT_LOGS
+        ||8fee13948c87b7a2497a74e4e43423de419161eb||Jonathan Lalande||2024-11-19||2024-11-19||0b8094d247cb6c22d21fd863222ba5bab59130ca||add random_file.rb
+        ||a151de81e6f90d9c0745ca638695c4bfe6b46ba6||Jonathan Lalande||2024-11-19||2024-11-19||8fee13948c87b7a2497a74e4e43423de419161eb||update random_file.rb
+        ||c1e50e105f8848b893bb58e2475cc52b8b170f99||Jonathan Lalande||2024-11-19||2024-11-19||a151de81e6f90d9c0745ca638695c4bfe6b46ba6||remove random_file.rb
+      GIT_LOGS
+    end
+    stub_git_commit_history_for_line_counts  do
+      <<~GIT_LOGS
+        ||8fee13948c87b7a2497a74e4e43423de419161eb||Jonathan Lalande||2024-11-19||2024-11-19||0b8094d247cb6c22d21fd863222ba5bab59130ca||add random_file.rb
+        1	0	src/random_file.rb
+         create mode 100644 src/random_file.rb
+
+        ||a151de81e6f90d9c0745ca638695c4bfe6b46ba6||Jonathan Lalande||2024-11-19||2024-11-19||8fee13948c87b7a2497a74e4e43423de419161eb||update random_file.rb
+        1	0	src/random_file.rb
+
+        ||c1e50e105f8848b893bb58e2475cc52b8b170f99||Jonathan Lalande||2024-11-19||2024-11-19||a151de81e6f90d9c0745ca638695c4bfe6b46ba6||remove random_file.rb
+        0	2	src/random_file.rb
+         delete mode 100644 src/random_file.rb
+      GIT_LOGS
+    end
+
+    RepositorySyncService.new(@repository).index
+
+    creation, modification, deletion = @repository
+      .source_files
+      .find_by(filepath: "src/random_file.rb")
+      .source_file_changes
+
+    assert_equal(1, creation.additions)
+    assert_equal(0, creation.deletions)
+    assert_equal("create", creation.category)
+
+    assert_equal(1, modification.additions)
+    assert_equal(0, modification.deletions)
+    assert_equal("modify", modification.category)
+
+    assert_equal(0, deletion.additions)
+    assert_equal(2, deletion.deletions)
+    assert_equal("delete", deletion.category)
+  end
+
   private
 
   def stub_git_commit_history(&block)
