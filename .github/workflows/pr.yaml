@@ -22,14 +22,14 @@ jobs:
 
       # Assign Project
       - name: Add to Project
-        uses: actions/add-to-project@latest
-        with:
-          token: ${{ secrets.GITHUB_TOKEN }}
-          project: "Cscope_project"
+        uses: actions/add-to-project@v1.0.2
+        with: 
+          project-url: https://github.com/orgs/visevol/projects/1
+          github-token: ${{ secrets.GITHUB_TOKEN }}
 
       # Assign Milestone
       - name: Assign Milestone
-        uses: doit-actions/assign-milestone@latest
+        uses: Julexar/Milestone-Assigner@v1.0
         with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
+          token: ${{ secrets.GITHUB_TOKEN }}
           milestone: "Final presentation"
