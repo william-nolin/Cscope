@@ -20,5 +20,5 @@ Rails.application.routes.draw do
   get "/repositories/:repository_id/files/stats/change-history", to: "files#change_history"
 
   get "/repositories/:repository_id/commits/stats/commits_over_time", to: "commits#commits_over_time"
-  get "/repositories/:repository_id/commits/stats/files_over_time", to: "commits#files_over_time"
+  get "/repositories/:repository_id/files/stats/files_over_time", to: "files#files_over_time"
 end

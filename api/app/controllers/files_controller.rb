@@ -26,6 +26,24 @@ class FilesController < ApplicationController
     render(json: data)
   end
 
+  def files_over_time
+    return render_repository_not_found unless current_repository
+
+    stats = RepositoryStatisticsService
+      .new(current_repository)
+      .file_modifications_by_date(start_date: start_date_filter, end_date: end_date_filter)
+      .map! do |filepath, total_additions, total_deletions, total_modifications|
+        {
+          filepath: filepath,
+          total_additions: total_additions,
+          total_deletions: total_deletions,
+          total_modifications: total_modifications
+        }
+      end
+
+    render(json: stats)
+  end
+
   private
 
   def render_source_file_not_found
