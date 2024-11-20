@@ -10,5 +10,3 @@ LOG795 – Projet de fin d’étude
 
 ## Description
 Ce dépôt contient toute la documentation, les diagrammes ainsi que toutes les informations nécessaires à la compréhension de notre PFE, et vise à faciliter la continuation du projet.
-
-test
