@@ -283,6 +283,34 @@ class RepositorySyncServiceTest < ActiveSupport::TestCase
     assert_equal("delete", deletion.category)
   end
 
+  test "#index summary parsing handles files with spaces in them" do
+    stub_git_commit_history do
+      <<~GIT_LOGS
+        ||8fee13948c87b7a2497a74e4e43423de419161eb||Jonathan Lalande||2024-11-19||2024-11-19||0b8094d247cb6c22d21fd863222ba5bab59130ca||add space file A
+        1	0	src/space file A
+         create mode 100644 src/space file A
+
+        ||a151de81e6f90d9c0745ca638695c4bfe6b46ba6||Jonathan Lalande||2024-11-19||2024-11-19||8fee13948c87b7a2497a74e4e43423de419161eb||add space file B
+      GIT_LOGS
+    end
+
+    stub_git_commit_history_for_line_counts do
+      <<~GIT_LOGS
+        ||a151de81e6f90d9c0745ca638695c4bfe6b46ba6||Jonathan Lalande||2024-11-19||2024-11-19||8fee13948c87b7a2497a74e4e43423de419161eb||add space file B
+        1	0	src/space file B
+         create mode 100644 src/space file B
+      GIT_LOGS
+    end
+
+    RepositorySyncService.new(@repository).index
+
+    space_file_a = @repository.source_files.find_by(filepath: "src/space file A")
+    assert_equal("create", space_file_a.source_file_changes.first.category)
+
+    space_file_b = @repository.source_files.find_by(filepath: "src/space file B")
+    assert_equal("create", space_file_b.source_file_changes.first.category)
+  end
+
   private
 
   def stub_git_commit_history(&block)
