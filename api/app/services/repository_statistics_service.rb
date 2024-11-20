@@ -64,12 +64,12 @@ class RepositoryStatisticsService
     scope
       .joins(:source_file_changes)
       .joins(:source_files)
-      .group('source_files.filepath')
+      .group("source_files.filepath")
       .pluck(
-        Arel.sql('source_files.filepath'),
-        Arel.sql('SUM(source_file_changes.additions)'),
-        Arel.sql('SUM(source_file_changes.deletions)'),
-        Arel.sql('SUM(source_file_changes.additions + source_file_changes.deletions)')
+        Arel.sql("source_files.filepath"),
+        Arel.sql("SUM(source_file_changes.additions)"),
+        Arel.sql("SUM(source_file_changes.deletions)"),
+        Arel.sql("SUM(source_file_changes.additions + source_file_changes.deletions)")
       )
   end
 end
