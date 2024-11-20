@@ -1,0 +1,35 @@
+name: Auto Assign Labels, Projects, and Milestones
+
+on:
+  pull_request:
+    types: [opened]
+
+jobs:
+  auto-assign:
+    runs-on: ubuntu-latest
+    steps:
+      # Check out the repository
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      # Assign Labels
+      - name: Assign Labels
+        uses: actions-ecosystem/action-add-labels@v1
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          labels: |
+            Development
+
+      # Assign Project
+      - name: Add to Project
+        uses: actions/add-to-project@v2
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          project: "Cscope_project"
+
+      # Assign Milestone
+      - name: Assign Milestone
+        uses: doit-actions/assign-milestone@v2
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          milestone: "Final presentation"
