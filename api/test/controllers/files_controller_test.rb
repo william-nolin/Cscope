@@ -114,7 +114,7 @@ class FilesControllerTest < ActionDispatch::IntegrationTest
   end
 
   test "#files_over_time output is filtered by `start_date` parameter" do
-    get "/repositories/#{@repository.id}/files/stats/files_over_time?start_date=2024-10-15"
+    get "/repositories/#{@repository.id}/files/stats/files_over_time?start_date=2024-10-14"
 
     assert_response(:ok)
     assert_equal(
@@ -124,6 +124,12 @@ class FilesControllerTest < ActionDispatch::IntegrationTest
           "total_additions" => 2,
           "total_deletions" => 0,
           "total_modifications" => 2
+        },
+        {
+          "filepath" => "main.rb",
+          "total_additions" => 1,
+          "total_deletions" => 0,
+          "total_modifications" => 1
         }
       ],
       response.parsed_body
