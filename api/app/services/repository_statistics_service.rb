@@ -62,7 +62,6 @@ class RepositoryStatisticsService
     scope = scope.where(committer_date: start_date..) if start_date
     scope = scope.where(committer_date: ..end_date) if end_date
     scope
-      .joins(:source_file_changes)
       .joins(:source_files)
       .group("source_files.filepath")
       .pluck(
