@@ -3,10 +3,18 @@ require "test_helper"
 class RepositorySyncServiceTest < ActiveSupport::TestCase
   def setup
     @repository = repositories(:example_repository)
+
+    @gitland_repository_mock = mock("gitland_repository")
+    @gitland_repository_mock.responds_like(Gitland::Repository.new(@repository))
+    @gitland_repository_mock.stubs(:log).yields([])
+
+    Gitland::Repository
+      .expects(:new)
+      .with(@repository)
+      .returns(@gitland_repository_mock)
   end
 
   test "#index creates commits for the given repository" do
-    stub_git_commit_history_for_line_counts { "" }
     stub_git_commit_history do
       <<~GIT_LOGS
         ||71c23127bf7bad405dd3e8e29f9394140882898c||Jonathan Lalande||2024-10-06||2024-10-06||
@@ -32,7 +40,6 @@ class RepositorySyncServiceTest < ActiveSupport::TestCase
   end
 
   test "#index creates source_file_changes for each commits" do
-    stub_git_commit_history_for_line_counts { "" }
     stub_git_commit_history do
       <<~GIT_LOGS
         ||3ecab153fab78e61290892881e9a34d0df6fb7a0||Jonathan Lalande||2024-10-06||2024-10-06||l3gitpar3ntha5h yupt0ta11yl3git||some kind of subject
@@ -69,7 +76,6 @@ class RepositorySyncServiceTest < ActiveSupport::TestCase
   end
 
   test "#index creates source_files for each file in the log" do
-    stub_git_commit_history_for_line_counts { "" }
     stub_git_commit_history do
       <<~GIT_LOGS
         ||3ecab153fab78e61290892881e9a34d0df6fb7a0||Jonathan Lalande||2024-10-06||2024-10-06||l3gitpar3ntha5h yupt0ta11yl3git||some kind of subject
@@ -92,7 +98,6 @@ class RepositorySyncServiceTest < ActiveSupport::TestCase
   end
 
   test "#index creates source_files for binary files in the log" do
-    stub_git_commit_history_for_line_counts { "" }
     stub_git_commit_history do
       <<~GIT_LOGS
         ||c5c6db27cef5623124dfb3f9aea34a04fd7c920f||Jonathan Lalande||2019-10-06||2019-10-06||c54b2f6989ba56fda64b7363e27ef99c4fa24346||Allow connection and channel creation via amqp
@@ -208,26 +213,20 @@ class RepositorySyncServiceTest < ActiveSupport::TestCase
   def stub_git_commit_history(&block)
     logs_enumerator = (block.call).lines.each
 
-    command = mock()
-    command.expects(:execute).yields(logs_enumerator)
-
-    Gitland::Commands::Log
-      .expects(:new)
-      .with(anything, format: "||%H||%aN||%cs||%as||%P||%s", first_parent: false)
-      .returns(command)
+    @gitland_repository_mock
+      .expects(:log)
+      .with(format: "||%H||%aN||%cs||%as||%P||%s")
+      .yields(logs_enumerator)
       .at_least_once
   end
 
   def stub_git_commit_history_for_line_counts(&block)
     logs_enumerator = (block.call).lines.each
 
-    command = mock()
-    command.expects(:execute).yields(logs_enumerator)
-
-    Gitland::Commands::Log
-      .expects(:new)
-      .with(anything, format: "||%H||%aN||%cs||%as||%P||%s", first_parent: true)
-      .returns(command)
+    @gitland_repository_mock
+      .expects(:log)
+      .with(format: "||%H||%aN||%cs||%as||%P||%s", first_parent: true)
+      .yields(logs_enumerator)
       .at_least_once
   end
 end
