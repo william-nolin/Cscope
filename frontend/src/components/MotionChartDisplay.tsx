@@ -4,14 +4,11 @@ import * as am5 from "@amcharts/amcharts5";
 import * as am5xy from "@amcharts/amcharts5/xy";
 import am5themes_Animated from "@amcharts/amcharts5/themes/Animated";
 
-import {
-  fileEvolutionCommitSmokeData,
-  fileEvolutionCommitSmokeDataBigData,
-} from "data/FileEvolutionCommitSmokeList";
 import { getModificationTypeFromColor } from "utils/tooltipHelper";
 
-const MotionChartDisplay = () => {
-  const dataFormat = fileEvolutionCommitSmokeDataBigData.map((f) => {
+const MotionChartDisplay = (props: any) => {
+  const data = props.fileHistoryCommitData || [];
+  const dataFormat = data.map((f: any) => {
     return {
       title: f.fileName,
       x: new Date(f.Date).getTime(),
@@ -20,6 +17,7 @@ const MotionChartDisplay = () => {
       modificationType: getModificationTypeFromColor(f.typeEvolution),
     };
   });
+
   useLayoutEffect(() => {
     const root = am5.Root.new("chartdiv");
 
