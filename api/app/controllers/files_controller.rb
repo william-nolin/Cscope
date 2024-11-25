@@ -16,9 +16,31 @@ class FilesController < ApplicationController
     })
   end
 
+  def change_history
+    return render_repository_not_found unless current_repository
+
+    data = RepositoryStatisticsService
+      .new(current_repository)
+      .file_change_history_by_date(start_date: start_date_filter, end_date: end_date_filter)
+
+    render(json: data)
+  end
+
   private
 
   def render_source_file_not_found
     render(json: { message: "file does not exists." }, status: :not_found)
+  end
+
+  def start_date_filter
+    DateTime.parse(params[:start_date])
+  rescue
+    nil
+  end
+
+  def end_date_filter
+    DateTime.parse(params[:end_date])
+  rescue
+    nil
   end
 end

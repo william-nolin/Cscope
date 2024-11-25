@@ -40,4 +40,47 @@ class FilesControllerTest < ActionDispatch::IntegrationTest
     assert_response(:ok)
     assert_equal(expected_response, response.parsed_body)
   end
+
+  test "#change_history returns 404 when the repository does not exists" do
+    get "/repositories/9999999999/files/stats/change-history"
+
+    assert_response(:not_found)
+  end
+
+  test "#change_history returns 200 when the repository exists" do
+    get "/repositories/#{@repository.id}/files/stats/change-history"
+
+    expected_response = [
+      [ "2024-10-13", "README.md", "create" ],
+      [ "2024-10-15", "main.rb", "create" ],
+      [ "2024-10-27", "README.md", "modify" ]
+    ]
+
+    assert_response(:ok)
+    assert_equal(expected_response, response.parsed_body)
+  end
+
+  test "#change_history respects the start_date query params filter" do
+    get "/repositories/#{@repository.id}/files/stats/change-history?start_date=2024-10-14"
+
+    expected_response = [
+      [ "2024-10-15", "main.rb", "create" ],
+      [ "2024-10-27", "README.md", "modify" ]
+    ]
+
+    assert_response(:ok)
+    assert_equal(expected_response, response.parsed_body)
+  end
+
+  test "#change_history respects the end_date query params filter" do
+    get "/repositories/#{@repository.id}/files/stats/change-history?end_date=2024-10-20"
+
+    expected_response = [
+      [ "2024-10-13", "README.md", "create" ],
+      [ "2024-10-15", "main.rb", "create" ]
+    ]
+
+    assert_response(:ok)
+    assert_equal(expected_response, response.parsed_body)
+  end
 end
