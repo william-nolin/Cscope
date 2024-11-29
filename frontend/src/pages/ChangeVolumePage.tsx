@@ -16,7 +16,7 @@ import { FileFolderCommits } from "models/FileFolderCommits";
 import BubbleGraphDisplay from "components/BubbleGraphDisplay";
 
 const ChangeVolumePage: React.FC = () => {
-  const { repositoryId, startDate, endDate, fileName } =
+  const { repositoryId, startDate, endDate, filePath } =
     useDataSettingContext();
   const [project, setProject] = useState<Project | null>(null);
   const [filterMetrics, setFilterMetrics] = useState<{

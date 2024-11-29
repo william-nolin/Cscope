@@ -1,6 +1,7 @@
 import { DataSettingContext } from "context/DataSettingContext";
-import React, { useState, ReactNode } from "react";
+import React, { useState, ReactNode, useEffect } from "react";
 import dayjs from "dayjs";
+import { getFilesRepository } from "api";
 
 export const DataSettingProvider: React.FC<{
   children: ReactNode;
@@ -11,7 +12,17 @@ export const DataSettingProvider: React.FC<{
     dayjs().subtract(1, "month").format("YYYY-MM-DD")
   );
   const [endDate, setEndDate] = useState<string>(dayjs().format("YYYY-MM-DD"));
-  const [fileName, setFileName] = useState<string>("");
+  const [filePath, setFilePath] = useState<string>("");
+  const [files, setFiles] = useState<string[]>([]);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      const data = await getFilesRepository(Number(repositoryId));
+      setFiles(["", ...data]);
+    };
+
+    fetchData();
+  }, [repositoryId]);
 
   return (
     <DataSettingContext.Provider
@@ -22,8 +33,10 @@ export const DataSettingProvider: React.FC<{
         setStartDate,
         endDate,
         setEndDate,
-        fileName,
-        setFileName,
+        filePath,
+        setFilePath,
+        files,
+        setFiles,
       }}
     >
       {children}

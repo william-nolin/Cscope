@@ -13,45 +13,20 @@ const DateAndFileInput: React.FC = () => {
     setStartDate,
     endDate,
     setEndDate,
-    fileName,
-    setFileName,
+    filePath,
+    setFilePath,
+    files,
   } = useDataSettingContext();
-
-  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (e.target.files?.[0]) {
-      setFileName(e.target.files[0].name);
-    }
-  };
-
-  const onStartDateChange: DatePickerProps["onChange"] = (date, dateString) => {
-    if (dateString) {
-      const newStartDate = dateString.toString();
-
-      if (endDate && dayjs(newStartDate).isAfter(dayjs(endDate))) {
-        alert("Start date cannot be later than the end date.");
-      } else {
-        setStartDate(dateString.toString());
-      }
-    }
-  };
-
-  const onEndDateChange: DatePickerProps["onChange"] = (date, dateString) => {
-    if (dateString) {
-      const newEndDate = dateString.toString();
-
-      if (startDate && dayjs(newEndDate).isBefore(dayjs(startDate))) {
-        alert("End date cannot be earlier than the start date.");
-      } else {
-        setEndDate(dateString.toString());
-      }
-    }
-  };
 
   const onDateChange = (dates: any, dateStrings: [string, string]) => {
     if (dateStrings) {
       setStartDate(dateStrings[0]);
       setEndDate(dateStrings[1]);
     }
+  };
+
+  const handleChangeFile = (value: string) => {
+    setFilePath(value);
   };
 
   return (
@@ -70,21 +45,16 @@ const DateAndFileInput: React.FC = () => {
             style={{ width: inputWidth * 2 + 20, height: 45 }}
             placeholder="Search by filename"
             optionFilterProp="label"
+            value={filePath}
             filterSort={(optionA, optionB) =>
               (optionA?.label ?? "")
                 .toLowerCase()
                 .localeCompare((optionB?.label ?? "").toLowerCase())
             }
-            options={[
-              {
-                value: "1",
-                label: "Not Identified",
-              },
-              {
-                value: "2",
-                label: "Closed",
-              },
-            ]}
+            options={files.map((f: string) => {
+              return { value: f, label: f };
+            })}
+            onChange={handleChangeFile}
           />
         </div>
         <div>

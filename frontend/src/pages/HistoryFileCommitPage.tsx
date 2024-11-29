@@ -7,12 +7,13 @@ import { FileHistoryCommit } from "models/FileHistoryCommit";
 
 import { fileHistoryByDate } from "api";
 import { filterByDate } from "utils/tooltipHelper";
+import { Spin } from "antd";
 
 const HistoryFileCommitPage: React.FC = () => {
   const [data, setData] = useState<FileHistoryCommit[]>([]);
   const [filterData, setFilterData] = useState<FileHistoryCommit[]>([]);
   const [ready, setReady] = useState<boolean>(false);
-  const { repositoryId, startDate, endDate, fileName } =
+  const { repositoryId, startDate, endDate, filePath } =
     useDataSettingContext();
 
   useEffect(() => {
@@ -31,16 +32,23 @@ const HistoryFileCommitPage: React.FC = () => {
 
   useEffect(() => {
     setFilterData(
-      data.filter((item: any) => filterByDate(item.Date, startDate, endDate))
+      data.filter((item: FileHistoryCommit) => {
+        return (
+          filterByDate(item.Date.toString(), startDate, endDate) &&
+          (filePath === "" || item.fileName === filePath)
+        );
+      })
     );
-  }, [data, startDate, endDate]);
+  }, [data, startDate, endDate, filePath]);
 
   return (
     <div className="two-side-structure">
       <div className="page">
         {ready ? (
           <MotionChartDisplay fileHistoryCommitData={filterData} />
-        ) : null}
+        ) : (
+          <Spin size="large" />
+        )}
       </div>
       <DateAndFileInput />
     </div>

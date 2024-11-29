@@ -4,7 +4,7 @@ import "assets/styles/developersInput.scss";
 import DateAndFileInput from "components/DateAndFileInput";
 
 const DevelopersInputPage: React.FC = () => {
-  const { startDate, endDate, fileName } = useDataSettingContext();
+  const { startDate, endDate, filePath } = useDataSettingContext();
 
   return (
     <div className="two-side-structure">

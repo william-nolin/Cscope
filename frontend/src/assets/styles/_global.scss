@@ -65,9 +65,13 @@ body {
 }
 
 .page {
+  display: flex;
   background-color: #fff;
   padding: 20px;
+  height: 640px;
   margin-right: 20px;
+  justify-content: center;
+  align-items: center;
   border-radius: $border-radius;
   box-shadow: $box-shadow;
   width: calc(100% - 420px);
@@ -78,6 +82,7 @@ body {
   }
 
   .visualization-placeholder {
+    width: 100%;
     height: 600px;
     background-color: #f3f3f3;
     display: flex;

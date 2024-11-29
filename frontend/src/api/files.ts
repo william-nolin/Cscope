@@ -47,3 +47,14 @@ export async function fileHistoryByDate(
 
   return data;
 }
+
+export async function getFilesRepository(
+  repositoryId: number
+): Promise<string[]> {
+  const endpoint = `/repositories/${repositoryId}/tree/head`;
+  const response = await axios.get(endpoint);
+
+  const data = response.data.map((file: any) => file.filepath);
+
+  return data;
+}

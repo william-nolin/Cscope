@@ -7,8 +7,10 @@ interface DataSettingContextType {
   setStartDate: (date: string) => void;
   endDate: string;
   setEndDate: (date: string) => void;
-  fileName: string;
-  setFileName: (name: string) => void;
+  filePath: string;
+  setFilePath: (name: string) => void;
+  files: string[];
+  setFiles: (files: string[]) => void;
 }
 
 export const DataSettingContext = createContext<
