@@ -1,26 +1,54 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import "assets/styles/addRepository.scss";
-import { Input } from "antd";
+import { Input, Spin } from "antd";
 import { useNavigate } from "react-router-dom";
 
-import { searchRepositoryByUrl } from "api";
+import { createRepositoryByUrl, getFileTree, searchRepositoryByUrl } from "api";
 
 const AddRepository: React.FC = () => {
   const [url, setUrl] = useState<string>("");
+  const [loadRepository, setLoadRepository] = useState<boolean>(false);
   const navigate = useNavigate();
 
-  const handleEnterPress = async () => {
-    const result = await searchRepositoryByUrl(url);
+  useEffect(() => {
+    //Implementing the setInterval method
+    if (loadRepository) {
+      let interval: any;
 
-    if (result.repository) {
-      return navigate(`/repository/${result.repository.id}/change-volume`);
+      const fetchData = async () => {
+        const data = await createRepositoryByUrl(url);
+
+        let checkRepository: any;
+        interval = setInterval(async () => {
+          try {
+            checkRepository = await getFileTree(data.id);
+            setLoadRepository(false);
+            return navigate(`/repository/${data.id}/change-volume`);
+          } catch (error) {}
+        }, 1000);
+      };
+
+      fetchData();
+      //Clearing the interval
+      return () => clearInterval(interval);
     }
+  }, [loadRepository]);
 
-    if (result.remoteRepository) {
-      console.log(result.remoteRepository)
-      alert(`repository: ${result.remoteRepository.url} exists, but not yet analyzed.`)
-    } else {
-      alert(`repository: ${url} does not exists.`)
+  const handleEnterPress = async () => {
+    try {
+      const result = await searchRepositoryByUrl(url);
+
+      if (result.repository) {
+        return navigate(`/repository/${result.repository.id}/change-volume`);
+      }
+
+      if (result.remoteRepository) {
+        setLoadRepository(true);
+      } else {
+        alert(`repository: ${url} does not exists.`);
+      }
+    } catch (error) {
+      alert(`repository: ${url} does not exists.`);
     }
   };
 
@@ -29,13 +57,17 @@ const AddRepository: React.FC = () => {
       <h1 className="cscope__title">CScope</h1>
       <p className="cscope__subtitle">Insert repository URL</p>
       <div className="cscope__search">
-        <Input
-          className="cscope__input"
-          value={url}
-          placeholder="Insert URL and press enter"
-          onPressEnter={handleEnterPress}
-          onChange={e => setUrl(e.target.value)}
-        />
+        {!loadRepository ? (
+          <Input
+            className="cscope__input"
+            value={url}
+            placeholder="Insert URL and press enter"
+            onPressEnter={handleEnterPress}
+            onChange={(e) => setUrl(e.target.value)}
+          />
+        ) : (
+          <Spin size="large" />
+        )}
       </div>
     </div>
   );

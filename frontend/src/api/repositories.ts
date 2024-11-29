@@ -7,12 +7,16 @@ interface RepositorySearchResult {
   remoteRepository: RemoteRepository | null;
 }
 
-export async function searchRepositoryByUrl(url: string): Promise<RepositorySearchResult> {
-  const response = await axios.get('/repositories/search', { params: {url: url} });
+export async function searchRepositoryByUrl(
+  url: string
+): Promise<RepositorySearchResult> {
+  const response = await axios.get("/repositories/search", {
+    params: { url: url },
+  });
   const result: RepositorySearchResult = {
     repository: null,
     remoteRepository: null,
-  }
+  };
 
   if (response.data.repository) {
     result.repository = {
@@ -23,7 +27,7 @@ export async function searchRepositoryByUrl(url: string): Promise<RepositorySear
       url: response.data.repository.url,
       createdAt: response.data.repository.created_at,
       updatedAt: response.data.repository.updated_at,
-    }
+    };
   }
 
   if (response.data.remote_repository) {
@@ -33,8 +37,21 @@ export async function searchRepositoryByUrl(url: string): Promise<RepositorySear
       domain: response.data.remote_repository.domain,
       path: response.data.remote_repository.path,
       url: response.data.remote_repository.url,
-    }
+    };
   }
 
-  return result
+  return result;
+}
+
+export async function createRepositoryByUrl(url: string): Promise<Repository> {
+  const response = await axios.post("/repositories", { url: url });
+  const result: Repository = { ...response.data, url: url };
+
+  return result;
+}
+
+export async function getFileTree(id: number): Promise<any> {
+  const response = await axios.get(`/repositories/${id}/tree/head`);
+
+  return response;
 }
