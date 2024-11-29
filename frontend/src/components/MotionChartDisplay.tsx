@@ -165,7 +165,7 @@ const MotionChartDisplay = (props: any) => {
     chart.appear(1000, 100);
 
     return () => root.dispose();
-  }, []);
+  }, [data]);
 
   return <div id="chartdiv" style={{ width: "100%", height: "600px" }}></div>;
 };

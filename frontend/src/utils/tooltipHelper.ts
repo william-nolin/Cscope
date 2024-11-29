@@ -1,5 +1,6 @@
 // src/utils/tooltipHelper.ts
 import { TypeFileCommitEvolution } from "enum/TypeFileCommitEvolution";
+import dayjs from "dayjs";
 
 export function getModificationTypeFromColor(color: string): string {
   switch (color) {
@@ -24,4 +25,21 @@ export function getModificationTypeFromColor(color: string): string {
     default:
       return "Unknown Modification";
   }
+}
+
+export function filterByDate(
+  date: string,
+  startDate: string,
+  endDate: string
+): boolean {
+  const itemDate = dayjs(date);
+
+  return (
+    (!startDate ||
+      itemDate.isSame(dayjs(startDate), "day") ||
+      itemDate.isAfter(dayjs(startDate), "day")) &&
+    (!endDate ||
+      itemDate.isSame(dayjs(endDate), "day") ||
+      itemDate.isBefore(dayjs(endDate), "day"))
+  );
 }
