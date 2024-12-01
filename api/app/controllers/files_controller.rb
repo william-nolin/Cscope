@@ -7,7 +7,7 @@ class FilesController < ApplicationController
 
     render(json: {
       filepath: source_file.filepath,
-      filetype: FileClassifier.new(source_file.filepath).filetype,
+      filetype: source_file.filetype,
       commits_count: source_file.commits.count,
       main_contributor: source_file.main_contributor,
       line_count: source_file.line_count,

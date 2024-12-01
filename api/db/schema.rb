@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2024_11_20_051124) do
+ActiveRecord::Schema[8.0].define(version: 2024_12_01_002654) do
   create_table "commits", force: :cascade do |t|
     t.integer "repository_id"
     t.string "commit_hash"
@@ -47,6 +47,7 @@ ActiveRecord::Schema[8.0].define(version: 2024_11_20_051124) do
   create_table "source_files", force: :cascade do |t|
     t.integer "repository_id"
     t.string "filepath"
+    t.string "filetype"
     t.index ["repository_id", "filepath"], name: "index_source_files_on_repository_id_and_filepath", unique: true
   end
 end

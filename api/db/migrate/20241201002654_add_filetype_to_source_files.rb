@@ -1,0 +1,5 @@
+class AddFiletypeToSourceFiles < ActiveRecord::Migration[8.0]
+  def change
+    add_column :source_files, :filetype, :string
+  end
+end
