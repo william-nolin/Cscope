@@ -119,7 +119,7 @@ class RepositorySyncService
 
   def commit_batch(batch)
     @repository.commits.insert_all(batch.commits)
-    @repository.source_files.insert_all(batch.filepaths.map { { filepath: _1 } })
+    @repository.source_files.insert_all(batch.filepaths.map { { filepath: _1, filetype: FileClassifier.new(_1).filetype } })
 
     commits_by_hash = @repository.commits
       .select(:id, :commit_hash)
@@ -150,7 +150,7 @@ class RepositorySyncService
   end
 
   def commit_batch_for_changes_ledger(batch)
-    @repository.source_files.insert_all(batch.filepaths.map { { filepath: _1 } })
+    @repository.source_files.insert_all(batch.filepaths.map { { filepath: _1, filetype: FileClassifier.new(_1).filetype } })
 
     commit_scope = @repository.commits.where(commit_hash: batch.commits.map { _1[:commit_hash] })
     commit_scope.update_all(for_changes_ledger: true)
