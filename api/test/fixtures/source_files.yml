@@ -7,11 +7,14 @@
 rails_gemfile:
   repository: rails
   filepath: "Gemfile"
+  filetype: "unknown" # TODO should ideally be identifiable
 
 test_repository_readme:
   repository: test_repository
   filepath: "README.md"
+  filetype: "markdown"
 
 test_repository_main:
   repository: test_repository
   filepath: "main.rb"
+  filetype: "ruby"
