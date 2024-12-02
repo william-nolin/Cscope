@@ -1,8 +1,9 @@
+import Repository from "models/repository";
 import { createContext, useContext } from "react";
 
 interface DataSettingContextType {
-  repositoryId: string;
-  setRepositoryId: (id: string) => void;
+  repository: Repository | null;
+  setRepository: (Repo: Repository) => void;
   startDate: string;
   setStartDate: (date: string) => void;
   endDate: string;

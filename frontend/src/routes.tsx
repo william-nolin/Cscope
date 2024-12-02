@@ -7,7 +7,7 @@ import { RouteObject } from "react-router-dom";
 
 const routes: RouteObject[] = [
   {
-    path: "repository/:id",
+    path: "repository/",
     element: <MainLayout />,
     children: [
       { path: "change-volume", element: <ChangeVolumePage /> },

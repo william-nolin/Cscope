@@ -1,6 +1,7 @@
 import axios from "axios";
 import { FileHistoryCommit } from "models/FileHistoryCommit";
 import { TypeFileCommitEvolution } from "enum/TypeFileCommitEvolution";
+import { FileData } from "models/FileData";
 
 export async function fileHistoryByDate(
   repositoryId: number,
@@ -14,18 +15,9 @@ export async function fileHistoryByDate(
   let fileIdGenerator = 1;
 
   const categoryToEvolutionType = new Map<string, TypeFileCommitEvolution>();
-  categoryToEvolutionType.set(
-    "create",
-    TypeFileCommitEvolution.ADD_SOURCE_FILE
-  );
-  categoryToEvolutionType.set(
-    "delete",
-    TypeFileCommitEvolution.DELETE_SOURCE_FILE
-  );
-  categoryToEvolutionType.set(
-    "modify",
-    TypeFileCommitEvolution.SET_SOURCE_FILE
-  );
+  categoryToEvolutionType.set("create", TypeFileCommitEvolution.ADD_FILE);
+  categoryToEvolutionType.set("delete", TypeFileCommitEvolution.DELETE_FILE);
+  categoryToEvolutionType.set("modify", TypeFileCommitEvolution.SET_FILE);
 
   const data = (response.data || []).map((point: any) => {
     const [date, filepath, category] = point;
@@ -40,7 +32,7 @@ export async function fileHistoryByDate(
       fileName: filepath,
       typeEvolution:
         categoryToEvolutionType.get(category) ||
-        TypeFileCommitEvolution.SET_SOURCE_FILE,
+        TypeFileCommitEvolution.SET_FILE,
       Date: new Date(date),
     };
   });
@@ -53,8 +45,17 @@ export async function getFilesRepository(
 ): Promise<string[]> {
   const endpoint = `/repositories/${repositoryId}/tree/head`;
   const response = await axios.get(endpoint);
-
   const data = response.data.map((file: any) => file.filepath);
+  return data;
+}
+
+export async function getFileData(
+  repositoryId: number,
+  filepath: string
+): Promise<FileData> {
+  const endpoint = `/repositories/${repositoryId}/files/head/${filepath}`;
+  const response = await axios.get(endpoint);
+  const data: FileData = response.data;
 
   return data;
 }

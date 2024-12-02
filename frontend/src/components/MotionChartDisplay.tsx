@@ -14,6 +14,7 @@ const MotionChartDisplay = (props: any) => {
       x: new Date(f.Date).getTime(),
       y: f.fileId,
       color: f.typeEvolution,
+      filetype: f.filetype,
       modificationType: getModificationTypeFromColor(f.typeEvolution),
     };
   });
@@ -85,7 +86,7 @@ const MotionChartDisplay = (props: any) => {
         tooltip: am5.Tooltip.new(root, {
           pointerOrientation: "horizontal",
           labelText:
-            "[bold]{title}[/]\nDate: {valueX.formatDate('yyyy-MM-dd')}\nID: {valueY}\nType: {modificationType}",
+            "[bold]{title}[/]\nDate: {valueX.formatDate('yyyy-MM-dd')}\nID: {valueY}\nType of change: {modificationType}\nFile type: {filetype}",
         }),
       })
     );

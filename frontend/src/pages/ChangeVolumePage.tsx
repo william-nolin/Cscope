@@ -16,8 +16,7 @@ import { FileFolderCommits } from "models/FileFolderCommits";
 import BubbleGraphDisplay from "components/BubbleGraphDisplay";
 
 const ChangeVolumePage: React.FC = () => {
-  const { repositoryId, startDate, endDate, filePath } =
-    useDataSettingContext();
+  const { repository, startDate, endDate, filePath } = useDataSettingContext();
   const [project, setProject] = useState<Project | null>(null);
   const [filterMetrics, setFilterMetrics] = useState<{
     codeLines: number;
@@ -44,18 +43,20 @@ const ChangeVolumePage: React.FC = () => {
       bigFileFolderDatas,
     ];
 
-    const foundProject = mockProjets.find(
-      (p: Project) => p.id === repositoryId
-    );
-    if (foundProject) {
-      setFileFolderDatas(options[foundProject.type]);
-      setFilterMetrics({
-        ...filterMetrics,
-        maxCodeLine: options[foundProject.type][0].codeLines,
-      });
-      setProject(foundProject);
+    if (repository) {
+      const foundProject = mockProjets.find(
+        (p: Project) => Number(p.id) === repository.id
+      );
+      if (foundProject) {
+        setFileFolderDatas(options[foundProject.type]);
+        setFilterMetrics({
+          ...filterMetrics,
+          maxCodeLine: options[foundProject.type][0].codeLines,
+        });
+        setProject(foundProject);
+      }
     }
-  }, [repositoryId]);
+  }, [repository]);
 
   return (
     <div className="two-side-structure">

@@ -4,10 +4,12 @@ import { Input, Spin } from "antd";
 import { useNavigate } from "react-router-dom";
 
 import { createRepositoryByUrl, getFileTree, searchRepositoryByUrl } from "api";
+import { useDataSettingContext } from "context/DataSettingContext";
 
 const AddRepository: React.FC = () => {
   const [url, setUrl] = useState<string>("");
   const [loadRepository, setLoadRepository] = useState<boolean>(false);
+  const { setRepository } = useDataSettingContext();
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -23,7 +25,8 @@ const AddRepository: React.FC = () => {
           try {
             checkRepository = await getFileTree(data.id);
             setLoadRepository(false);
-            return navigate(`/repository/${data.id}/change-volume`);
+            setRepository(data);
+            return navigate(`/repository/change-volume`);
           } catch (error) {}
         }, 1000);
       };
@@ -39,7 +42,8 @@ const AddRepository: React.FC = () => {
       const result = await searchRepositoryByUrl(url);
 
       if (result.repository) {
-        return navigate(`/repository/${result.repository.id}/change-volume`);
+        setRepository(result.repository);
+        return navigate(`/repository/change-volume`);
       }
 
       if (result.remoteRepository) {
