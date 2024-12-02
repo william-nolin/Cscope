@@ -57,9 +57,9 @@ class FilesControllerTest < ActionDispatch::IntegrationTest
     get "/repositories/#{@repository.id}/files/stats/change-history"
 
     expected_response = [
-      [ "2024-10-13", "README.md", "create" ],
-      [ "2024-10-15", "main.rb", "create" ],
-      [ "2024-10-27", "README.md", "modify" ]
+      [ "2024-10-13", "README.md", "create", "markdown" ],
+      [ "2024-10-15", "main.rb", "create", "ruby" ],
+      [ "2024-10-27", "README.md", "modify", "markdown" ]
     ]
 
     assert_response(:ok)
@@ -70,8 +70,8 @@ class FilesControllerTest < ActionDispatch::IntegrationTest
     get "/repositories/#{@repository.id}/files/stats/change-history?start_date=2024-10-14"
 
     expected_response = [
-      [ "2024-10-15", "main.rb", "create" ],
-      [ "2024-10-27", "README.md", "modify" ]
+      [ "2024-10-15", "main.rb", "create", "ruby" ],
+      [ "2024-10-27", "README.md", "modify", "markdown" ]
     ]
 
     assert_response(:ok)
@@ -82,8 +82,8 @@ class FilesControllerTest < ActionDispatch::IntegrationTest
     get "/repositories/#{@repository.id}/files/stats/change-history?end_date=2024-10-20"
 
     expected_response = [
-      [ "2024-10-13", "README.md", "create" ],
-      [ "2024-10-15", "main.rb", "create" ]
+      [ "2024-10-13", "README.md", "create", "markdown" ],
+      [ "2024-10-15", "main.rb", "create", "ruby" ]
     ]
 
     assert_response(:ok)
