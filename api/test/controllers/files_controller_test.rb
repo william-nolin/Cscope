@@ -47,13 +47,19 @@ class FilesControllerTest < ActionDispatch::IntegrationTest
     assert_response(:not_found)
   end
 
+  test "#files_over_time returns 404 when the repository does not exist" do
+    get "/repositories/9999999999/files/stats/files_over_time"
+
+    assert_response(:not_found)
+  end
+
   test "#change_history returns 200 when the repository exists" do
     get "/repositories/#{@repository.id}/files/stats/change-history"
 
     expected_response = [
-      [ "2024-10-13", "README.md", "create" ],
-      [ "2024-10-15", "main.rb", "create" ],
-      [ "2024-10-27", "README.md", "modify" ]
+      [ "2024-10-13", "README.md", "create", "markdown" ],
+      [ "2024-10-15", "main.rb", "create", "ruby" ],
+      [ "2024-10-27", "README.md", "modify", "markdown" ]
     ]
 
     assert_response(:ok)
@@ -64,8 +70,8 @@ class FilesControllerTest < ActionDispatch::IntegrationTest
     get "/repositories/#{@repository.id}/files/stats/change-history?start_date=2024-10-14"
 
     expected_response = [
-      [ "2024-10-15", "main.rb", "create" ],
-      [ "2024-10-27", "README.md", "modify" ]
+      [ "2024-10-15", "main.rb", "create", "ruby" ],
+      [ "2024-10-27", "README.md", "modify", "markdown" ]
     ]
 
     assert_response(:ok)
@@ -76,11 +82,87 @@ class FilesControllerTest < ActionDispatch::IntegrationTest
     get "/repositories/#{@repository.id}/files/stats/change-history?end_date=2024-10-20"
 
     expected_response = [
-      [ "2024-10-13", "README.md", "create" ],
-      [ "2024-10-15", "main.rb", "create" ]
+      [ "2024-10-13", "README.md", "create", "markdown" ],
+      [ "2024-10-15", "main.rb", "create", "ruby" ]
     ]
 
     assert_response(:ok)
     assert_equal(expected_response, response.parsed_body)
+  end
+
+  test "#files_over_time returns 200 if the repository exists" do
+    get "/repositories/#{@repository.id}/files/stats/files_over_time"
+
+    assert_response(:ok)
+    assert_equal(
+      [
+        {
+          "filepath" => "README.md",
+          "total_additions" => 9,
+          "total_deletions" => 0,
+          "total_modifications" => 9
+        },
+        {
+          "filepath" => "main.rb",
+          "total_additions" => 1,
+          "total_deletions" => 0,
+          "total_modifications" => 1
+        }
+      ],
+      response.parsed_body
+    )
+  end
+
+  test "#files_over_time output is filtered by `start_date` parameter" do
+    get "/repositories/#{@repository.id}/files/stats/files_over_time?start_date=2024-10-14"
+
+    assert_response(:ok)
+    assert_equal(
+      [
+        {
+          "filepath" => "README.md",
+          "total_additions" => 2,
+          "total_deletions" => 0,
+          "total_modifications" => 2
+        },
+        {
+          "filepath" => "main.rb",
+          "total_additions" => 1,
+          "total_deletions" => 0,
+          "total_modifications" => 1
+        }
+      ],
+      response.parsed_body
+    )
+  end
+
+  test "#files_over_time output is filtered by `end_date` parameter" do
+    get "/repositories/#{@repository.id}/files/stats/files_over_time?end_date=2024-10-14"
+
+    assert_response(:ok)
+    assert_equal(
+      [
+        {
+          "filepath" => "README.md",
+          "total_additions" => 7,
+          "total_deletions" => 0,
+          "total_modifications" => 7
+        }
+      ],
+      response.parsed_body
+    )
+  end
+
+  test "#file_types returns 404 when the repository does not exists" do
+    get "/repositories/9999999999/files/stats/file_types"
+
+    assert_response(:not_found)
+  end
+
+  test "#file_extensions returns the list of file types present in the repository" do
+    get "/repositories/#{@repository.id}/files/stats/file_types"
+
+    assert_response(:ok)
+    assert_equal([ "markdown", "ruby" ], response.parsed_body)
   end
 end

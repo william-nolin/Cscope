@@ -30,14 +30,15 @@ ActiveRecord::Schema[8.0].define(version: 2024_12_01_002654) do
     t.string "path"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.datetime "last_synced_at"
     t.index ["domain", "path"], name: "index_repositories_on_domain_and_path", unique: true
   end
 
   create_table "source_file_changes", force: :cascade do |t|
     t.integer "commit_id"
-    t.integer "source_file_id"
     t.integer "additions", default: 0
     t.integer "deletions", default: 0
+    t.integer "source_file_id"
     t.string "category"
     t.index ["commit_id"], name: "index_source_file_changes_on_commit_id"
     t.index ["source_file_id", "commit_id"], name: "index_source_file_changes_on_source_file_id_and_commit_id", unique: true

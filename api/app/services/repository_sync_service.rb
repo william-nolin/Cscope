@@ -6,8 +6,12 @@ class RepositorySyncService
   def index
     gitland_repository = Gitland::Repository.new(@repository)
 
-    extract_full_commit_history(gitland_repository)
-    extract_commit_history_for_changes_ledger(gitland_repository)
+    @repository.transaction do
+      extract_full_commit_history(gitland_repository)
+      extract_commit_history_for_changes_ledger(gitland_repository)
+
+      @repository.update!(last_synced_at: DateTime.current)
+    end
   end
 
   private
@@ -150,7 +154,14 @@ class RepositorySyncService
   end
 
   def commit_batch_for_changes_ledger(batch)
-    @repository.source_files.insert_all(batch.filepaths.map { { filepath: _1, filetype: FileClassifier.new(_1).filetype } })
+    source_files = batch.filepaths.map do |filepath|
+      {
+        filepath: filepath,
+        filetype: FileClassifier.new(filepath).filetype
+      }
+    end
+
+    @repository.source_files.insert_all(source_files)
 
     commit_scope = @repository.commits.where(commit_hash: batch.commits.map { _1[:commit_hash] })
     commit_scope.update_all(for_changes_ledger: true)

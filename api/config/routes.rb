@@ -18,6 +18,8 @@ Rails.application.routes.draw do
 
   get "/repositories/:repository_id/files/head/*filepath", to: "files#show", format: false
   get "/repositories/:repository_id/files/stats/change-history", to: "files#change_history"
+  get "/repositories/:repository_id/files/stats/files_over_time", to: "files#files_over_time"
+  get "/repositories/:repository_id/files/stats/file_types", to: "files#file_types"
 
   get "/repositories/:repository_id/commits/stats/commits_over_time", to: "commits#commits_over_time"
 end

@@ -41,6 +41,7 @@ class RepositoryStatisticsService
   #   date,         <-- the date in this format: YYYY-MM-DD
   #   filepath,     <-- the name of the file
   #   category,     <-- the category of the change
+  #   filetype,     <-- the file type of the file
   # ]
   #
   def file_change_history_by_date(start_date: nil, end_date: nil)
@@ -49,11 +50,27 @@ class RepositoryStatisticsService
     scope = scope.where(committer_date: ..end_date) if end_date
     scope
       .joins(:source_files)
-      .group(:committer_date, "source_files.filepath")
+      .group(:committer_date, "source_files.id")
       .pluck(
         Arel.sql("strftime('%Y-%m-%d', committer_date)"),
         Arel.sql("source_files.filepath"),
-        Arel.sql("MIN(source_file_changes.category)")
+        Arel.sql("MIN(source_file_changes.category)"),
+        Arel.sql("source_files.filetype")
+      )
+  end
+
+  def file_modifications_by_date(start_date: nil, end_date: nil)
+    scope = @repository.commits.on_changes_ledger
+    scope = scope.where(committer_date: start_date..) if start_date
+    scope = scope.where(committer_date: ..end_date) if end_date
+    scope
+      .joins(:source_files)
+      .group("source_files.id")
+      .pluck(
+        Arel.sql("source_files.filepath"),
+        Arel.sql("SUM(source_file_changes.additions)"),
+        Arel.sql("SUM(source_file_changes.deletions)"),
+        Arel.sql("SUM(source_file_changes.additions + source_file_changes.deletions)")
       )
   end
 end
