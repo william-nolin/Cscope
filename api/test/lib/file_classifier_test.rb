@@ -28,4 +28,11 @@ class FileClassifierTest < ActiveSupport::TestCase
   test "#filetype returns unknown for unknown filetype" do
     assert_equal("unknown", FileClassifier.new("src/main.xqc").filetype)
   end
+
+  test "#filetype returns filetype for commonly known filenames" do
+    assert_equal("Dockerfile", FileClassifier.new("Dockerfile").filetype)
+    assert_equal("Dockerfile", FileClassifier.new("src/Dockerfile").filetype)
+    assert_equal("Docker compose file", FileClassifier.new("docker-compose.yml").filetype)
+    assert_equal("Docker compose file", FileClassifier.new("src/docker-compose.yml").filetype)
+  end
 end
