@@ -152,4 +152,17 @@ class FilesControllerTest < ActionDispatch::IntegrationTest
       response.parsed_body
     )
   end
+
+  test "#file_types returns 404 when the repository does not exists" do
+    get "/repositories/9999999999/files/stats/file_types"
+
+    assert_response(:not_found)
+  end
+
+  test "#file_extensions returns the list of file types present in the repository" do
+    get "/repositories/#{@repository.id}/files/stats/file_types"
+
+    assert_response(:ok)
+    assert_equal([ "markdown", "ruby" ], response.parsed_body)
+  end
 end

@@ -44,21 +44,15 @@ class FilesController < ApplicationController
     render(json: stats)
   end
 
+  def file_types
+    return render_repository_not_found unless current_repository
+
+    render(json: current_repository.source_files.distinct.pluck(:filetype))
+  end
+
   private
 
   def render_source_file_not_found
     render(json: { message: "file does not exists." }, status: :not_found)
-  end
-
-  def start_date_filter
-    DateTime.parse(params[:start_date])
-  rescue
-    nil
-  end
-
-  def end_date_filter
-    DateTime.parse(params[:end_date])
-  rescue
-    nil
   end
 end
