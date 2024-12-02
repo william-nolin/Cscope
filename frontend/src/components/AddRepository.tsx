@@ -3,7 +3,11 @@ import "assets/styles/addRepository.scss";
 import { Input, Spin } from "antd";
 import { useNavigate } from "react-router-dom";
 
-import { createRepositoryByUrl, getFileTree, searchRepositoryByUrl } from "api";
+import {
+  createRepositoryByUrl,
+  getRepositoryById,
+  searchRepositoryByUrl,
+} from "api";
 import { useDataSettingContext } from "context/DataSettingContext";
 
 const AddRepository: React.FC = () => {
@@ -20,14 +24,16 @@ const AddRepository: React.FC = () => {
       const fetchData = async () => {
         const data = await createRepositoryByUrl(url);
 
-        let checkRepository: any;
         interval = setInterval(async () => {
           try {
-            checkRepository = await getFileTree(data.id); // FAKE REQUEST JUST TO TEST
-            setLoadRepository(false);
-            setRepository(data);
-            setRepositoryId(data.id);
-            return navigate(`/repository/${data.id}/change-volume`);
+            const repo = await getRepositoryById(data.id);
+            console.log(repo);
+            if (repo.last_synced_at) {
+              setRepository(data);
+              setRepositoryId(data.id);
+              setLoadRepository(false);
+              return navigate(`/repository/${data.id}/change-volume`);
+            }
           } catch (error) {}
         }, 1000);
       };

@@ -12,7 +12,7 @@ export async function fileHistoryByDate(
   const response = await axios.get(endpoint, {
     params: { start_date: startDate, end_date: endDate },
   });
-
+  console.log(response);
   const fileIdMap = new Map<string, number>();
   let fileIdGenerator = 1;
 

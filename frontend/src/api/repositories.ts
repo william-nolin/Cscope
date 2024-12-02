@@ -27,6 +27,7 @@ export async function searchRepositoryByUrl(
       url: response.data.repository.url,
       createdAt: response.data.repository.created_at,
       updatedAt: response.data.repository.updated_at,
+      last_synced_at: response.data.repository.last_synced_at,
     };
   }
 
@@ -52,13 +53,8 @@ export async function createRepositoryByUrl(url: string): Promise<Repository> {
 
 export async function getRepositoryById(id: number): Promise<Repository> {
   const response = await axios.get(`/repositories/${id}`);
+  console.log(response.data);
   const result: Repository = { ...response.data };
 
   return result;
-}
-
-export async function getFileTree(id: number): Promise<any> {
-  const response = await axios.get(`/repositories/${id}/tree/head`);
-
-  return response;
 }
