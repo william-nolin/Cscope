@@ -9,7 +9,9 @@ export async function fileHistoryByDate(
   endDate: string
 ): Promise<FileHistoryCommit[]> {
   const endpoint = `/repositories/${repositoryId}/files/stats/change-history`;
-  const response = await axios.get(endpoint);
+  const response = await axios.get(endpoint, {
+    params: { start_date: startDate, end_date: endDate },
+  });
 
   const fileIdMap = new Map<string, number>();
   let fileIdGenerator = 1;

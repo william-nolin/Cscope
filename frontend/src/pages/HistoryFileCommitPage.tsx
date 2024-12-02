@@ -18,7 +18,7 @@ import { useParams } from "react-router-dom";
 
 const HistoryFileCommitPage: React.FC = () => {
   const [data, setData] = useState<FileHistoryCommit[]>([]);
-  const [dateFilterData, setDateFilterData] = useState<any[]>([]);
+  const [pathFilterData, setPathFilterData] = useState<any[]>([]);
   const [filterData, setFilterData] = useState<any[]>([]);
   const [ready, setReady] = useState<boolean>(false);
   const {
@@ -62,17 +62,14 @@ const HistoryFileCommitPage: React.FC = () => {
     }
 
     fetchData();
-  }, [repository]);
+  }, [repository, startDate, endDate]);
 
   useEffect(() => {
-    const newDateFilterData = data.filter((item: FileHistoryCommit) => {
-      return (
-        filterByDate(item.Date.toString(), startDate, endDate) &&
-        (filePath === "" || item.fileName === filePath)
-      );
+    const newPathFilterData = data.filter((item: FileHistoryCommit) => {
+      return filePath === "" || item.fileName === filePath;
     });
 
-    const setExtTypeFilterData = newDateFilterData.map(
+    const setExtTypeFilterData = newPathFilterData.map(
       (item: FileHistoryCommit) => {
         return { ...item, filetype: identifyFileType(item.fileName) };
       }
@@ -84,17 +81,17 @@ const HistoryFileCommitPage: React.FC = () => {
 
     setTypeFiles(noDuplicateListExtType);
 
-    setDateFilterData(setExtTypeFilterData);
-  }, [data, startDate, endDate, filePath]);
+    setPathFilterData(setExtTypeFilterData);
+  }, [data, filePath]);
 
   useEffect(() => {
-    const newFilterData = dateFilterData.filter((item: any) => {
+    const newFilterData = pathFilterData.filter((item: any) => {
       return selectfilterTypeFiles.length > 0
         ? selectfilterTypeFiles.includes(item.filetype)
         : true;
     });
     setFilterData(newFilterData);
-  }, [dateFilterData, selectfilterTypeFiles]);
+  }, [pathFilterData, selectfilterTypeFiles]);
 
   return (
     <div className="two-side-structure">
