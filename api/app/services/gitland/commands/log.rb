@@ -18,8 +18,9 @@ module Gitland
       #     end
       #   end
       #
-      def initialize(repository, format: nil, first_parent: false)
+      def initialize(repository, commit_hash: nil, format: nil, first_parent: false)
         @repository = repository
+        @commit_hash = commit_hash
         @format = format
         @first_parent = first_parent
       end
@@ -30,6 +31,7 @@ module Gitland
         cli = Git::CommandLine.new({}, "/usr/bin/git", [], Logger.new("/dev/null"))
 
         command = [ "log" ]
+        command << "#{@commit_hash}..HEAD" if @commit_hash
         command << "--reverse"
         command << "--no-renames"
         command << "--numstat"
