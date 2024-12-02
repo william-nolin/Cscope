@@ -154,7 +154,14 @@ class RepositorySyncService
   end
 
   def commit_batch_for_changes_ledger(batch)
-    @repository.source_files.insert_all(batch.filepaths.map { { filepath: _1, filetype: FileClassifier.new(_1).filetype } })
+    source_files = batch.filepaths.map do |filepath|
+      {
+        filepath: filepath,
+        filetype: FileClassifier.new(filepath).filetype
+      }
+    end
+
+    @repository.source_files.insert_all(source_files)
 
     commit_scope = @repository.commits.where(commit_hash: batch.commits.map { _1[:commit_hash] })
     commit_scope.update_all(for_changes_ledger: true)
