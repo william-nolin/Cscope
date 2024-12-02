@@ -14,9 +14,10 @@ import {
 } from "data/fileFolderData";
 import { FileFolderCommits } from "models/FileFolderCommits";
 import BubbleGraphDisplay from "components/BubbleGraphDisplay";
+import { useParams } from "react-router-dom";
 
 const ChangeVolumePage: React.FC = () => {
-  const { repository, startDate, endDate, filePath } = useDataSettingContext();
+  const { repository, repositoryId, setRepositoryId } = useDataSettingContext();
   const [project, setProject] = useState<Project | null>(null);
   const [filterMetrics, setFilterMetrics] = useState<{
     codeLines: number;
@@ -35,6 +36,14 @@ const ChangeVolumePage: React.FC = () => {
     mainAuthor: "Boblebri Codeur",
     modifiedDate: "1 month ago",
   };
+
+  const { id } = useParams<{ id: string }>();
+
+  useEffect(() => {
+    if (!repositoryId) {
+      setRepositoryId(Number(id));
+    }
+  }, [id]);
 
   useEffect(() => {
     const options = [

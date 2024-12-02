@@ -5,27 +5,35 @@ import DateAndFileInput from "components/DateAndFileInput";
 import MotionChartDisplay from "components/MotionChartDisplay";
 import { FileHistoryCommit } from "models/FileHistoryCommit";
 
-import { fileHistoryByDate, getFileData } from "api";
+import { fileHistoryByDate } from "api";
 import {
   filterByDate,
   getFileExtension,
   getFileName,
 } from "utils/tooltipHelper";
 import { Spin } from "antd";
-import { FileData } from "models/FileData";
 import { extDataMine } from "data/ExtDataMine";
 import FileTypeChangeFilter from "components/FileTypeChangeFilter";
+import { useParams } from "react-router-dom";
 
 const HistoryFileCommitPage: React.FC = () => {
   const [data, setData] = useState<FileHistoryCommit[]>([]);
   const [dateFilterData, setDateFilterData] = useState<any[]>([]);
   const [filterData, setFilterData] = useState<any[]>([]);
   const [ready, setReady] = useState<boolean>(false);
-  const { repository, startDate, endDate, filePath } = useDataSettingContext();
+  const {
+    repository,
+    repositoryId,
+    setRepositoryId,
+    startDate,
+    endDate,
+    filePath,
+  } = useDataSettingContext();
   const [typeFiles, setTypeFiles] = useState<string[]>([]);
   const [selectfilterTypeFiles, setSelectFilterTypeFiles] = useState<string[]>(
     []
   );
+  const { id } = useParams<{ id: string }>();
 
   const identifyFileType = (filePath: string): string => {
     const mimeType = extDataMine.find(
@@ -33,6 +41,12 @@ const HistoryFileCommitPage: React.FC = () => {
     );
     return mimeType?.mime || "unknown";
   };
+
+  useEffect(() => {
+    if (!repositoryId) {
+      setRepositoryId(Number(id));
+    }
+  }, [id]);
 
   useEffect(() => {
     async function fetchData() {

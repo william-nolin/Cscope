@@ -9,7 +9,7 @@ import { useDataSettingContext } from "context/DataSettingContext";
 const AddRepository: React.FC = () => {
   const [url, setUrl] = useState<string>("");
   const [loadRepository, setLoadRepository] = useState<boolean>(false);
-  const { setRepository } = useDataSettingContext();
+  const { setRepository, setRepositoryId } = useDataSettingContext();
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -26,7 +26,8 @@ const AddRepository: React.FC = () => {
             checkRepository = await getFileTree(data.id); // FAKE REQUEST JUST TO TEST
             setLoadRepository(false);
             setRepository(data);
-            return navigate(`/repository/change-volume`);
+            setRepositoryId(data.id);
+            return navigate(`/repository/${data.id}/change-volume`);
           } catch (error) {}
         }, 1000);
       };
@@ -43,7 +44,8 @@ const AddRepository: React.FC = () => {
 
       if (result.repository) {
         setRepository(result.repository);
-        return navigate(`/repository/change-volume`);
+        setRepositoryId(result.repository.id);
+        return navigate(`/repository/${result.repository.id}/change-volume`);
       }
 
       if (result.remoteRepository) {

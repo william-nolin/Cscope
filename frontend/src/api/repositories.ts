@@ -50,6 +50,13 @@ export async function createRepositoryByUrl(url: string): Promise<Repository> {
   return result;
 }
 
+export async function getRepositoryById(id: number): Promise<Repository> {
+  const response = await axios.get(`/repositories/${id}`);
+  const result: Repository = { ...response.data };
+
+  return result;
+}
+
 export async function getFileTree(id: number): Promise<any> {
   const response = await axios.get(`/repositories/${id}/tree/head`);
 
