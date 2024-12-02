@@ -6,6 +6,7 @@ class RepositorySyncServiceTest < ActiveSupport::TestCase
 
     @gitland_repository_mock = mock("gitland_repository")
     @gitland_repository_mock.responds_like(Gitland::Repository.new(@repository))
+    @gitland_repository_mock.expects(:pull).once
     @gitland_repository_mock.stubs(:log).yields([])
 
     Gitland::Repository
@@ -333,7 +334,7 @@ class RepositorySyncServiceTest < ActiveSupport::TestCase
 
     @gitland_repository_mock
       .expects(:log)
-      .with(format: "||%H||%aN||%cs||%as||%P||%s")
+      .with(latest_commit_hash: anything, format: "||%H||%aN||%cs||%as||%P||%s")
       .yields(logs_enumerator)
       .at_least_once
   end
@@ -343,7 +344,7 @@ class RepositorySyncServiceTest < ActiveSupport::TestCase
 
     @gitland_repository_mock
       .expects(:log)
-      .with(format: "||%H||%aN||%cs||%as||%P||%s", first_parent: true)
+      .with(latest_commit_hash: anything, format: "||%H||%aN||%cs||%as||%P||%s", first_parent: true)
       .yields(logs_enumerator)
       .at_least_once
   end
