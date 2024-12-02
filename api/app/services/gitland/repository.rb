@@ -13,7 +13,7 @@ module Gitland
     end
 
     def log(latest_commit_hash: nil, format: nil, first_parent: false)
-      Commands::Log.new(@repository, latest_commit_hash: latest_commit_hash, format: format, first_parent: first_parent).execute { |logs| yield logs }
+      Commands::Log.new(@repository, commit_hash: latest_commit_hash, format: format, first_parent: first_parent).execute { |logs| yield logs }
     end
 
     def destroy
