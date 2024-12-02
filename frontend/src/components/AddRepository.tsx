@@ -23,7 +23,7 @@ const AddRepository: React.FC = () => {
         let checkRepository: any;
         interval = setInterval(async () => {
           try {
-            checkRepository = await getFileTree(data.id);
+            checkRepository = await getFileTree(data.id); // FAKE REQUEST JUST TO TEST
             setLoadRepository(false);
             setRepository(data);
             return navigate(`/repository/change-volume`);
