@@ -7,12 +7,12 @@ class RepositorySyncService
     gitland_repository = Gitland::Repository.new(@repository)
     gitland_repository.pull
 
-    @repository.transaction do
-      extract_full_commit_history(gitland_repository)
-      extract_commit_history_for_changes_ledger(gitland_repository)
+    latest_known_commit = @repository.commits.last&.commit_hash
 
-      @repository.update!(last_synced_at: DateTime.current)
-    end
+    extract_full_commit_history(gitland_repository, latest_known_commit)
+    extract_commit_history_for_changes_ledger(gitland_repository, latest_known_commit)
+
+    @repository.update!(last_synced_at: DateTime.current)
   end
 
   private
@@ -66,12 +66,11 @@ class RepositorySyncService
     end
   end
 
-  def extract_full_commit_history(gitland_repository)
+  def extract_full_commit_history(gitland_repository, latest_known_commit)
     batch = Batch.new
-    latest_commit_hash = @repository.commits.last&.commit_hash
     current_commit_hash = nil
 
-    gitland_repository.log(latest_commit_hash: latest_commit_hash, format: "||%H||%aN||%cs||%as||%P||%s") do |logs|
+    gitland_repository.log(from: latest_known_commit, format: "||%H||%aN||%cs||%as||%P||%s") do |logs|
       logs.each do |line|
         line.force_encoding("utf-8")
 
@@ -95,12 +94,11 @@ class RepositorySyncService
     end
   end
 
-  def extract_commit_history_for_changes_ledger(gitland_repository)
+  def extract_commit_history_for_changes_ledger(gitland_repository, latest_known_commit)
     batch = Batch.new
-    latest_commit_hash = @repository.commits.last&.commit_hash
     current_commit_hash = nil
 
-    gitland_repository.log(latest_commit_hash: latest_commit_hash, format: "||%H||%aN||%cs||%as||%P||%s", first_parent: true) do |logs|
+    gitland_repository.log(from: latest_known_commit, format: "||%H||%aN||%cs||%as||%P||%s", first_parent: true) do |logs|
       logs.each do |line|
         line.force_encoding("utf-8")
 
@@ -125,8 +123,15 @@ class RepositorySyncService
   end
 
   def commit_batch(batch)
+    source_files = batch.filepaths.map do |filepath|
+      {
+        filepath: filepath,
+        filetype: FileClassifier.new(filepath).filetype
+      }
+    end
+
+    @repository.source_files.insert_all(source_files)
     @repository.commits.insert_all(batch.commits)
-    @repository.source_files.insert_all(batch.filepaths.map { { filepath: _1, filetype: FileClassifier.new(_1).filetype } })
 
     commits_by_hash = @repository.commits
       .select(:id, :commit_hash)
@@ -168,6 +173,7 @@ class RepositorySyncService
 
     commit_scope = @repository.commits.where(commit_hash: batch.commits.map { _1[:commit_hash] })
     commit_scope.update_all(for_changes_ledger: true)
+
     commits_by_hash = commit_scope.select(:id, :commit_hash).index_by(&:commit_hash)
 
     source_files_by_filepath = @repository.source_files

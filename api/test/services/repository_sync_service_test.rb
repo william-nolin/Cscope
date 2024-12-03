@@ -2,7 +2,7 @@ require "test_helper"
 
 class RepositorySyncServiceTest < ActiveSupport::TestCase
   def setup
-    @repository = repositories(:example_repository)
+    @repository = repositories(:test_repository)
 
     @gitland_repository_mock = mock("gitland_repository")
     @gitland_repository_mock.responds_like(Gitland::Repository.new(@repository))
@@ -195,9 +195,16 @@ class RepositorySyncServiceTest < ActiveSupport::TestCase
       GIT_LOGS
     end
 
+    existing_commit_ids = @repository.commits.map(&:id)
+
     RepositorySyncService.new(@repository).index
 
-    commits_for_ledger, commits = @repository.commits.order(:id).partition(&:for_changes_ledger)
+    commits_for_ledger, commits = @repository
+      .commits
+      .where.not(id: existing_commit_ids)
+      .order(:id)
+      .partition(&:for_changes_ledger)
+
     assert_equal([ "28a8fa54deaf87843cf653a2ce9684b14548c1e6" ], commits.map(&:commit_hash))
     assert_equal(
       [
@@ -332,9 +339,11 @@ class RepositorySyncServiceTest < ActiveSupport::TestCase
   def stub_git_commit_history(&block)
     logs_enumerator = (block.call).lines.each
 
+    latest_known_commit = @repository.commits.last&.commit_hash
+
     @gitland_repository_mock
       .expects(:log)
-      .with(latest_commit_hash: anything, format: "||%H||%aN||%cs||%as||%P||%s")
+      .with(from: latest_known_commit, format: "||%H||%aN||%cs||%as||%P||%s")
       .yields(logs_enumerator)
       .at_least_once
   end
@@ -342,9 +351,11 @@ class RepositorySyncServiceTest < ActiveSupport::TestCase
   def stub_git_commit_history_for_line_counts(&block)
     logs_enumerator = (block.call).lines.each
 
+    latest_known_commit = @repository.commits.last&.commit_hash
+
     @gitland_repository_mock
       .expects(:log)
-      .with(latest_commit_hash: anything, format: "||%H||%aN||%cs||%as||%P||%s", first_parent: true)
+      .with(from: latest_known_commit, format: "||%H||%aN||%cs||%as||%P||%s", first_parent: true)
       .yields(logs_enumerator)
       .at_least_once
   end
