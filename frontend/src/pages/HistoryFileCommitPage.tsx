@@ -6,15 +6,13 @@ import MotionChartDisplay from "components/MotionChartDisplay";
 import { FileHistoryCommit } from "models/FileHistoryCommit";
 
 import { fileHistoryByDate, getFileTypes } from "api";
-import {
-  filterByDate,
-  getFileExtension,
-  getFileName,
-} from "utils/tooltipHelper";
 import { Spin } from "antd";
-import { extDataMine } from "data/ExtDataMine";
 import FileTypeChangeFilter from "components/FileTypeChangeFilter";
 import { useParams } from "react-router-dom";
+import {
+  evolutionTypeToCategory,
+  typeEvolutionOptions,
+} from "utils/tooltipHelper";
 
 const HistoryFileCommitPage: React.FC = () => {
   const [data, setData] = useState<FileHistoryCommit[]>([]);
@@ -33,14 +31,9 @@ const HistoryFileCommitPage: React.FC = () => {
   const [selectfilterTypeFiles, setSelectFilterTypeFiles] = useState<string[]>(
     []
   );
+  const [checkTypeEvolution, setCheckTypeEvolution] =
+    useState<string[]>(typeEvolutionOptions);
   const { id } = useParams<{ id: string }>();
-
-  const identifyFileType = (filePath: string): string => {
-    const mimeType = extDataMine.find(
-      ({ ext }) => ext === getFileExtension(getFileName(filePath))
-    );
-    return mimeType?.mime || "unknown";
-  };
 
   useEffect(() => {
     const fetchFilesTypes = async () => {
@@ -90,13 +83,18 @@ const HistoryFileCommitPage: React.FC = () => {
   }, [data, filePath]);
 
   useEffect(() => {
-    const newFilterData = pathFilterData.filter((item: any) => {
+    const newFilterPathData = pathFilterData.filter((item: any) => {
       return selectfilterTypeFiles.length > 0
         ? selectfilterTypeFiles.includes(item.filetype)
         : true;
     });
+
+    const newFilterData = newFilterPathData.filter((item: any) => {
+      const type = evolutionTypeToCategory.get(item.typeEvolution);
+      return type && checkTypeEvolution.includes(type);
+    });
     setFilterData(newFilterData);
-  }, [pathFilterData, selectfilterTypeFiles]);
+  }, [pathFilterData, selectfilterTypeFiles, checkTypeEvolution]);
 
   return (
     <div className="two-side-structure">
@@ -113,6 +111,8 @@ const HistoryFileCommitPage: React.FC = () => {
           fileTypes={typeFiles}
           filterTypeFiles={selectfilterTypeFiles}
           setFilterTypeFiles={setSelectFilterTypeFiles}
+          checkedList={checkTypeEvolution}
+          setCheckedList={setCheckTypeEvolution}
         />
       </div>
     </div>

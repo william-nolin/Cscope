@@ -1,16 +1,26 @@
-import { Label } from "@amcharts/amcharts5";
-import { ConfigProvider, Select } from "antd";
+import { Checkbox, CheckboxProps, ConfigProvider, Select } from "antd";
 import { SizeType } from "antd/es/config-provider/SizeContext";
+import { TypeFileCommitEvolution } from "enum/TypeFileCommitEvolution";
 import { useState } from "react";
+import {
+  categoryToEvolutionType,
+  typeEvolutionOptions,
+} from "utils/tooltipHelper";
+
+const CheckboxGroup = Checkbox.Group;
 
 const FileTypeChangeFilter = ({
   fileTypes,
   filterTypeFiles,
   setFilterTypeFiles,
+  checkedList,
+  setCheckedList,
 }: {
   fileTypes: string[];
   filterTypeFiles: string[];
   setFilterTypeFiles: any;
+  checkedList: string[];
+  setCheckedList: any;
 }) => {
   const inputWidth = 200;
   const [size, setSize] = useState<SizeType>("middle");
@@ -19,6 +29,17 @@ const FileTypeChangeFilter = ({
     setFilterTypeFiles(ftfs);
   };
 
+  const checkAll = typeEvolutionOptions.length === checkedList.length;
+  const indeterminate =
+    checkedList.length > 0 && checkedList.length < typeEvolutionOptions.length;
+
+  const onChange = (list: string[]) => {
+    setCheckedList(list);
+  };
+
+  const onCheckAllChange: CheckboxProps["onChange"] = (e) => {
+    setCheckedList(e.target.checked ? typeEvolutionOptions : []);
+  };
   return (
     <ConfigProvider
       theme={{
@@ -48,7 +69,35 @@ const FileTypeChangeFilter = ({
             <label style={{ width: 250 }}>Filter by type of change : </label>
           </div>
         </div>
-        <div></div>
+        <div>
+          <Checkbox
+            style={{ marginTop: 10 }}
+            indeterminate={indeterminate}
+            onChange={onCheckAllChange}
+            checked={checkAll}
+          >
+            All files
+          </Checkbox>
+          <CheckboxGroup value={checkedList} onChange={onChange}>
+            {typeEvolutionOptions.map((option) => (
+              <ConfigProvider
+                theme={{
+                  components: {
+                    Checkbox: {
+                      colorPrimary: categoryToEvolutionType.get(option),
+                      colorPrimaryHover: categoryToEvolutionType.get(option),
+                    },
+                  },
+                }}
+                key={option}
+              >
+                <Checkbox key={option} value={option}>
+                  {option}
+                </Checkbox>
+              </ConfigProvider>
+            ))}
+          </CheckboxGroup>
+        </div>
       </div>
     </ConfigProvider>
   );
