@@ -20,6 +20,10 @@
         font-weight: normal;
         letter-spacing: 0.2rem;
         color: $title-page-color;
+
+        > a {
+          color: $title-page-color;
+        }
       }
 
       .butSty1 {

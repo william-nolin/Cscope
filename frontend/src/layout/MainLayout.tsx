@@ -4,13 +4,14 @@ import "assets/styles/mainLayout.scss";
 import { HomeFilled, ReloadOutlined } from "@ant-design/icons";
 import { useDataSettingContext } from "context/DataSettingContext";
 import { syncRepositoryById } from "api";
+import { getFileName } from "utils/tooltipHelper";
 
 const MainLayout: React.FC = () => {
-  const { repositoryId, setRepository } = useDataSettingContext();
+  const { repository, setRepository } = useDataSettingContext();
   const handleReloadEvent = () => {
     const fetchData = async () => {
-      if (repositoryId) {
-        const repo = await syncRepositoryById(repositoryId);
+      if (repository) {
+        const repo = await syncRepositoryById(repository.id);
         setRepository(repo);
       }
     };
@@ -23,7 +24,16 @@ const MainLayout: React.FC = () => {
       <div className="main-layout">
         <header>
           <div>
-            <h1>Visualisation</h1>
+            <h1>
+              Visualisation{" "}
+              <NavLink
+                target="_blank"
+                to={"https://github.com/" + repository?.path}
+                rel="noopener noreferrer"
+              >
+                {repository?.name}
+              </NavLink>
+            </h1>
             <div>
               <div onClick={handleReloadEvent} className="butSty1">
                 <ReloadOutlined />
