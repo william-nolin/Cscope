@@ -96,8 +96,19 @@ body {
 }
 
 .slider-container {
+  display: flex;
+  flex-direction: column;
   background-color: white;
   margin-top: 20px;
   padding: 2px 10px;
+  padding-left: 20px;
   border-radius: $border-radius;
+
+  label {
+    margin-top: 9px;
+    margin-bottom: 0px;
+    font-weight: bold;
+    color: $text-page-color;
+    letter-spacing: 0.08rem;
+  }
 }

@@ -9,17 +9,28 @@ import { FileFolderCommits } from "models/FileFolderCommits";
 import BubbleGraphDisplay from "components/BubbleGraphDisplay";
 import { useParams } from "react-router-dom";
 import { getFileOverTime } from "api";
+import { SliderFilterCodeLine } from "models/SliderFilterCodeLine";
 
 const ChangeVolumePage: React.FC = () => {
-  const { repository, repositoryId, setRepositoryId, startDate, endDate } =
-    useDataSettingContext();
-  const [filterMetrics, setFilterMetrics] = useState<{
-    codeLines: number;
-    maxCodeLine: number;
-  }>({
-    codeLines: 0,
-    maxCodeLine: 1000,
-  });
+  const {
+    repository,
+    repositoryId,
+    setRepositoryId,
+    startDate,
+    endDate,
+    filePath,
+  } = useDataSettingContext();
+  const [filterAddLineMetrics, setFilterAddLineMetrics] =
+    useState<SliderFilterCodeLine>({
+      codeLines: 1000,
+      maxCodeLine: 1000,
+    });
+
+  const [filterDeleteLineMetrics, setFilterDeleteLineMetrics] =
+    useState<SliderFilterCodeLine>({
+      codeLines: 1000,
+      maxCodeLine: 1000,
+    });
   const [fileFolderDatas, setFileFolderDatas] = useState<FileFolderCommits[]>(
     []
   );
@@ -42,27 +53,52 @@ const ChangeVolumePage: React.FC = () => {
   useEffect(() => {
     if (repository) {
       const fetchData = async () => {
-        const data = await getFileOverTime(repository.id, startDate, endDate);
-        console.log(data);
+        const data: FileFolderCommits[] = await getFileOverTime(
+          repository.id,
+          startDate,
+          endDate
+        );
+        const maxAdditionsLines = Math.max(
+          ...data.map((item) => item.total_additions)
+        );
+        const maxDeletionsLines = Math.max(
+          ...data.map((item) => item.total_deletions)
+        );
+        setFilterAddLineMetrics({
+          codeLines: maxAdditionsLines,
+          maxCodeLine: maxAdditionsLines,
+        });
+        setFilterDeleteLineMetrics({
+          codeLines: maxDeletionsLines,
+          maxCodeLine: maxDeletionsLines,
+        });
+
+        const newPathFilterData = data.filter((item: FileFolderCommits) => {
+          return filePath === "" || item.path === filePath;
+        });
+        setFileFolderDatas(newPathFilterData);
       };
 
       fetchData();
     }
-  }, [repository, startDate, endDate]);
+  }, [repository, startDate, endDate, filePath]);
 
   return (
     <div className="two-side-structure">
       <div className="page">
         <BubbleGraphDisplay
-          filterMetrics={filterMetrics}
+          filterAddLineMetrics={filterAddLineMetrics}
+          filterDeleteLineMetrics={filterDeleteLineMetrics}
           fileFolderDatas={fileFolderDatas}
         />
       </div>
       <div>
         <DateAndFileInput />
         <SliderFilterMetrix
-          filterMetrics={filterMetrics}
-          setFilterMetrics={setFilterMetrics}
+          filterAddLineMetrics={filterAddLineMetrics}
+          setFilterAddLineMetrics={setFilterAddLineMetrics}
+          filterDeleteLineMetrics={filterDeleteLineMetrics}
+          setFilterDeleteLineMetrics={setFilterDeleteLineMetrics}
         />
         <BuddleGraphMetrics metricsProps={bubbleMetrix} />
       </div>

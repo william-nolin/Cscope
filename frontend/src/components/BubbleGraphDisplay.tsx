@@ -7,15 +7,15 @@ import am5themes_Animated from "@amcharts/amcharts5/themes/Animated";
 import { FileFolderCommits } from "models/FileFolderCommits";
 import { GraphNode } from "models/GraphNode";
 import { convertToGraphData } from "utils/algofileFolderData";
+import { SliderFilterCodeLine } from "models/SliderFilterCodeLine";
 
 const BubbleGraphDisplay = ({
-  filterMetrics,
+  filterAddLineMetrics,
+  filterDeleteLineMetrics,
   fileFolderDatas,
 }: {
-  filterMetrics: {
-    codeLines: number;
-    maxCodeLine: number;
-  };
+  filterAddLineMetrics: SliderFilterCodeLine;
+  filterDeleteLineMetrics: SliderFilterCodeLine;
   fileFolderDatas: FileFolderCommits[];
 }) => {
   const [filterFileFolderDatas, setFilterFileFolderDatas] =
@@ -30,11 +30,14 @@ const BubbleGraphDisplay = ({
 
   useEffect(() => {
     setFilterFileFolderDatas(
-      fileFolderDatas.filter((dt) => {
-        return dt.codeLines >= filterMetrics.codeLines;
+      fileFolderDatas.filter((file: FileFolderCommits) => {
+        return (
+          file.total_additions <= filterAddLineMetrics.codeLines &&
+          file.total_deletions <= filterDeleteLineMetrics.codeLines
+        );
       })
     );
-  }, [filterMetrics]);
+  }, [fileFolderDatas, filterAddLineMetrics, filterDeleteLineMetrics]);
 
   useLayoutEffect(() => {
     const root = am5.Root.new("chartdiv");

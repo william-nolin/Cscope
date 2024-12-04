@@ -1,4 +1,5 @@
 import { ConfigProvider, Slider } from "antd";
+import { SliderFilterCodeLine } from "models/SliderFilterCodeLine";
 import { useEffect, useState } from "react";
 
 const colorRanges = [
@@ -14,70 +15,114 @@ function getSliderColor(value: number): string {
   return range ? range.color : "#64f07d"; // Vert pale par défaut
 }
 
+const codeColorAddLines = "#64f07d";
+const codeColorDeleteLines = "#f4ca3b";
+
 const SliderFilterMetrix = ({
-  filterMetrics,
-  setFilterMetrics,
+  filterAddLineMetrics,
+  setFilterAddLineMetrics,
+  filterDeleteLineMetrics,
+  setFilterDeleteLineMetrics,
 }: {
-  filterMetrics: {
-    codeLines: number;
-    maxCodeLine: number;
-  };
-  setFilterMetrics: React.Dispatch<
-    React.SetStateAction<{
-      codeLines: number;
-      maxCodeLine: number;
-    }>
+  filterAddLineMetrics: SliderFilterCodeLine;
+  setFilterAddLineMetrics: React.Dispatch<
+    React.SetStateAction<SliderFilterCodeLine>
+  >;
+  filterDeleteLineMetrics: SliderFilterCodeLine;
+  setFilterDeleteLineMetrics: React.Dispatch<
+    React.SetStateAction<SliderFilterCodeLine>
   >;
 }) => {
-  const [filterPanelMetrics, setFilterPanelMetrics] = useState<{
+  const [filterAddLinePanelMetrics, setFilterAddLinePanelMetrics] = useState<{
     codeLines: number;
-  }>({ ...filterMetrics });
+  }>({ ...filterAddLineMetrics });
 
-  const [codeLinesColor, setCodeLinesColor] = useState<string>(
-    getSliderColor(filterPanelMetrics.codeLines)
-  );
+  const [filterDeleteLinePanelMetrics, setFilterDeleteLinePanelMetrics] =
+    useState<{
+      codeLines: number;
+    }>({ ...filterDeleteLineMetrics });
 
   useEffect(() => {
-    setFilterPanelMetrics({ ...filterMetrics });
-    setCodeLinesColor(getSliderColor(filterMetrics.codeLines));
-  }, [filterMetrics]);
+    setFilterAddLinePanelMetrics({ ...filterAddLineMetrics });
+  }, [filterAddLineMetrics]);
+
+  useEffect(() => {
+    setFilterDeleteLinePanelMetrics({ ...filterDeleteLineMetrics });
+  }, [filterDeleteLineMetrics]);
 
   return (
     <div>
-      <ConfigProvider
-        theme={{
-          components: {
-            Slider: {
-              trackBg: codeLinesColor,
-              trackHoverBg: codeLinesColor,
-              handleColor: codeLinesColor,
-              handleActiveColor: codeLinesColor,
-              handleActiveOutlineColor: codeLinesColor,
-              dotActiveBorderColor: codeLinesColor,
-              colorPrimaryBorderHover: codeLinesColor,
+      <div className="slider-container">
+        <label>Filter by lines added (less than)</label>
+        <ConfigProvider
+          theme={{
+            components: {
+              Slider: {
+                trackBg: codeColorAddLines,
+                trackHoverBg: codeColorAddLines,
+                handleColor: codeColorAddLines,
+                handleActiveColor: codeColorAddLines,
+                handleActiveOutlineColor: codeColorAddLines,
+                dotActiveBorderColor: codeColorAddLines,
+                colorPrimaryBorderHover: codeColorAddLines,
+              },
             },
-          },
-        }}
-      >
-        <div className="slider-container">
+          }}
+        >
           <Slider
             min={0}
-            max={filterMetrics.maxCodeLine}
-            defaultValue={0}
-            value={filterPanelMetrics.codeLines}
+            max={filterAddLineMetrics.maxCodeLine}
+            value={filterAddLinePanelMetrics.codeLines}
             onChange={(value) => {
-              setFilterPanelMetrics({
-                ...filterPanelMetrics,
+              setFilterAddLinePanelMetrics({
+                ...filterAddLinePanelMetrics,
                 codeLines: value,
               });
-              setCodeLinesColor(getSliderColor(value));
             }}
             onChangeComplete={(value) => {
-              setFilterMetrics({ ...filterMetrics, codeLines: value });
+              setFilterAddLineMetrics({
+                ...filterAddLineMetrics,
+                codeLines: value,
+              });
             }}
           />
-        </div>
-      </ConfigProvider>
+        </ConfigProvider>
+
+        <label>Filter by lines removed (less than)</label>
+        <ConfigProvider
+          theme={{
+            components: {
+              Slider: {
+                trackBg: codeColorDeleteLines,
+                trackHoverBg: codeColorDeleteLines,
+                handleColor: codeColorDeleteLines,
+                handleActiveColor: codeColorDeleteLines,
+                handleActiveOutlineColor: codeColorDeleteLines,
+                dotActiveBorderColor: codeColorDeleteLines,
+                colorPrimaryBorderHover: codeColorDeleteLines,
+              },
+            },
+          }}
+        >
+          <Slider
+            min={0}
+            max={filterDeleteLineMetrics.maxCodeLine}
+            value={filterDeleteLinePanelMetrics.codeLines}
+            onChange={(value) => {
+              setFilterDeleteLinePanelMetrics({
+                ...filterDeleteLinePanelMetrics,
+                codeLines: value,
+              });
+            }}
+            onChangeComplete={(value) => {
+              setFilterDeleteLineMetrics({
+                ...filterDeleteLineMetrics,
+                codeLines: value,
+              });
+            }}
+          />
+        </ConfigProvider>
+      </div>
     </div>
   );
 };

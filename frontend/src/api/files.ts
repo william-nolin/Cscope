@@ -2,6 +2,7 @@ import axios from "axios";
 import { FileHistoryCommit } from "models/FileHistoryCommit";
 import { TypeFileCommitEvolution } from "enum/TypeFileCommitEvolution";
 import { FileData } from "models/FileData";
+import { FileFolderCommits } from "models/FileFolderCommits";
 
 export async function fileHistoryByDate(
   repositoryId: number,
@@ -46,14 +47,22 @@ export async function getFileOverTime(
   repositoryId: number,
   startDate: string,
   endDate: string
-): Promise<any[]> {
+): Promise<FileFolderCommits[]> {
   const endpoint = `/repositories/${repositoryId}/files/stats/files_over_time`;
   const response = await axios.get(endpoint, {
     params: { start_date: startDate, end_date: endDate },
   });
   const data = response.data;
 
-  return data;
+  const fileFolderData: FileFolderCommits[] = data.map((item: any) => {
+    return {
+      path: item.filepath,
+      total_additions: item.total_additions,
+      total_deletions: item.total_deletions,
+      total_modifications: item.total_modifications,
+    };
+  });
+  return fileFolderData;
 }
 
 export async function getFilesRepository(
