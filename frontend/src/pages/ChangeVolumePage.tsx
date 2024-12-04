@@ -24,13 +24,13 @@ const ChangeVolumePage: React.FC = () => {
   } = useDataSettingContext();
   const [filterAddLineMetrics, setFilterAddLineMetrics] =
     useState<SliderFilterCodeLine>({
-      codeLines: 1000,
+      codeLines: 0,
       maxCodeLine: 1000,
     });
 
   const [filterDeleteLineMetrics, setFilterDeleteLineMetrics] =
     useState<SliderFilterCodeLine>({
-      codeLines: 1000,
+      codeLines: 0,
       maxCodeLine: 1000,
     });
   const [fileFolderDatas, setFileFolderDatas] = useState<FileFolderCommits[]>(
