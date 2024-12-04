@@ -69,11 +69,11 @@ const ChangeVolumePage: React.FC = () => {
           ...data.map((item) => item.total_deletions)
         );
         setFilterAddLineMetrics({
-          codeLines: maxAdditionsLines,
+          codeLines: 0,
           maxCodeLine: maxAdditionsLines,
         });
         setFilterDeleteLineMetrics({
-          codeLines: maxDeletionsLines,
+          codeLines: 0,
           maxCodeLine: maxDeletionsLines,
         });
 

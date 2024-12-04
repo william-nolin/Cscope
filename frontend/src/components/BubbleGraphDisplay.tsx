@@ -39,8 +39,8 @@ const BubbleGraphDisplay = ({
     setFilterFileFolderDatas(
       fileFolderDatas.filter((file: FileFolderCommits) => {
         return (
-          file.total_additions <= filterAddLineMetrics.codeLines &&
-          file.total_deletions <= filterDeleteLineMetrics.codeLines
+          file.total_additions >= filterAddLineMetrics.codeLines &&
+          file.total_deletions >= filterDeleteLineMetrics.codeLines
         );
       })
     );

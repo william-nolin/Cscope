@@ -53,7 +53,7 @@ const SliderFilterMetrix = ({
   return (
     <div>
       <div className="slider-container">
-        <label>Filter by lines added (less than)</label>
+        <label>Filter by lines added (More than)</label>
         <ConfigProvider
           theme={{
             components: {
@@ -88,7 +88,7 @@ const SliderFilterMetrix = ({
           />
         </ConfigProvider>
 
-        <label>Filter by lines removed (less than)</label>
+        <label>Filter by lines removed (More than)</label>
         <ConfigProvider
           theme={{
             components: {
