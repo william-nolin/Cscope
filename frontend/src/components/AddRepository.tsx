@@ -13,7 +13,8 @@ import { useDataSettingContext } from "context/DataSettingContext";
 const AddRepository: React.FC = () => {
   const [url, setUrl] = useState<string>("");
   const [loadRepository, setLoadRepository] = useState<boolean>(false);
-  const { setRepository, setRepositoryId } = useDataSettingContext();
+  const { setRepository, setRepositoryId, setFilePath } =
+    useDataSettingContext();
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -28,6 +29,7 @@ const AddRepository: React.FC = () => {
           try {
             const repo = await getRepositoryById(data.id);
             if (repo.last_synced_at) {
+              setFilePath("");
               setRepository(data);
               setRepositoryId(data.id);
               setLoadRepository(false);
@@ -48,6 +50,7 @@ const AddRepository: React.FC = () => {
       const result = await searchRepositoryByUrl(url);
 
       if (result.repository) {
+        setFilePath("");
         setRepository(result.repository);
         setRepositoryId(result.repository.id);
         return navigate(`/repository/${result.repository.id}/change-volume`);

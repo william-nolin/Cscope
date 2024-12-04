@@ -21,6 +21,8 @@ export const DataSettingProvider: React.FC<{
       if (repositoryId) {
         if (repository) {
           const data = await getFilesRepository(Number(repository.id));
+          setStartDate(dayjs().subtract(1, "month").format("YYYY-MM-DD"));
+          setEndDate(dayjs().format("YYYY-MM-DD"));
           setFiles(["", ...data]);
         } else {
           const repository = await getRepositoryById(Number(repositoryId));
