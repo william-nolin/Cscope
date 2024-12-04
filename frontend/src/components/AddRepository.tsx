@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import "assets/styles/addRepository.scss";
 import { Input, Spin } from "antd";
 import { useNavigate } from "react-router-dom";
-
+import dayjs from "dayjs";
 import {
   createRepositoryByUrl,
   getRepositoryById,
@@ -13,8 +13,13 @@ import { useDataSettingContext } from "context/DataSettingContext";
 const AddRepository: React.FC = () => {
   const [url, setUrl] = useState<string>("");
   const [loadRepository, setLoadRepository] = useState<boolean>(false);
-  const { setRepository, setRepositoryId, setFilePath } =
-    useDataSettingContext();
+  const {
+    setRepository,
+    setRepositoryId,
+    setFilePath,
+    setStartDate,
+    setEndDate,
+  } = useDataSettingContext();
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -29,6 +34,8 @@ const AddRepository: React.FC = () => {
           try {
             const repo = await getRepositoryById(data.id);
             if (repo.last_synced_at) {
+              setStartDate(dayjs().subtract(1, "month").format("YYYY-MM-DD"));
+              setEndDate(dayjs().format("YYYY-MM-DD"));
               setFilePath("");
               setRepository(data);
               setRepositoryId(data.id);
@@ -50,6 +57,8 @@ const AddRepository: React.FC = () => {
       const result = await searchRepositoryByUrl(url);
 
       if (result.repository) {
+        setStartDate(dayjs().subtract(1, "month").format("YYYY-MM-DD"));
+        setEndDate(dayjs().format("YYYY-MM-DD"));
         setFilePath("");
         setRepository(result.repository);
         setRepositoryId(result.repository.id);

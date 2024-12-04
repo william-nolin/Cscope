@@ -39,11 +39,11 @@ const ChangeVolumePage: React.FC = () => {
   const [ready, setReady] = useState<boolean>(false);
 
   const [bubbleMetrix, setBubbleMetrix] = useState<MetricsProps>({
-    file: "source",
-    commitCount: 140,
-    codeSize: 1055,
-    mainAuthor: "Boblebri Codeur",
-    modifiedDate: "1 month ago",
+    file: "No file",
+    commitCount: 0,
+    codeSize: 0,
+    mainAuthor: "No author",
+    modifiedDate: "No date",
   });
 
   const { id } = useParams<{ id: string }>();
@@ -81,34 +81,37 @@ const ChangeVolumePage: React.FC = () => {
           return filePath === "" || item.path === filePath;
         });
 
-        let path = "";
-        if (filePath === "") {
-          const maxItem = data.reduce((max, item) =>
-            item.total_modifications > max.total_modifications ? item : max
-          );
-          path = maxItem.path;
-        } else {
-          path = filePath;
+        if (data && data.length > 0) {
+          let path = "";
+          if (filePath === "") {
+            const maxItem = data.reduce((max, item) =>
+              item.total_modifications > max.total_modifications ? item : max
+            );
+            path = maxItem.path;
+          } else {
+            path = filePath;
+          }
+
+          if (path != "") {
+            try {
+              const fileData = await getFileData(repository.id, path);
+              const date = new Date(fileData.last_modification_date);
+              const formattedDate = date.toLocaleDateString("en-EN", {
+                year: "numeric",
+                month: "long",
+                day: "numeric",
+              });
+              setBubbleMetrix({
+                file: getFileName(path),
+                commitCount: fileData.commits_count,
+                codeSize: fileData.line_count,
+                mainAuthor: fileData.main_contributor.author,
+                modifiedDate: formattedDate,
+              });
+            } catch (error) {}
+          }
         }
 
-        if (path != "") {
-          try {
-            const fileData = await getFileData(repository.id, path);
-            const date = new Date(fileData.last_modification_date);
-            const formattedDate = date.toLocaleDateString("en-EN", {
-              year: "numeric",
-              month: "long",
-              day: "numeric",
-            });
-            setBubbleMetrix({
-              file: getFileName(path),
-              commitCount: fileData.commits_count,
-              codeSize: fileData.line_count,
-              mainAuthor: fileData.main_contributor.author,
-              modifiedDate: formattedDate,
-            });
-          } catch (error) {}
-        }
         setFileFolderDatas(newPathFilterData);
         setReady(true);
       };
