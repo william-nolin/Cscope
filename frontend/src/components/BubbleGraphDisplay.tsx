@@ -10,6 +10,7 @@ import { convertToGraphData } from "utils/algofileFolderData";
 import { SliderFilterCodeLine } from "models/SliderFilterCodeLine";
 import { useDataSettingContext } from "context/DataSettingContext";
 import { getFileData } from "api";
+import { Spin } from "antd";
 
 const BubbleGraphDisplay = ({
   filterAddLineMetrics,
@@ -28,6 +29,7 @@ const BubbleGraphDisplay = ({
     convertToGraphData(fileFolderDatas)
   );
   const { repositoryId } = useDataSettingContext();
+  const [ready, setReady] = useState<boolean>(false);
 
   useEffect(() => {
     setGraphData(convertToGraphData(filterFileFolderDatas));
@@ -141,10 +143,25 @@ const BubbleGraphDisplay = ({
     // Make stuff animate on load
     series.appear(1000, 100);
 
-    return () => root.dispose();
+    return () => {
+      root.dispose();
+      setReady(true);
+    };
   }, [graphData]);
 
-  return <div id="chartdiv" style={{ width: "100%", height: "600px" }}></div>;
+  return (
+    <>
+      <div
+        id="chartdiv"
+        style={{
+          display: ready ? "block" : "none",
+          width: "100%",
+          height: "600px",
+        }}
+      ></div>
+      {!ready && <Spin size="large" />}
+    </>
+  );
 };
 
 export default BubbleGraphDisplay;
