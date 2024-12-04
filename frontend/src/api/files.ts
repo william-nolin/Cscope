@@ -12,7 +12,6 @@ export async function fileHistoryByDate(
   const response = await axios.get(endpoint, {
     params: { start_date: startDate, end_date: endDate },
   });
-  console.log(response);
   const fileIdMap = new Map<string, number>();
   let fileIdGenerator = 1;
 
@@ -22,7 +21,7 @@ export async function fileHistoryByDate(
   categoryToEvolutionType.set("modify", TypeFileCommitEvolution.SET_FILE);
 
   const data = (response.data || []).map((point: any) => {
-    const [date, filepath, category] = point;
+    const [date, filepath, category, filetype] = point;
 
     if (!fileIdMap.has(filepath)) {
       fileIdMap.set(filepath, fileIdGenerator);
@@ -35,6 +34,7 @@ export async function fileHistoryByDate(
       typeEvolution:
         categoryToEvolutionType.get(category) ||
         TypeFileCommitEvolution.SET_FILE,
+      filetype: filetype,
       Date: new Date(date),
     };
   });
@@ -58,6 +58,14 @@ export async function getFileData(
   const endpoint = `/repositories/${repositoryId}/files/head/${filepath}`;
   const response = await axios.get(endpoint);
   const data: FileData = response.data;
+
+  return data;
+}
+
+export async function getFileTypes(repositoryId: number): Promise<string[]> {
+  const endpoint = `/repositories/${repositoryId}/files/stats/file_types`;
+  const response = await axios.get(endpoint);
+  const data: string[] = response.data;
 
   return data;
 }

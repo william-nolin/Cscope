@@ -27,7 +27,6 @@ const AddRepository: React.FC = () => {
         interval = setInterval(async () => {
           try {
             const repo = await getRepositoryById(data.id);
-            console.log(repo);
             if (repo.last_synced_at) {
               setRepository(data);
               setRepositoryId(data.id);

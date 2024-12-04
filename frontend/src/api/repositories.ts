@@ -53,7 +53,6 @@ export async function createRepositoryByUrl(url: string): Promise<Repository> {
 
 export async function getRepositoryById(id: number): Promise<Repository> {
   const response = await axios.get(`/repositories/${id}`);
-  console.log(response.data);
   const result: Repository = { ...response.data };
 
   return result;

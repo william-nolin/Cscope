@@ -5,7 +5,7 @@ import DateAndFileInput from "components/DateAndFileInput";
 import MotionChartDisplay from "components/MotionChartDisplay";
 import { FileHistoryCommit } from "models/FileHistoryCommit";
 
-import { fileHistoryByDate } from "api";
+import { fileHistoryByDate, getFileTypes } from "api";
 import {
   filterByDate,
   getFileExtension,
@@ -43,6 +43,17 @@ const HistoryFileCommitPage: React.FC = () => {
   };
 
   useEffect(() => {
+    const fetchFilesTypes = async () => {
+      if (repository) {
+        const fileTypes = await getFileTypes(repository.id);
+        setTypeFiles(fileTypes);
+      }
+    };
+
+    fetchFilesTypes();
+  }, [repository]);
+
+  useEffect(() => {
     if (!repositoryId) {
       setRepositoryId(Number(id));
     }
@@ -71,15 +82,9 @@ const HistoryFileCommitPage: React.FC = () => {
 
     const setExtTypeFilterData = newPathFilterData.map(
       (item: FileHistoryCommit) => {
-        return { ...item, filetype: identifyFileType(item.fileName) };
+        return { ...item };
       }
     );
-
-    const noDuplicateListExtType = Array.from(
-      new Set(setExtTypeFilterData.map((item) => item.filetype))
-    );
-
-    setTypeFiles(noDuplicateListExtType);
 
     setPathFilterData(setExtTypeFilterData);
   }, [data, filePath]);
