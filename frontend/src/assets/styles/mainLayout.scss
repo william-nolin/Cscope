@@ -22,13 +22,14 @@
         color: $title-page-color;
       }
 
-      > a {
+      .butSty1 {
         display: flex;
         justify-content: center;
         align-items: center;
         font-size: 1.7rem;
         width: 60px;
         height: 60px;
+        margin-right: 10px;
         background-color: white;
         border-radius: 50%;
         color: $bg-active-color;
@@ -37,6 +38,27 @@
           background-color: $bg-active-color;
           color: $bg-button;
           cursor: pointer;
+        }
+      }
+
+      > div {
+        display: flex;
+        > a {
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          font-size: 1.7rem;
+          width: 60px;
+          height: 60px;
+          background-color: white;
+          border-radius: 50%;
+          color: $bg-active-color;
+          transition: background-color 0.3s, color 0.3s;
+          &:hover {
+            background-color: $bg-active-color;
+            color: $bg-button;
+            cursor: pointer;
+          }
         }
       }
     }

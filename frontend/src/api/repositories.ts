@@ -51,6 +51,13 @@ export async function createRepositoryByUrl(url: string): Promise<Repository> {
   return result;
 }
 
+export async function syncRepositoryById(id: number): Promise<Repository> {
+  const response = await axios.post(`/repositories/${id}/sync`);
+  const result: Repository = response.data;
+
+  return result;
+}
+
 export async function getRepositoryById(id: number): Promise<Repository> {
   const response = await axios.get(`/repositories/${id}`);
   const result: Repository = { ...response.data };
