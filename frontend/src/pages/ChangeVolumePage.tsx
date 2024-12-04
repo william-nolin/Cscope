@@ -5,20 +5,14 @@ import DateAndFileInput from "components/DateAndFileInput";
 import BuddleGraphMetrics from "components/BubbleGraphMetrix";
 import { MetricsProps } from "models/MetricsProps";
 import SliderFilterMetrix from "components/SliderFilterMetrix";
-import Project from "models/Project";
-import { mockProjets } from "data/mockData";
-import {
-  bigFileFolderDatas,
-  mediumFileFolderDatas,
-  smallFileFolderDatas,
-} from "data/fileFolderData";
 import { FileFolderCommits } from "models/FileFolderCommits";
 import BubbleGraphDisplay from "components/BubbleGraphDisplay";
 import { useParams } from "react-router-dom";
+import { getFileOverTime } from "api";
 
 const ChangeVolumePage: React.FC = () => {
-  const { repository, repositoryId, setRepositoryId } = useDataSettingContext();
-  const [project, setProject] = useState<Project | null>(null);
+  const { repository, repositoryId, setRepositoryId, startDate, endDate } =
+    useDataSettingContext();
   const [filterMetrics, setFilterMetrics] = useState<{
     codeLines: number;
     maxCodeLine: number;
@@ -46,26 +40,15 @@ const ChangeVolumePage: React.FC = () => {
   }, [id]);
 
   useEffect(() => {
-    const options = [
-      smallFileFolderDatas,
-      mediumFileFolderDatas,
-      bigFileFolderDatas,
-    ];
-
     if (repository) {
-      const foundProject = mockProjets.find(
-        (p: Project) => Number(p.id) === repository.id
-      );
-      if (foundProject) {
-        setFileFolderDatas(options[foundProject.type]);
-        setFilterMetrics({
-          ...filterMetrics,
-          maxCodeLine: options[foundProject.type][0].codeLines,
-        });
-        setProject(foundProject);
-      }
+      const fetchData = async () => {
+        const data = await getFileOverTime(repository.id, startDate, endDate);
+        console.log(data);
+      };
+
+      fetchData();
     }
-  }, [repository]);
+  }, [repository, startDate, endDate]);
 
   return (
     <div className="two-side-structure">

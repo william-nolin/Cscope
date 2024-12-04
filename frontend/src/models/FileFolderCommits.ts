@@ -7,5 +7,5 @@ export interface FileFolderCommits {
   codeLines: number;
   codeHealh: number;
   codeThreshold: number;
-  LineCoverage: number;
+  total_additions: number;
 }

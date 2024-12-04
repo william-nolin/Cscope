@@ -42,6 +42,20 @@ export async function fileHistoryByDate(
   return data;
 }
 
+export async function getFileOverTime(
+  repositoryId: number,
+  startDate: string,
+  endDate: string
+): Promise<any[]> {
+  const endpoint = `/repositories/${repositoryId}/files/stats/files_over_time`;
+  const response = await axios.get(endpoint, {
+    params: { start_date: startDate, end_date: endDate },
+  });
+  const data = response.data;
+
+  return data;
+}
+
 export async function getFilesRepository(
   repositoryId: number
 ): Promise<string[]> {
