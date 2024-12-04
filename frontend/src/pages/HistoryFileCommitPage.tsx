@@ -64,7 +64,7 @@ const HistoryFileCommitPage: React.FC = () => {
         setReady(true);
       }
     }
-
+    setReady(false);
     fetchData();
   }, [repository, startDate, endDate]);
 

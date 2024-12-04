@@ -7,7 +7,7 @@ const BuddleGraphMetrics = ({
 }) => {
   return (
     <div className="metrics">
-      <div className="metrics__header">Metrics</div>
+      <div className="metrics__header">Metrics : {metricsProps.file}</div>
       <div className="metrics__item">
         <span>Commit</span>
         <span>{metricsProps.commitCount} commits</span>

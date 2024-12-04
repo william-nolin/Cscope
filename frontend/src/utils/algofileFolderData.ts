@@ -26,6 +26,7 @@ export const convertToGraphData = (
   // Création d'une racine "src"
   const rootNode: GraphNode = {
     name: "src",
+    path: null,
     children: [],
     nodeSettings: { fill: am5.color("rgb(235, 235, 235)") },
   };
@@ -47,6 +48,7 @@ export const convertToGraphData = (
         const isFile = index === parts.length - 1; // Dernier segment = fichier
         const newNode: GraphNode = {
           name: part,
+          path: isFile ? currentPath : null,
           children: isFile ? null : [],
           value: isFile ? item.total_modifications : undefined,
           nodeSettings: {

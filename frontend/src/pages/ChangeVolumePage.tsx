@@ -8,8 +8,10 @@ import SliderFilterMetrix from "components/SliderFilterMetrix";
 import { FileFolderCommits } from "models/FileFolderCommits";
 import BubbleGraphDisplay from "components/BubbleGraphDisplay";
 import { useParams } from "react-router-dom";
-import { getFileOverTime } from "api";
+import { getFileData, getFileOverTime } from "api";
 import { SliderFilterCodeLine } from "models/SliderFilterCodeLine";
+import { Spin } from "antd";
+import { getFileName } from "utils/tooltipHelper";
 
 const ChangeVolumePage: React.FC = () => {
   const {
@@ -34,13 +36,15 @@ const ChangeVolumePage: React.FC = () => {
   const [fileFolderDatas, setFileFolderDatas] = useState<FileFolderCommits[]>(
     []
   );
+  const [ready, setReady] = useState<boolean>(false);
 
-  const bubbleMetrix: MetricsProps = {
+  const [bubbleMetrix, setBubbleMetrix] = useState<MetricsProps>({
+    file: "source",
     commitCount: 140,
     codeSize: 1055,
     mainAuthor: "Boblebri Codeur",
     modifiedDate: "1 month ago",
-  };
+  });
 
   const { id } = useParams<{ id: string }>();
 
@@ -76,9 +80,39 @@ const ChangeVolumePage: React.FC = () => {
         const newPathFilterData = data.filter((item: FileFolderCommits) => {
           return filePath === "" || item.path === filePath;
         });
-        setFileFolderDatas(newPathFilterData);
-      };
 
+        let path = "";
+        if (filePath === "") {
+          const maxItem = data.reduce((max, item) =>
+            item.total_modifications > max.total_modifications ? item : max
+          );
+          path = maxItem.path;
+        } else {
+          path = filePath;
+        }
+
+        if (path != "") {
+          try {
+            const fileData = await getFileData(repository.id, path);
+            const date = new Date(fileData.last_modification_date);
+            const formattedDate = date.toLocaleDateString("en-EN", {
+              year: "numeric",
+              month: "long",
+              day: "numeric",
+            });
+            setBubbleMetrix({
+              file: getFileName(path),
+              commitCount: fileData.commits_count,
+              codeSize: fileData.line_count,
+              mainAuthor: fileData.main_contributor.author,
+              modifiedDate: formattedDate,
+            });
+          } catch (error) {}
+        }
+        setFileFolderDatas(newPathFilterData);
+        setReady(true);
+      };
+      setReady(false);
       fetchData();
     }
   }, [repository, startDate, endDate, filePath]);
@@ -86,11 +120,16 @@ const ChangeVolumePage: React.FC = () => {
   return (
     <div className="two-side-structure">
       <div className="page">
-        <BubbleGraphDisplay
-          filterAddLineMetrics={filterAddLineMetrics}
-          filterDeleteLineMetrics={filterDeleteLineMetrics}
-          fileFolderDatas={fileFolderDatas}
-        />
+        {ready ? (
+          <BubbleGraphDisplay
+            filterAddLineMetrics={filterAddLineMetrics}
+            filterDeleteLineMetrics={filterDeleteLineMetrics}
+            fileFolderDatas={fileFolderDatas}
+            setBubbleMetrix={setBubbleMetrix}
+          />
+        ) : (
+          <Spin size="large" />
+        )}
       </div>
       <div>
         <DateAndFileInput />

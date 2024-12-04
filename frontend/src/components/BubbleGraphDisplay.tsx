@@ -8,21 +8,26 @@ import { FileFolderCommits } from "models/FileFolderCommits";
 import { GraphNode } from "models/GraphNode";
 import { convertToGraphData } from "utils/algofileFolderData";
 import { SliderFilterCodeLine } from "models/SliderFilterCodeLine";
+import { useDataSettingContext } from "context/DataSettingContext";
+import { getFileData } from "api";
 
 const BubbleGraphDisplay = ({
   filterAddLineMetrics,
   filterDeleteLineMetrics,
   fileFolderDatas,
+  setBubbleMetrix,
 }: {
   filterAddLineMetrics: SliderFilterCodeLine;
   filterDeleteLineMetrics: SliderFilterCodeLine;
   fileFolderDatas: FileFolderCommits[];
+  setBubbleMetrix: any;
 }) => {
   const [filterFileFolderDatas, setFilterFileFolderDatas] =
     useState<FileFolderCommits[]>(fileFolderDatas);
   const [graphData, setGraphData] = useState<GraphNode[]>(
     convertToGraphData(fileFolderDatas)
   );
+  const { repositoryId } = useDataSettingContext();
 
   useEffect(() => {
     setGraphData(convertToGraphData(filterFileFolderDatas));
@@ -92,6 +97,31 @@ const BubbleGraphDisplay = ({
     // Gestion de la sélection pour chaque nœud
     series.nodes.template.events.on("click", (event) => {
       const node = event.target;
+      const nodeData: any = node.dataItem?.dataContext;
+      if (nodeData && nodeData.path) {
+        const fetchData = async () => {
+          if (repositoryId) {
+            try {
+              const fileData = await getFileData(repositoryId, nodeData.path);
+              const date = new Date(fileData.last_modification_date);
+              const formattedDate = date.toLocaleDateString("en-EN", {
+                year: "numeric",
+                month: "long",
+                day: "numeric",
+              });
+              setBubbleMetrix({
+                file: nodeData.name,
+                commitCount: fileData.commits_count,
+                codeSize: fileData.line_count,
+                mainAuthor: fileData.main_contributor.author,
+                modifiedDate: formattedDate,
+              });
+            } catch (error) {}
+          }
+        };
+
+        fetchData();
+      }
 
       // Réinitialiser les autres nœuds
       series.nodes.each((otherNode) => {
