@@ -18,9 +18,9 @@ module Gitland
       #     end
       #   end
       #
-      def initialize(repository, commit_hash: nil, format: nil, first_parent: false)
+      def initialize(repository, from: nil, format: nil, first_parent: false)
         @repository = repository
-        @commit_hash = commit_hash
+        @from = from
         @format = format
         @first_parent = first_parent
       end
@@ -31,13 +31,13 @@ module Gitland
         cli = Git::CommandLine.new({}, "/usr/bin/git", [], Logger.new("/dev/null"))
 
         command = [ "log" ]
-        command << "#{@commit_hash}..HEAD" if @commit_hash
         command << "--reverse"
         command << "--no-renames"
         command << "--numstat"
         command << "--summary"
         command << "--first-parent" if @first_parent
         command << "--pretty=format:#{@format}" if @format
+        command << "#{@from}..HEAD" if @from
 
         Tempfile.create(binmode: true) do |f|
           cli.run(
