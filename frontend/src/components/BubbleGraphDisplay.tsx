@@ -7,22 +7,29 @@ import am5themes_Animated from "@amcharts/amcharts5/themes/Animated";
 import { FileFolderCommits } from "models/FileFolderCommits";
 import { GraphNode } from "models/GraphNode";
 import { convertToGraphData } from "utils/algofileFolderData";
+import { SliderFilterCodeLine } from "models/SliderFilterCodeLine";
+import { useDataSettingContext } from "context/DataSettingContext";
+import { getFileData } from "api";
+import { Spin } from "antd";
 
 const BubbleGraphDisplay = ({
-  filterMetrics,
+  filterAddLineMetrics,
+  filterDeleteLineMetrics,
   fileFolderDatas,
+  setBubbleMetrix,
 }: {
-  filterMetrics: {
-    codeLines: number;
-    maxCodeLine: number;
-  };
+  filterAddLineMetrics: SliderFilterCodeLine;
+  filterDeleteLineMetrics: SliderFilterCodeLine;
   fileFolderDatas: FileFolderCommits[];
+  setBubbleMetrix: any;
 }) => {
   const [filterFileFolderDatas, setFilterFileFolderDatas] =
     useState<FileFolderCommits[]>(fileFolderDatas);
   const [graphData, setGraphData] = useState<GraphNode[]>(
     convertToGraphData(fileFolderDatas)
   );
+  const { repositoryId } = useDataSettingContext();
+  const [ready, setReady] = useState<boolean>(false);
 
   useEffect(() => {
     setGraphData(convertToGraphData(filterFileFolderDatas));
@@ -30,11 +37,14 @@ const BubbleGraphDisplay = ({
 
   useEffect(() => {
     setFilterFileFolderDatas(
-      fileFolderDatas.filter((dt) => {
-        return dt.codeLines >= filterMetrics.codeLines;
+      fileFolderDatas.filter((file: FileFolderCommits) => {
+        return (
+          file.total_additions >= filterAddLineMetrics.codeLines &&
+          file.total_deletions >= filterDeleteLineMetrics.codeLines
+        );
       })
     );
-  }, [filterMetrics]);
+  }, [fileFolderDatas, filterAddLineMetrics, filterDeleteLineMetrics]);
 
   useLayoutEffect(() => {
     const root = am5.Root.new("chartdiv");
@@ -89,6 +99,31 @@ const BubbleGraphDisplay = ({
     // Gestion de la sélection pour chaque nœud
     series.nodes.template.events.on("click", (event) => {
       const node = event.target;
+      const nodeData: any = node.dataItem?.dataContext;
+      if (nodeData && nodeData.path) {
+        const fetchData = async () => {
+          if (repositoryId) {
+            try {
+              const fileData = await getFileData(repositoryId, nodeData.path);
+              const date = new Date(fileData.last_modification_date);
+              const formattedDate = date.toLocaleDateString("en-EN", {
+                year: "numeric",
+                month: "long",
+                day: "numeric",
+              });
+              setBubbleMetrix({
+                file: nodeData.name,
+                commitCount: fileData.commits_count,
+                codeSize: fileData.line_count,
+                mainAuthor: fileData.main_contributor.author,
+                modifiedDate: formattedDate,
+              });
+            } catch (error) {}
+          }
+        };
+
+        fetchData();
+      }
 
       // Réinitialiser les autres nœuds
       series.nodes.each((otherNode) => {
@@ -108,10 +143,25 @@ const BubbleGraphDisplay = ({
     // Make stuff animate on load
     series.appear(1000, 100);
 
-    return () => root.dispose();
+    return () => {
+      root.dispose();
+      setReady(true);
+    };
   }, [graphData]);
 
-  return <div id="chartdiv" style={{ width: "100%", height: "600px" }}></div>;
+  return (
+    <>
+      <div
+        id="chartdiv"
+        style={{
+          display: ready ? "block" : "none",
+          width: "100%",
+          height: "600px",
+        }}
+      ></div>
+      {!ready && <Spin size="large" />}
+    </>
+  );
 };
 
 export default BubbleGraphDisplay;

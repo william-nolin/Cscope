@@ -1,14 +1,19 @@
+import Repository from "models/repository";
 import { createContext, useContext } from "react";
 
 interface DataSettingContextType {
-  repositoryId: string;
-  setRepositoryId: (id: string) => void;
+  repository: Repository | null;
+  setRepository: (Repo: Repository) => void;
+  repositoryId: number | null;
+  setRepositoryId: (id: number) => void;
   startDate: string;
   setStartDate: (date: string) => void;
   endDate: string;
   setEndDate: (date: string) => void;
-  fileName: string;
-  setFileName: (name: string) => void;
+  filePath: string;
+  setFilePath: (name: string) => void;
+  files: string[];
+  setFiles: (files: string[]) => void;
 }
 
 export const DataSettingContext = createContext<

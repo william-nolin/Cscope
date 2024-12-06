@@ -1,91 +1,76 @@
 import * as am5 from "@amcharts/amcharts5";
-import { TypeFileOrFolder } from "enum/TypeFileOrFolder";
 import { FileFolderCommits } from "models/FileFolderCommits";
 import { GraphNode } from "models/GraphNode";
 
-// Fonction pour déterminer la couleur du nœud
-function determineNodeColor(
-  type: string,
-  codeHealth: number,
-  depth: number
-): am5.Color {
-  // Couleurs pour les fichiers en fonction du codeHealth
-  const colorRanges = [
-    { threshold: 25, color: 0xe45b3f }, // Rouge grisé
-    { threshold: 50, color: 0xf4ca3b }, // Jaune orange
-    { threshold: 75, color: 0xe2e43f }, // Jaune vert
-    { threshold: 100, color: 0x64f07d }, // Vert pale
-  ];
-
-  // Choix de couleur pour les fichiers
-  if (type === TypeFileOrFolder.FILE) {
-    const colorRange = colorRanges.find(
-      (range) => codeHealth <= range.threshold
-    );
-    return am5.color(colorRange?.color || 0x64f07d); // Valeur par défaut: vert pale
+// Fonction utilitaire pour déterminer la couleur du nœud
+const getNodeColor = (additions: number, deletions: number): am5.Color => {
+  const totalChanges = additions - deletions;
+  if (totalChanges >= 0) {
+    return am5.color("#64f07d"); // vert pour plus d'addition de changements
+  } else {
+    return am5.color("#f4ca3b"); // jaune orange pour plus de suppression de changements
   }
+};
 
+const getFolderColor = (depth: number): am5.Color => {
   // Choix de couleur pour les dossiers en fonction de la profondeur
   const baseGray = 235;
   const grayValue = Math.max(0, baseGray - depth * 10); // Réduction de 10 pour chaque niveau de profondeur
   return am5.color(`rgb(${grayValue}, ${grayValue}, ${grayValue})`);
-}
+};
 
+// Conversion des données en structure GraphNode
 export const convertToGraphData = (
   fileFolderDatas: FileFolderCommits[]
 ): GraphNode[] => {
-  // Dictionnaire pour stocker chaque item par son ID pour un accès rapide
-  const nodeMap: {
-    [id: string]: GraphNode & { id: string; parentId: string | null };
-  } = {};
-
-  // Convertir chaque item de fileFolderDatas en GraphNode et les stocker dans nodeMap
-  fileFolderDatas.forEach((item: FileFolderCommits) => {
-    nodeMap[item.id] = {
-      id: item.id,
-      parentId: item.parendId,
-      name: item.fileFolderName,
-      value: item.codeLines,
-      ...(item.typeFileOrFolder === TypeFileOrFolder.FILE
-        ? { children: null }
-        : { children: [] }),
-      nodeSettings: {
-        fill: determineNodeColor(item.typeFileOrFolder, item.codeHealh, 0), // Couleur de base, profondeur 0
-      },
-    };
-  });
-
-  // Créer le dossier racine "src"
+  // Création d'une racine "src"
   const rootNode: GraphNode = {
     name: "src",
+    path: null,
     children: [],
     nodeSettings: { fill: am5.color("rgb(235, 235, 235)") },
   };
 
-  // Fonction récursive pour attacher les enfants au bon niveau dans l'arborescence
-  const buildHierarchy = (
-    parentId: string | null,
-    depth: number = 0
-  ): GraphNode[] => {
-    return fileFolderDatas
-      .filter((item) => item.parendId === parentId)
-      .map((item) => {
-        const node = nodeMap[item.id];
-        if (node.children) {
-          // Si c'est un dossier, on construit récursivement ses enfants et ajuste la profondeur
-          node.children = buildHierarchy(node.id, depth + 1);
-          node.nodeSettings.fill = determineNodeColor(
-            TypeFileOrFolder.FOLDER,
-            0,
-            depth + 1
-          );
+  // Map pour organiser les nœuds par chemin
+  const pathMap: Record<string, GraphNode> = {};
+
+  // Ajout des dossiers et fichiers à la structure
+  fileFolderDatas.forEach((item) => {
+    const parts = item.path.split("/"); // Divise le chemin en segments
+    let currentPath = "";
+    let currentNode: GraphNode = rootNode;
+
+    parts.forEach((part, index) => {
+      currentPath += (index === 0 ? "" : "/") + part;
+
+      // Si le nœud n'existe pas encore, le créer
+      if (!pathMap[currentPath]) {
+        const isFile = index === parts.length - 1; // Dernier segment = fichier
+        const newNode: GraphNode = {
+          name: part,
+          path: isFile ? currentPath : null,
+          children: isFile ? null : [],
+          value: isFile ? item.total_modifications : undefined,
+          nodeSettings: {
+            fill: isFile
+              ? getNodeColor(item.total_additions, item.total_deletions)
+              : getFolderColor(index + 1),
+          },
+        };
+
+        // Ajouter le nouveau nœud à la hiérarchie
+        if (currentNode.children) {
+          currentNode.children.push(newNode);
         }
-        return node;
-      });
-  };
 
-  // Attacher tous les éléments sans parentId sous le dossier "src"
-  rootNode.children = buildHierarchy(null);
+        // Sauvegarder dans le pathMap pour un accès futur
+        pathMap[currentPath] = newNode;
+      }
 
-  return [rootNode]; // Retourner le noeud "src" en tant que racine unique
+      // Passer au nœud suivant
+      currentNode = pathMap[currentPath];
+    });
+  });
+
+  return [rootNode]; // Retourne le nœud racine
 };

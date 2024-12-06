@@ -1,6 +1,9 @@
 import React from "react";
 import { useDataSettingContext } from "context/DataSettingContext";
 import { ConfigProvider, DatePicker, DatePickerProps, Select } from "antd";
+import dayjs from "dayjs";
+
+const { RangePicker } = DatePicker;
 
 const DateAndFileInput: React.FC = () => {
   const inputWidth = 200;
@@ -10,18 +13,20 @@ const DateAndFileInput: React.FC = () => {
     setStartDate,
     endDate,
     setEndDate,
-    fileName,
-    setFileName,
+    filePath,
+    setFilePath,
+    files,
   } = useDataSettingContext();
 
-  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (e.target.files?.[0]) {
-      setFileName(e.target.files[0].name);
+  const onDateChange = (dates: any, dateStrings: [string, string]) => {
+    if (dateStrings) {
+      setStartDate(dateStrings[0]);
+      setEndDate(dateStrings[1]);
     }
   };
 
-  const onChange: DatePickerProps["onChange"] = (date, dateString) => {
-    console.log(date, dateString);
+  const handleChangeFile = (value: string) => {
+    setFilePath(value);
   };
 
   return (
@@ -40,38 +45,32 @@ const DateAndFileInput: React.FC = () => {
             style={{ width: inputWidth * 2 + 20, height: 45 }}
             placeholder="Search by filename"
             optionFilterProp="label"
+            value={filePath}
             filterSort={(optionA, optionB) =>
               (optionA?.label ?? "")
                 .toLowerCase()
                 .localeCompare((optionB?.label ?? "").toLowerCase())
             }
-            options={[
-              {
-                value: "1",
-                label: "Not Identified",
-              },
-              {
-                value: "2",
-                label: "Closed",
-              },
-            ]}
+            options={files.map((f: string) => {
+              return { value: f, label: f };
+            })}
+            onChange={handleChangeFile}
           />
         </div>
         <div>
           <div>
-            <label>Start date : </label>
-            <DatePicker
-              style={{ width: inputWidth, height: 45 }}
-              onChange={onChange}
-            />
+            <label style={{ width: 200 }}>Start date : </label>
           </div>
           <div>
             <label>End date : </label>
-            <DatePicker
-              style={{ width: inputWidth, height: 45 }}
-              onChange={onChange}
-            />
           </div>
+        </div>
+        <div>
+          <RangePicker
+            style={{ width: 420, height: 45 }}
+            value={[dayjs(startDate), dayjs(endDate)]}
+            onChange={onDateChange}
+          />
         </div>
       </div>
     </ConfigProvider>

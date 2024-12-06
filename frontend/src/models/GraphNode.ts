@@ -2,6 +2,7 @@ import * as am5 from "@amcharts/amcharts5";
 
 export interface GraphNode {
   name: string;
+  path: string | null;
   value?: number; // Valeur pour les fichiers
   children?: GraphNode[] | null; // Sous-éléments pour les dossiers
   nodeSettings: {

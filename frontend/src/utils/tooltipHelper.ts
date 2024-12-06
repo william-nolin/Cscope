@@ -1,27 +1,66 @@
 // src/utils/tooltipHelper.ts
 import { TypeFileCommitEvolution } from "enum/TypeFileCommitEvolution";
+import dayjs from "dayjs";
+
+export const typeEvolutionOptions = ["Add", "Set", "Delete"];
+export const categoryToEvolutionType = new Map<string, TypeFileCommitEvolution>(
+  [
+    ["Add", TypeFileCommitEvolution.ADD_FILE],
+    ["Set", TypeFileCommitEvolution.SET_FILE],
+    ["Delete", TypeFileCommitEvolution.DELETE_FILE],
+  ]
+);
+
+export const evolutionTypeToCategory = new Map<TypeFileCommitEvolution, string>(
+  [
+    [TypeFileCommitEvolution.ADD_FILE, "Add"],
+    [TypeFileCommitEvolution.SET_FILE, "Set"],
+    [TypeFileCommitEvolution.DELETE_FILE, "Delete"],
+  ]
+);
 
 export function getModificationTypeFromColor(color: string): string {
   switch (color) {
-    case TypeFileCommitEvolution.ADD_SOURCE_FILE:
-      return "Added source file";
-    case TypeFileCommitEvolution.SET_SOURCE_FILE:
-      return "Updated source file";
-    case TypeFileCommitEvolution.DELETE_SOURCE_FILE:
-      return "Deleted source file";
-    case TypeFileCommitEvolution.ADD_TEST_FILE:
-      return "Added test file";
-    case TypeFileCommitEvolution.SET_TEST_FILE:
-      return "Updated test file";
-    case TypeFileCommitEvolution.DELETE_TEST_FILE:
-      return "Deleted test file";
-    case TypeFileCommitEvolution.ADD_DOC_FILE:
-      return "Added documentation file";
-    case TypeFileCommitEvolution.SET_DOC_FILE:
-      return "Updated documentation file";
-    case TypeFileCommitEvolution.DELETE_DOC_FILE:
-      return "Deleted documentation file";
+    case TypeFileCommitEvolution.ADD_FILE:
+      return "Added file";
+    case TypeFileCommitEvolution.SET_FILE:
+      return "Updated file";
+    case TypeFileCommitEvolution.DELETE_FILE:
+      return "Deleted file";
     default:
       return "Unknown Modification";
   }
+}
+
+export function filterByDate(
+  date: string,
+  startDate: string,
+  endDate: string
+): boolean {
+  const itemDate = dayjs(date);
+
+  return (
+    (!startDate ||
+      itemDate.isSame(dayjs(startDate), "day") ||
+      itemDate.isAfter(dayjs(startDate), "day")) &&
+    (!endDate ||
+      itemDate.isSame(dayjs(endDate), "day") ||
+      itemDate.isBefore(dayjs(endDate), "day"))
+  );
+}
+
+export function getFileName(filepath: string): string {
+  // Split the URL by '/'
+  const parts = filepath.split("/");
+
+  // Return the last non-empty element
+  return parts.filter((part) => part.trim() !== "").pop() || "";
+}
+
+export function getFileExtension(filepath: string): string {
+  // Split the URL by '/'
+  const parts = filepath.split(".");
+
+  // Return the last non-empty element
+  return parts.filter((part) => part.trim() !== "").pop() || "";
 }
