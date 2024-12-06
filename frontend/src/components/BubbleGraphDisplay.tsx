@@ -118,7 +118,9 @@ const BubbleGraphDisplay = ({
                 mainAuthor: fileData.main_contributor.author,
                 modifiedDate: formattedDate,
               });
-            } catch (error) {}
+            } catch (error) {
+              alert(`This file: ${nodeData.path} no longer exists.`);
+            }
           }
         };
 
