@@ -18,9 +18,7 @@ const DevelopersInputPage: React.FC = () => {
   return (
     <div className="two-side-structure">
       <div className="page">
-        <div className="visualization-placeholder">
-          [Graph Visualization Placeholder]
-        </div>
+        <div className="visualization-placeholder">[Coming soon...]</div>
       </div>
       <DateAndFileInput />
     </div>
