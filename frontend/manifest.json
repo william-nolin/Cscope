@@ -1,0 +1,10 @@
+{
+    "version": "0.0.1",
+    "manifest_version": 3,
+    "name": "CScope",
+    "description": "CScope",
+    "permissions": ["activeTab", "tabs"],
+    "background": {
+        "scripts": ["js/background.js"]
+    }
+}

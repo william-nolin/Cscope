@@ -1,11 +1,11 @@
 import { Checkbox, CheckboxProps, ConfigProvider, Select } from "antd";
 import { SizeType } from "antd/es/config-provider/SizeContext";
-import { TypeFileCommitEvolution } from "enum/TypeFileCommitEvolution";
+import { TypeFileCommitEvolution } from "../enum/TypeFileCommitEvolution";
 import { useState } from "react";
 import {
   categoryToEvolutionType,
   typeEvolutionOptions,
-} from "utils/tooltipHelper";
+} from "../utils/tooltipHelper";
 
 const CheckboxGroup = Checkbox.Group;
 

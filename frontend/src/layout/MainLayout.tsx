@@ -1,10 +1,9 @@
 import React from "react";
 import { Outlet, NavLink } from "react-router-dom";
-import "assets/styles/mainLayout.scss";
+import "../assets/styles/mainLayout.scss";
 import { HomeFilled, ReloadOutlined } from "@ant-design/icons";
-import { useDataSettingContext } from "context/DataSettingContext";
-import { syncRepositoryById } from "api";
-import { getFileName } from "utils/tooltipHelper";
+import { useDataSettingContext } from "../context/DataSettingContext";
+import { syncRepositoryById } from "../api";
 
 const MainLayout: React.FC = () => {
   const { repository, setRepository } = useDataSettingContext();

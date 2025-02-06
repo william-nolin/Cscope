@@ -1,17 +1,17 @@
 import React, { useEffect, useState } from "react";
 import { useDataSettingContext } from "../context/DataSettingContext";
-import "assets/styles/changeVolume.scss";
-import DateAndFileInput from "components/DateAndFileInput";
-import BuddleGraphMetrics from "components/BubbleGraphMetrix";
-import { MetricsProps } from "models/MetricsProps";
-import SliderFilterMetrix from "components/SliderFilterMetrix";
-import { FileFolderCommits } from "models/FileFolderCommits";
-import BubbleGraphDisplay from "components/BubbleGraphDisplay";
+import "../assets/styles/changeVolume.scss";
+import DateAndFileInput from "../components/DateAndFileInput";
+import BuddleGraphMetrics from "../components/BubbleGraphMetrix";
+import { MetricsProps } from "../models/MetricsProps";
+import SliderFilterMetrix from "../components/SliderFilterMetrix";
+import { FileFolderCommits } from "../models/FileFolderCommits";
+import BubbleGraphDisplay from "../components/BubbleGraphDisplay";
 import { useParams } from "react-router-dom";
-import { getFileData, getFileOverTime } from "api";
-import { SliderFilterCodeLine } from "models/SliderFilterCodeLine";
+import { getFileData, getFileOverTime } from "../api";
+import { SliderFilterCodeLine } from "../models/SliderFilterCodeLine";
 import { Spin } from "antd";
-import { getFileName } from "utils/tooltipHelper";
+import { getFileName } from "../utils/tooltipHelper";
 
 const ChangeVolumePage: React.FC = () => {
   const {

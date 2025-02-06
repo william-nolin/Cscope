@@ -1,4 +1,4 @@
-import AddRepository from "components/AddRepository";
+import AddRepository from "../components/AddRepository";
 
 const StartProjetPage = () => {
   return (

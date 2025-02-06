@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import "assets/styles/addRepository.scss";
+import "../assets/styles/addRepository.scss";
 import { Input, Spin } from "antd";
 import { useNavigate } from "react-router-dom";
 import dayjs from "dayjs";
@@ -7,8 +7,8 @@ import {
   createRepositoryByUrl,
   getRepositoryById,
   searchRepositoryByUrl,
-} from "api";
-import { useDataSettingContext } from "context/DataSettingContext";
+} from "../api";
+import { useDataSettingContext } from "../context/DataSettingContext";
 
 const AddRepository: React.FC = () => {
   const [url, setUrl] = useState<string>("");
@@ -55,7 +55,6 @@ const AddRepository: React.FC = () => {
   const handleEnterPress = async () => {
     try {
       const result = await searchRepositoryByUrl(url);
-
       if (result.repository) {
         setStartDate(dayjs().subtract(1, "month").format("YYYY-MM-DD"));
         setEndDate(dayjs().format("YYYY-MM-DD"));
@@ -71,6 +70,7 @@ const AddRepository: React.FC = () => {
         alert(`repository: ${url} does not exists.`);
       }
     } catch (error) {
+      console.error(error);
       alert(`repository: ${url} does not exists.`);
     }
   };

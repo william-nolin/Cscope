@@ -1,7 +1,7 @@
 import React, { useEffect } from "react";
 import { useDataSettingContext } from "../context/DataSettingContext";
-import "assets/styles/developersInput.scss";
-import DateAndFileInput from "components/DateAndFileInput";
+import "../assets/styles/developersInput.scss";
+import DateAndFileInput from "../components/DateAndFileInput";
 import { useParams } from "react-router-dom";
 
 const DevelopersInputPage: React.FC = () => {

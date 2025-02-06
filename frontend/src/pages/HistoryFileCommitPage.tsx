@@ -1,18 +1,18 @@
 import React, { useEffect, useState } from "react";
 import { useDataSettingContext } from "../context/DataSettingContext";
-import "assets/styles/evolutionFileCommit.scss";
-import DateAndFileInput from "components/DateAndFileInput";
-import MotionChartDisplay from "components/MotionChartDisplay";
-import { FileHistoryCommit } from "models/FileHistoryCommit";
+import "../assets/styles/evolutionFileCommit.scss";
+import DateAndFileInput from "../components/DateAndFileInput";
+import MotionChartDisplay from "../components/MotionChartDisplay";
+import { FileHistoryCommit } from "../models/FileHistoryCommit";
 
-import { fileHistoryByDate, getFileTypes } from "api";
+import { fileHistoryByDate, getFileTypes } from "../api";
 import { Spin } from "antd";
-import FileTypeChangeFilter from "components/FileTypeChangeFilter";
+import FileTypeChangeFilter from "../components/FileTypeChangeFilter";
 import { useParams } from "react-router-dom";
 import {
   evolutionTypeToCategory,
   typeEvolutionOptions,
-} from "utils/tooltipHelper";
+} from "../utils/tooltipHelper";
 
 const HistoryFileCommitPage: React.FC = () => {
   const [data, setData] = useState<FileHistoryCommit[]>([]);
