@@ -14,6 +14,7 @@
     "@types/react-dom": "^18.3.1",
     "antd": "^5.21.6",
     "axios": "^1.7.7",
+    "bootstrap": "^5.3.3",
     "cross-env": "^7.0.3",
     "ext-name": "^5.0.0",
     "file-type": "^19.6.0",
@@ -24,6 +25,7 @@
     "react-scripts": "5.0.1",
     "sass": "^1.81.0",
     "typescript": "^4.9.5",
+    "utils-merge": "^1.0.1",
     "web-vitals": "^2.1.4"
   },
   "scripts": {

@@ -97,23 +97,25 @@ const HistoryFileCommitPage: React.FC = () => {
   }, [pathFilterData, selectfilterTypeFiles, checkTypeEvolution]);
 
   return (
-    <div className="two-side-structure">
-      <div className="page">
-        {ready ? (
-          <MotionChartDisplay fileHistoryCommitData={filterData} />
-        ) : (
-          <Spin size="large" />
-        )}
-      </div>
-      <div>
-        <DateAndFileInput />
-        <FileTypeChangeFilter
-          fileTypes={typeFiles}
-          filterTypeFiles={selectfilterTypeFiles}
-          setFilterTypeFiles={setSelectFilterTypeFiles}
-          checkedList={checkTypeEvolution}
-          setCheckedList={setCheckTypeEvolution}
-        />
+    <div className="container">
+      <div className="row g-4">
+        <div className="page col-12 col-lg-8">
+          {ready ? (
+            <MotionChartDisplay fileHistoryCommitData={filterData} />
+          ) : (
+            <Spin size="large" />
+          )}
+        </div>
+        <div className="col-12 col-lg-4">
+          <DateAndFileInput />
+          <FileTypeChangeFilter
+            fileTypes={typeFiles}
+            filterTypeFiles={selectfilterTypeFiles}
+            setFilterTypeFiles={setSelectFilterTypeFiles}
+            checkedList={checkTypeEvolution}
+            setCheckedList={setCheckTypeEvolution}
+          />
+        </div>
       </div>
     </div>
   );

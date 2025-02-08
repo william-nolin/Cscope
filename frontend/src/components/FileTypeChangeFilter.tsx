@@ -22,7 +22,6 @@ const FileTypeChangeFilter = ({
   checkedList: string[];
   setCheckedList: any;
 }) => {
-  const inputWidth = 200;
   const [size, setSize] = useState<SizeType>("middle");
 
   const handleChange = (ftfs: string[]) => {
@@ -55,7 +54,6 @@ const FileTypeChangeFilter = ({
           <label>Choose file type : </label>
           <Select
             mode="multiple"
-            style={{ width: inputWidth * 2 + 20 }}
             value={filterTypeFiles}
             size={size}
             onChange={handleChange}
