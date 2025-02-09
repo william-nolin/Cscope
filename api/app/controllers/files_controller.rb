@@ -1,4 +1,16 @@
 class FilesController < ApplicationController
+  CODE_FILETYPES = %w[
+    c cpp cs go java js jsx kotlin lua php pl py rb rs scala sh swift ts tsx
+  ].freeze
+
+  CONFIG_FILETYPES = %w[
+    cfg conf env ini json properties toml xml yaml yml
+  ].freeze
+
+  TEST_FILETYPES = %w[
+    spec test unittest pytest ctest junit nunit karma mocha rspec jest
+  ].freeze
+
   def show
     return render_repository_not_found unless current_repository
 
@@ -48,6 +60,21 @@ class FilesController < ApplicationController
     return render_repository_not_found unless current_repository
 
     render(json: current_repository.source_files.distinct.pluck(:filetype))
+  end
+
+  def grouped_file_types
+    return render_repository_not_found unless current_repository
+
+    file_types = current_repository.source_files.distinct.pluck(:filetype)
+
+    categorized_files = {
+      code: file_types & CODE_FILETYPES,
+      config: file_types & CONFIG_FILETYPES,
+      tests: file_types & TEST_FILETYPES,
+      uncategorized: file_types - (CODE_FILETYPES + CONFIG_FILETYPES + TEST_FILETYPES)
+    }
+
+    render json: categorized_files
   end
 
   private

@@ -72,6 +72,23 @@ class FileClassifier
     ".yml" => "yaml"
   }.freeze
 
+  CONFIG_FILE_EXTENSIONS = {
+    ".conf" => "configuration file",
+    ".ini" => "configuration file",
+    ".json" => "json",
+    ".lock" => "lock file",
+    ".toml" => "toml",
+    ".yaml" => "yaml",
+    ".yml" => "yaml"
+  }.freeze
+
+  TEST_FILE_EXTENSIONS = {
+    ".csv" => "csv",
+    ".log" => "log file",
+    ".md" => "markdown",
+    ".txt" => "plain text"
+  }.freeze
+
   COMMON_KNOWN_FILES = {
     ".env" => ".env",
     ".eslintrc" => "eslint configuration",
@@ -103,7 +120,7 @@ class FileClassifier
   UNKNOWN_FILE_TYPE = "unknown"
 
   def filetype
-    COMMON_KNOWN_FILES[basename] || FILE_TYPE_EXTENSIONS[extension] || UNKNOWN_FILE_TYPE
+    COMMON_KNOWN_FILES[basename] || FILE_TYPE_EXTENSIONS[extension] || CONFIG_FILE_EXTENSIONS[extension] || TEST_FILE_EXTENSIONS[extension] || UNKNOWN_FILE_TYPE
   end
 
   def extension

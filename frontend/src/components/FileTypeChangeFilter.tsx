@@ -6,17 +6,20 @@ import {
   categoryToEvolutionType,
   typeEvolutionOptions,
 } from "utils/tooltipHelper";
+import { CategorizedFileTypes } from 'models/CategorizedFileTypes'
 
 const CheckboxGroup = Checkbox.Group;
 
 const FileTypeChangeFilter = ({
   fileTypes,
+  groupedFileTypes,
   filterTypeFiles,
   setFilterTypeFiles,
   checkedList,
   setCheckedList,
 }: {
   fileTypes: string[];
+  groupedFileTypes: CategorizedFileTypes;
   filterTypeFiles: string[];
   setFilterTypeFiles: any;
   checkedList: string[];
@@ -27,6 +30,7 @@ const FileTypeChangeFilter = ({
 
   const handleChange = (ftfs: string[]) => {
     setFilterTypeFiles(ftfs);
+    console.log(groupedFileTypes);
   };
 
   const checkAll = typeEvolutionOptions.length === checkedList.length;
