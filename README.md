@@ -23,3 +23,15 @@ La séparation des fichiers est claire, backend, frontend et documentation
 ## Documentation
 
 Un guide utilisateur et de programmeur se trouve dans la documentation ainsi que plusieurs readme dans chacun des sous-dossier
+
+## Edit : option manuelle
+
+Dans /cscope/api, exécutez :
+1. docker build -t cscope -f Dockerfile.dev .
+2. docker run -p 3000:3000 --name cscope cscope
+3. docker exec -it cscope /bin/bash
+    3.1 ./bin/rails db:reset && ./bin/rails db:prepare
+    3.2 ./bin/jobs
+
+Dans /cscope/frontend, exécutez : 
+1. npm run start

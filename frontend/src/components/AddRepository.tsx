@@ -81,13 +81,16 @@ const AddRepository: React.FC = () => {
       <p className="cscope__subtitle">Insert repository URL</p>
       <div className="cscope__search">
         {!loadRepository ? (
-          <Input
-            className="cscope__input"
-            value={url}
-            placeholder="Insert URL and press enter"
-            onPressEnter={handleEnterPress}
-            onChange={(e) => setUrl(e.target.value)}
-          />
+          <div>
+            <Input
+              className="cscope__input"
+              value={url}
+              placeholder="Insert URL and press enter"
+              onPressEnter={handleEnterPress}
+              onChange={(e) => setUrl(e.target.value)}
+            />
+            <button className="cscope__button" type="button" onClick={handleEnterPress}>Confirm</button>
+          </div>
         ) : (
           <Spin size="large" />
         )}
