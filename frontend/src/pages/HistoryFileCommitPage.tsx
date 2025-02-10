@@ -92,17 +92,17 @@ const HistoryFileCommitPage: React.FC = () => {
         ? selectfilterTypeFiles.includes(item.filetype)
         : true;
     });
-
+  
     const newFilterData = newFilterPathData.filter((item: any) => {
       const type = evolutionTypeToCategory.get(item.typeEvolution);
       return type && checkTypeEvolution.includes(type);
     });
-
-    // Apply the keyword filter
-    const filteredByKeyword = newFilterData.filter((item: any) =>
-      item.fileName.toLowerCase().includes(keywordFilter.toLowerCase())
-    );
-
+  
+    const filteredByKeyword = newFilterData.filter((item: any) => {
+      const directoryPath = item.fileName.substring(0, item.fileName.lastIndexOf('/'));
+      return directoryPath.toLowerCase().includes(keywordFilter.toLowerCase());
+    });
+  
     setFilterData(filteredByKeyword);
   }, [pathFilterData, selectfilterTypeFiles, checkTypeEvolution, keywordFilter]);
 
@@ -119,7 +119,7 @@ const HistoryFileCommitPage: React.FC = () => {
         <KeywordFilter 
           value={keywordFilter}
           onChange={setKeywordFilter}/>
-          
+
         <DateAndFileInput />
         <FileTypeChangeFilter
           fileTypes={typeFiles}
