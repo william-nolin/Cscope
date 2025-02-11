@@ -36,7 +36,6 @@ const HistoryFileCommitPage: React.FC = () => {
     useState<string[]>(typeEvolutionOptions);
   const { id } = useParams<{ id: string }>();
 
-  // New state for the keyword filter
   const [keywordFilter, setKeywordFilter] = useState<string>("");
 
   useEffect(() => {
