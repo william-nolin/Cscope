@@ -8,6 +8,7 @@ import { FileHistoryCommit } from "../models/FileHistoryCommit";
 import { fileHistoryByDate, getFileTypes } from "../api";
 import { Spin } from "antd";
 import FileTypeChangeFilter from "../components/FileTypeChangeFilter";
+import KeywordFilter from "../components/KeywordFilter";
 import { useParams } from "react-router-dom";
 import {
   evolutionTypeToCategory,
@@ -34,6 +35,8 @@ const HistoryFileCommitPage: React.FC = () => {
   const [checkTypeEvolution, setCheckTypeEvolution] =
     useState<string[]>(typeEvolutionOptions);
   const { id } = useParams<{ id: string }>();
+
+  const [keywordFilter, setKeywordFilter] = useState<string>("");
 
   useEffect(() => {
     const fetchFilesTypes = async () => {
@@ -88,13 +91,19 @@ const HistoryFileCommitPage: React.FC = () => {
         ? selectfilterTypeFiles.includes(item.filetype)
         : true;
     });
-
+  
     const newFilterData = newFilterPathData.filter((item: any) => {
       const type = evolutionTypeToCategory.get(item.typeEvolution);
       return type && checkTypeEvolution.includes(type);
     });
-    setFilterData(newFilterData);
-  }, [pathFilterData, selectfilterTypeFiles, checkTypeEvolution]);
+  
+    const filteredByKeyword = newFilterData.filter((item: any) => {
+      const directoryPath = item.fileName.substring(0, item.fileName.lastIndexOf('/'));
+      return directoryPath.toLowerCase().includes(keywordFilter.toLowerCase());
+    });
+  
+    setFilterData(filteredByKeyword);
+  }, [pathFilterData, selectfilterTypeFiles, checkTypeEvolution, keywordFilter]);
 
   return (
     <div className="container">
@@ -107,6 +116,10 @@ const HistoryFileCommitPage: React.FC = () => {
           )}
         </div>
         <div className="col-12 col-lg-4">
+          <KeywordFilter 
+            value={keywordFilter}
+            onChange={setKeywordFilter}/>
+
           <DateAndFileInput />
           <FileTypeChangeFilter
             fileTypes={typeFiles}
