@@ -2,10 +2,11 @@ import React, { useEffect, useState } from "react";
 import { useDataSettingContext } from "../context/DataSettingContext";
 import "assets/styles/evolutionFileCommit.scss";
 import DateAndFileInput from "components/DateAndFileInput";
+import KeywordFilter from "components/KeywordFilter";
 import MotionChartDisplay from "components/MotionChartDisplay";
 import { FileHistoryCommit } from "models/FileHistoryCommit";
 
-import { fileHistoryByDate, getFileTypes } from "api";
+import { fileHistoryByDate, getFileTypes} from "api";
 import { Spin } from "antd";
 import FileTypeChangeFilter from "components/FileTypeChangeFilter";
 import { useParams } from "react-router-dom";
@@ -34,6 +35,8 @@ const HistoryFileCommitPage: React.FC = () => {
   const [checkTypeEvolution, setCheckTypeEvolution] =
     useState<string[]>(typeEvolutionOptions);
   const { id } = useParams<{ id: string }>();
+
+  const [keywordFilter, setKeywordFilter] = useState<string>("");
 
   useEffect(() => {
     const fetchFilesTypes = async () => {
@@ -88,13 +91,19 @@ const HistoryFileCommitPage: React.FC = () => {
         ? selectfilterTypeFiles.includes(item.filetype)
         : true;
     });
-
+  
     const newFilterData = newFilterPathData.filter((item: any) => {
       const type = evolutionTypeToCategory.get(item.typeEvolution);
       return type && checkTypeEvolution.includes(type);
     });
-    setFilterData(newFilterData);
-  }, [pathFilterData, selectfilterTypeFiles, checkTypeEvolution]);
+  
+    const filteredByKeyword = newFilterData.filter((item: any) => {
+      const directoryPath = item.fileName.substring(0, item.fileName.lastIndexOf('/'));
+      return directoryPath.toLowerCase().includes(keywordFilter.toLowerCase());
+    });
+  
+    setFilterData(filteredByKeyword);
+  }, [pathFilterData, selectfilterTypeFiles, checkTypeEvolution, keywordFilter]);
 
   return (
     <div className="two-side-structure">
@@ -106,6 +115,10 @@ const HistoryFileCommitPage: React.FC = () => {
         )}
       </div>
       <div>
+        <KeywordFilter 
+          value={keywordFilter}
+          onChange={setKeywordFilter}/>
+
         <DateAndFileInput />
         <FileTypeChangeFilter
           fileTypes={typeFiles}
@@ -114,6 +127,7 @@ const HistoryFileCommitPage: React.FC = () => {
           checkedList={checkTypeEvolution}
           setCheckedList={setCheckTypeEvolution}
         />
+
       </div>
     </div>
   );
