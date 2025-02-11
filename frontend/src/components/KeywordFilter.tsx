@@ -10,7 +10,6 @@ const KeywordFilter = ({
   value: string;
   onChange: (value: string) => void;
 }) => {
-  const inputWidth = 200;
   const [size, setSize] = useState<SizeType>("middle");
 
   return (
@@ -28,7 +27,6 @@ const KeywordFilter = ({
           <label>Filter by file name : </label>
           <Input
             size={size}
-            style={{ width: inputWidth * 2 + 20 }}
             value={value}
             onChange={(e) => onChange(e.target.value)}
             placeholder="Enter keyword to filter files"
