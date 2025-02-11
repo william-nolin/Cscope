@@ -24,7 +24,7 @@ const KeywordFilter = ({
     >
       <div className="date-file-input" style={{ marginBottom: 20 }}>
         <div>
-          <label>Filter by file name : </label>
+          <label>Filter by path : </label>
           <Input
             size={size}
             value={value}
